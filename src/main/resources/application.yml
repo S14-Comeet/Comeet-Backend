@@ -1,0 +1,80 @@
+spring:
+  application:
+    name: ${APP_NAME:Comeet}
+
+  # 프로필 설정
+  profiles:
+    active: ${APP_PROFILE:dev}
+
+  # 데이터베이스 설정
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+    # HikariCP 커넥션 풀 설정
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${DB_POOL_MIN_IDLE:5}
+      connection-timeout: ${DB_POOL_CONNECTION_TIMEOUT:30000}
+      idle-timeout: ${DB_POOL_IDLE_TIMEOUT:600000}
+      max-lifetime: ${DB_POOL_MAX_LIFETIME:1800000}
+      auto-commit: true
+
+# MyBatis 설정
+mybatis:
+  # Mapper XML 파일 위치
+  mapper-locations: classpath:mapper/**/*.xml
+
+  # MyBatis 설정 파일 위치 (선택적)
+  # config-location: classpath:mybatis-config.xml
+
+  type-aliases-package: com.backend.domain.*.entity
+
+  configuration:
+    # DB의 snake_case를 Java의 camelCase로 자동 변환
+    map-underscore-to-camel-case: true
+
+    # 쿼리 로깅 설정
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+    # 캐시 활성화
+    cache-enabled: true
+
+    # Lazy Loading 설정
+    lazy-loading-enabled: false
+    aggressive-lazy-loading: false
+
+    # JDBC 타임아웃 설정 (초)
+    default-statement-timeout: 30
+
+    # NULL 값 처리
+    call-setters-on-nulls: true
+
+    # ResultSet에서 컬럼이 없을 때 null 반환
+    return-instance-for-empty-row: false
+
+# 로깅 설정
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.backend: ${LOG_LEVEL_APP:DEBUG}
+    com.backend.mapper: ${LOG_LEVEL_MYBATIS:DEBUG}
+    org.springframework: INFO
+    org.springframework.web: INFO
+    org.mybatis: DEBUG
+
+# Actuator 설정 (모니터링)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+# 애플리케이션 정보
+info:
+  app:
+    name: ${APP_NAME:Comeet}
+    version: ${APP_VERSION:1.0.0}
+    description: Comeet Backend Application
