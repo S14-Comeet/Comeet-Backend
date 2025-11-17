@@ -14,7 +14,8 @@
 - [📖 프로젝트 소개](#-프로젝트-소개)
 - [🎯 프로젝트 목표](#-프로젝트-목표)
 - [🛠️ 기술 스택](#️-기술-스택)
-
+- [📝 Commit Message Convention](#-commit-message-convention)
+- [📚 상세 문서](#-상세-문서)
 ---
 
 # 📖 프로젝트 소개
@@ -71,6 +72,58 @@
 - Image Storage: AWS S3 / Object Storage
 ```
 
+
+---
+
+# 📝 Commit Message Convention
+
+## 기본 형식 (Angular Commit Convention)
+```
+[gitmoji] type(#issue): subject
+
+[optional body]
+
+[optional footer]
+```
+
+## Type
+- `feat`: 새로운 기능 추가
+- `fix`: 버그 수정
+- `docs`: 문서 수정
+- `style`: 코드 포맷팅, 세미콜론 누락 등 (코드 변경 없음)
+- `refactor`: 코드 리팩토링
+- `test`: 테스트 코드 추가/수정
+- `chore`: 빌드, 패키지 매니저 설정 등
+- `perf`: 성능 개선
+- `ci`: CI/CD 설정 변경
+- `build`: 빌드 시스템 변경
+
+## Scope (필수)
+- `#이슈번호` 형식으로 작성
+- 예: `#1`, `#42`, `#123`
+
+## Subject (필수)
+- 50자 이내로 간결하게 작성
+- 마침표 없이 명령문으로 작성
+- 한글 또는 영문 사용 가능
+
+## Gitmoji (선택)
+- 커밋 타입을 시각적으로 표현
+- **사용 여부는 선택 사항**
+
+### 자주 사용하는 Gitmoji
+| Emoji | Code | Type |
+|-------|------|------|
+| ✨ | `:sparkles:` | feat (새 기능) |
+| 🐛 | `:bug:` | fix (버그 수정) |
+| 📝 | `:memo:` | docs (문서) |
+| ♻️ | `:recycle:` | refactor (리팩토링) |
+| ✅ | `:white_check_mark:` | test (테스트) |
+| 🔧 | `:wrench:` | chore (설정) |
+| ⚡ | `:zap:` | perf (성능) |
+| 💄 | `:lipstick:` | style (스타일) |
+| 🔥 | `:fire:` | 코드/파일 삭제 |
+| 🚀 | `:rocket:` | 배포 |
 
 ---
 
