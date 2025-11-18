@@ -1,0 +1,31 @@
+package com.backend.domain.user.service.command;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.backend.domain.user.converter.UserConverter;
+import com.backend.domain.user.dto.request.UserReqDto;
+import com.backend.domain.user.dto.response.UserResDto;
+import com.backend.domain.user.entity.User;
+import com.backend.domain.user.mapper.command.UserCommandMapper;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+@Transactional
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+public class UserCommandServiceImpl implements UserCommandService {
+
+	private final UserCommandMapper commandMapper;
+
+	@Override
+	public UserResDto insert(UserReqDto reqDto) {
+		User newUser = UserConverter.toEntity(reqDto);
+		User savedUser = commandMapper.insert(newUser);
+		log.info("[User] 유저생성 완료 - userId: {}", savedUser.getId());
+		return UserConverter.toResponse(savedUser);
+	}
+}
