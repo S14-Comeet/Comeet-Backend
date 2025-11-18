@@ -75,6 +75,22 @@
 
 ---
 
+# 🌿 Git Branch 전략
+
+## GitHub Flow
+```
+- master: 프로덕션 배포 브랜치
+- feature/#issue: 기능 개발 브랜치 (예: feature/1, feature/2)
+```
+
+## 워크플로우
+1. **기능 개발**: `feature/#issue` 브랜치에서 작업
+2. **완료 후**: `master` 브랜치로 직접 Merge Request
+3. **코드 리뷰**: MR 승인 후 머지
+4. **배포**: `master` 브랜치 자동 배포
+
+---
+
 # 📝 Commit Message Convention
 
 ## 기본 형식 (Angular Commit Convention)
