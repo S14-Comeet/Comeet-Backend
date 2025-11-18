@@ -21,6 +21,11 @@ spring:
       idle-timeout: ${DB_POOL_IDLE_TIMEOUT:600000}
       max-lifetime: ${DB_POOL_MAX_LIFETIME:1800000}
       auto-commit: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:/schema/schema.sql
+      continue-on-error: false
 
 # MyBatis 설정
 mybatis:
