@@ -1,5 +1,6 @@
 package com.backend.common.config;
 
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +23,8 @@ public class SecurityConfig {
 	private static final String[] WHITELIST = {
 		"/swagger-ui/**",
 		"/v3/api-docs/**",
-		"/error"
+		"/error",
+		"/"
 	};
 
 	@Bean
@@ -32,7 +34,16 @@ public class SecurityConfig {
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.formLogin(AbstractHttpConfigurer::disable)
 			.logout(AbstractHttpConfigurer::disable)
-			.sessionManagement(SecurityConfig::createSessionPolicy)
+			.sessionManagement(SecurityConfig::createSessionPolicy);
+
+		http
+			.authorizeHttpRequests(authorize -> authorize
+				.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
+				.requestMatchers(WHITELIST).permitAll()
+				.anyRequest().permitAll()
+			);
+
+		http
 			.addFilterBefore(corsFilter.corsFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
