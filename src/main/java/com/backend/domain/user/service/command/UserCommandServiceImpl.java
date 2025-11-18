@@ -22,7 +22,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 	private final UserCommandMapper commandMapper;
 
 	@Override
-	public UserResDto insert(UserReqDto reqDto) {
+	public UserResDto insert(final UserReqDto reqDto) {
 		User newUser = UserConverter.toEntity(reqDto);
 		User savedUser = commandMapper.insert(newUser);
 		log.info("[User] 유저생성 완료 - userId: {}", savedUser.getId());
