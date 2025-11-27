@@ -3,6 +3,7 @@ package com.backend.common.config;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -11,20 +12,42 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.backend.common.auth.handler.OAuth2LoginSuccessHandler;
+import com.backend.common.auth.service.CustomOAuth2UserService;
+import com.backend.common.filter.JwtAuthenticationFilter;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final CorsConfig corsFilter;
+	private final CorsConfig corsConfig;
+	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	private static final String[] WHITELIST = {
-		"/swagger-ui/**",
-		"/v3/api-docs/**",
+		// Web
+		"/",
 		"/error",
-		"/"
+		"/favicon.ico",
+
+		// Swagger
+		"swagger-ui/**",
+		"/v3/api-docs/**",
+		"/swagger-ui/**",
+		"/swagger-resources/**",
+
+		// Actuator
+		"/actuator",
+		"/actuator/**",
+
+		// OAuth2
+		"/oauth2/**",
+		"/login/**",
 	};
 
 	@Bean
@@ -40,12 +63,14 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
 				.requestMatchers(WHITELIST).permitAll()
-				.anyRequest().permitAll()
-			);
+				.anyRequest().authenticated()
+			).oauth2Login(oauth2 -> oauth2
+				.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+				.successHandler(oAuth2LoginSuccessHandler));
 
 		http
-			.addFilterBefore(corsFilter.corsFilter(), UsernamePasswordAuthenticationFilter.class);
-
+			.addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 
