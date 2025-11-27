@@ -13,10 +13,12 @@ import com.backend.domain.auth.service.query.AuthQueryServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Auth", description = "인증 관련 API")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,8 +36,7 @@ public class AuthQueryController {
 		}
 	)
 	public ResponseEntity<BaseResponse<CheckNicknameDuplicateResponse>> checkNicknameDuplicate(
-		@RequestParam @NotBlank(message = "닉네임은 필수 입력 항목입니다.")
-		String nickname
+		@RequestParam @NotBlank(message = "닉네임은 필수 입력 항목입니다.") String nickname
 	) {
 		CheckNicknameDuplicateResponse response = queryService.checkNicknameDuplicate(nickname);
 		return ResponseUtils.ok(response);
