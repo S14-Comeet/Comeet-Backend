@@ -2,6 +2,10 @@ package com.backend.domain.auth.converter;
 
 import com.backend.domain.auth.dto.response.CheckNicknameDuplicateResponse;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthConverter {
 
 	public static CheckNicknameDuplicateResponse toCheckNicknameDuplicateResponse(

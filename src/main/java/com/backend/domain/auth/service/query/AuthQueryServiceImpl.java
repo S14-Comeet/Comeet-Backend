@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthQueryServiceImpl implements AuthQueryService{
 
-	public UserQueryMapper userQueryMapper;
+	private final UserQueryMapper userQueryMapper;
 
 	public CheckNicknameDuplicateResponse checkNicknameDuplicate(final String nickname) {
 		Boolean available = userQueryMapper.existByNickName(nickname);

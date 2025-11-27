@@ -7,7 +7,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.backend.common.auth.redis.BlackList;
-import com.backend.common.auth.redis.RefreshToken;
 
 import lombok.RequiredArgsConstructor;
 
