@@ -22,7 +22,6 @@ public class UserCommandController {
 
 	@PostMapping
 	public ResponseEntity<BaseResponse<UserResDto>> findUserById(final UserReqDto reqDto) {
-
 		UserResDto response = service.insert(reqDto);
 		return ResponseUtils.created(response);
 	}

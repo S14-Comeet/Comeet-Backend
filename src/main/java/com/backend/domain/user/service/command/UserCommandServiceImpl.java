@@ -23,9 +23,16 @@ public class UserCommandServiceImpl implements UserCommandService {
 
 	@Override
 	public UserResDto insert(final UserReqDto reqDto) {
-		User newUser = UserConverter.toEntity(reqDto);
-		User savedUser = commandMapper.insert(newUser);
-		log.info("[User] 유저생성 완료 - userId: {}", savedUser.getId());
-		return UserConverter.toResponse(savedUser);
+		User user = UserConverter.toEntity(reqDto);
+		int changes = commandMapper.save(user);
+		log.info("[User] 유저생성 완료 - 추가된 항목 {} 개 userId : {}", changes, user.getEmail());
+		return UserConverter.toResponse(user);
+	}
+
+	@Override
+	public User save(final User user) {
+		int changes = commandMapper.save(user);
+		log.info("[User] 유저생성 완료 - 추가된 항목 {} 개 userId : {}", changes, user.getEmail());
+		return user;
 	}
 }
