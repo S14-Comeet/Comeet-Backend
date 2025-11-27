@@ -1,15 +1,15 @@
 package com.backend.domain.auth.service.command;
 
-import com.backend.domain.auth.dto.response.LoginResponse;
+import com.backend.domain.user.entity.Role;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthCommandService {
 
-	void logout(String refreshToken, HttpServletRequest request, HttpServletResponse response);
+	void logout(HttpServletRequest request, HttpServletResponse response);
 
-	void reissue(String refreshToken, HttpServletResponse response);
+	void reissue(HttpServletRequest request, HttpServletResponse response);
 
-	void updateRole(String socialId, com.backend.domain.user.entity.Role role);
+	void updateRole(String socialId, Role role);
 }

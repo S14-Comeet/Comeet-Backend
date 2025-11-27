@@ -2,7 +2,6 @@ package com.backend.domain.auth.controller.command;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,23 +34,20 @@ public class AuthCommandController {
 	@Operation(summary = "로그아웃", description = "액세스 토큰과 리프레시 토큰을 블랙리스트에 추가하고 Redis에서 삭제합니다.")
 	@PostMapping("/logout")
 	public ResponseEntity<BaseResponse<Void>> logout(
-		@Parameter(description = "RefreshToken (쿠키에서 자동 전송)", required = true)
-		@CookieValue(name = "refreshToken") String refreshToken,
 		HttpServletRequest request,
 		HttpServletResponse response
 	) {
-		authCommandService.logout(refreshToken, request, response);
+		authCommandService.logout(request, response);
 		return ResponseUtils.noContent();
 	}
 
 	@Operation(summary = "토큰 재발급", description = "RefreshToken을 사용하여 새로운 AccessToken과 RefreshToken을 발급합니다.")
 	@PostMapping("/reissue")
 	public ResponseEntity<BaseResponse<Void>> reissueToken(
-		@Parameter(description = "RefreshToken (쿠키에서 자동 전송)", required = true)
-		@CookieValue(name = "refreshToken") String refreshToken,
+		HttpServletRequest request,
 		HttpServletResponse response
 	) {
-		authCommandService.reissue(refreshToken, response);
+		authCommandService.reissue(request, response);
 		return ResponseUtils.noContent();
 	}
 

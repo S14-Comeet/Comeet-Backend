@@ -17,7 +17,7 @@ import io.swagger.v3.oas.models.servers.Server;
 /**
  * Swagger OpenAPI 설정
  * - JWT Bearer Token 인증 (Authorization Header)
- * - RefreshToken Cookie 자동 전송 설정
+ * - RefreshToken은 브라우저가 자동으로 쿠키에서 전송 (withCredentials: true)
  */
 @Configuration
 public class SwaggerConfig {
@@ -33,19 +33,10 @@ public class SwaggerConfig {
 			.name("Authorization")
 			.description("JWT Access Token (Bearer {token})");
 
-		// RefreshToken Cookie 인증 스킴
-		SecurityScheme cookieAuth = new SecurityScheme()
-			.type(SecurityScheme.Type.APIKEY)
-			.in(SecurityScheme.In.COOKIE)
-			.name("refreshToken")
-			.description("RefreshToken (자동으로 쿠키에서 전송됨)");
-
 		// Security Requirement
 		SecurityRequirement securityRequirement = new SecurityRequirement()
-			.addList("bearerAuth")
-			.addList("cookieAuth");
+			.addList("bearerAuth");
 
-		// Server 설정
 		Server localServer = new Server()
 			.url("http://localhost:8080")
 			.description("로컬 개발 서버");
@@ -57,8 +48,7 @@ public class SwaggerConfig {
 				.version("v1.0.0"))
 			.servers(Arrays.asList(localServer))
 			.components(new Components()
-				.addSecuritySchemes("bearerAuth", bearerAuth)
-				.addSecuritySchemes("cookieAuth", cookieAuth))
+				.addSecuritySchemes("bearerAuth", bearerAuth))
 			.addSecurityItem(securityRequirement);
 	}
 

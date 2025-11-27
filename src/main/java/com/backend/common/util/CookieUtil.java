@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -30,5 +31,17 @@ public class CookieUtil {
 		cookie.setSecure(true);
 		cookie.setHttpOnly(true);
 		return cookie;
+	}
+
+	public String extractRefreshToken(final HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (REFRESH_TOKEN_NAME.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
 	}
 }

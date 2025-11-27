@@ -1,14 +1,11 @@
 package com.backend.domain.auth.service.command;
 
-import java.util.Optional;
-
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.auth.constants.AuthConstant;
 import com.backend.common.auth.dto.Token;
 import com.backend.common.auth.jwt.JwtProperties;
-import com.backend.common.auth.redis.BlackList;
+import com.backend.common.auth.jwt.JwtTokenProvider;
 import com.backend.common.auth.redis.RefreshToken;
 import com.backend.common.auth.redis.repository.BlackListRepository;
 import com.backend.common.auth.redis.repository.RefreshTokenRepository;
@@ -16,9 +13,9 @@ import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.AuthException;
 import com.backend.common.error.exception.BusinessException;
 import com.backend.common.error.exception.UserException;
-import com.backend.common.auth.jwt.JwtTokenProvider;
 import com.backend.common.util.CookieUtil;
 import com.backend.domain.user.entity.User;
+import com.backend.domain.user.service.command.UserCommandService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,14 +32,15 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final BlackListRepository blackListRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
-	private final com.backend.domain.user.service.command.UserCommandService userCommandService;
+	private final UserCommandService userCommandService;
 
 	@Override
 	public void logout(
-		final String refreshToken,
 		final HttpServletRequest request,
 		final HttpServletResponse response
 	) {
+		String refreshToken = CookieUtil.extractRefreshToken(request);
+
 		User user = jwtTokenProvider.getUser(refreshToken)
 			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
@@ -58,7 +56,9 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 	}
 
 	@Override
-	public void reissue(final String refreshToken, final HttpServletResponse response) {
+	public void reissue(final HttpServletRequest request, final HttpServletResponse response) {
+		String refreshToken = CookieUtil.extractRefreshToken(request);
+
 		if (blackListRepository.existsById(refreshToken)) {
 			throw new BusinessException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
 		}
