@@ -9,5 +9,13 @@ import com.backend.domain.user.entity.User;
 
 @Mapper
 public interface UserQueryMapper extends QueryMapper<User> {
-	Optional<User> findById(final Long userId);
+	Optional<User> findById(Long userId);
+
+	Optional<User> findByEmail(String email);
+
+	Optional<User> findBySocialId(String socialId);
+
+	Boolean existBySocialId(String socialId);
+
+	Boolean existByNickName(String nickname);
 }

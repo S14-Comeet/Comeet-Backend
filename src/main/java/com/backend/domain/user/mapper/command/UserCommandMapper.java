@@ -7,5 +7,5 @@ import com.backend.domain.user.entity.User;
 
 @Mapper
 public interface UserCommandMapper extends CommandMapper<User> {
-	User insert(final User user);
+	int save(User user);
 }
