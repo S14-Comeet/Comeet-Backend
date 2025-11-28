@@ -3,9 +3,6 @@ package com.backend.domain.user.service.command;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.domain.user.converter.UserConverter;
-import com.backend.domain.user.dto.request.UserReqDto;
-import com.backend.domain.user.dto.response.UserResDto;
 import com.backend.domain.user.entity.User;
 import com.backend.domain.user.mapper.command.UserCommandMapper;
 
@@ -22,10 +19,9 @@ public class UserCommandServiceImpl implements UserCommandService {
 	private final UserCommandMapper commandMapper;
 
 	@Override
-	public UserResDto insert(final UserReqDto reqDto) {
-		User newUser = UserConverter.toEntity(reqDto);
-		User savedUser = commandMapper.insert(newUser);
-		log.info("[User] 유저생성 완료 - userId: {}", savedUser.getId());
-		return UserConverter.toResponse(savedUser);
+	public User save(final User user) {
+		int changes = commandMapper.save(user);
+		log.info("[User] 유저생성 완료 - 추가된 항목 {} 개 userId : {}", changes, user.getEmail());
+		return user;
 	}
 }
