@@ -18,6 +18,6 @@ jobs:
         id: create_branch_for_issue
         uses: robvanderleek/create-issue-branch@main
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Echo branch name
         run: echo ${{ steps.create_branch_for_issue.outputs.branchName }}
