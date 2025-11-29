@@ -1,22 +1,19 @@
 name: Create Branch For Issue
-
 permissions:
   issues: write
   contents: write
-
 on:
   issues:
     types: [ assigned ]
   pull_request:
     types: [ closed ]
-
 jobs:
   create_issue_branch_job:
     runs-on: ubuntu-latest
     steps:
       - name: Create Branch For Issue
         id: create_branch_for_issue
-        uses: robvanderleek/create-issue-branch@main
+        uses: robvanderleek/create-issue-branch@v1.9.0  # 👈 변경
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Echo branch name
