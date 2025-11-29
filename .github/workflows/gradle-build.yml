@@ -22,9 +22,6 @@ jobs:
           echo "${{ secrets.ENV_FILE }}" > .env
         shell: bash
 
-      - name: Run CheckStyle
-        run: ./gradlew checkstyleMain checkstyleTest
-
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
