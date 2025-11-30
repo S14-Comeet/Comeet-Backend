@@ -1,18 +1,22 @@
 package com.backend.domain.map.controller.query;
 
+import java.math.BigDecimal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
+import com.backend.domain.map.converter.MapConverter;
 import com.backend.domain.map.dto.request.MapBoundsReqDto;
 import com.backend.domain.map.dto.response.MapMarkersResDto;
 import com.backend.domain.map.service.query.MapQueryService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +38,16 @@ class MapQueryController {
 	})
 	@GetMapping("/markers")
 	public ResponseEntity<BaseResponse<MapMarkersResDto>> getStoresWithinDistance(
-		@ModelAttribute final MapBoundsReqDto reqDto) {
+		@Parameter(description = "사용자 위도", required = true, example = "37.5665")
+		@RequestParam final BigDecimal latitude,
+
+		@Parameter(description = "사용자 경도", required = true, example = "126.9780")
+		@RequestParam final BigDecimal longitude,
+
+		@Parameter(description = "최대 거리 (km), 미입력 시 1km 기본값 적용", required = false, example = "1.0")
+		@RequestParam(required = false) final Double maxDistance
+	) {
+		final MapBoundsReqDto reqDto = MapConverter.toMapBoundsReqDto(latitude, longitude, maxDistance);
 		final MapMarkersResDto response = mapQueryService.getStoresWithinDistance(reqDto);
 		return ResponseUtils.ok(response);
 	}
