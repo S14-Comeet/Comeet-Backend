@@ -14,10 +14,10 @@ public record MapBoundsReqDto(
 	@Schema(description = "사용자 경도", example = "126.9780", required = true)
 	BigDecimal longitude,
 
-	@Schema(description = "최대 거리 (km), 미입력 시 기본값 적용", example = "5.0")
+	@Schema(description = "최대 거리 (km), 미입력 시 기본값 적용", example = "1.0")
 	Double maxDistance
 ) {
 	public Double getMaxDistance() {
-		return maxDistance != null ? maxDistance : 5.0;
+		return maxDistance != null ? maxDistance : 1.0;
 	}
 }

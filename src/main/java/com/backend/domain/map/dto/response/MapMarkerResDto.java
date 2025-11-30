@@ -29,7 +29,10 @@ public record MapMarkerResDto(
 	@Schema(description = "썸네일 URL", example = "https://example.com/thumbnail.jpg")
 	String thumbnailUrl,
 
-	@Schema(description = "사용자로부터의 거리 (km)", example = "1.23")
-	Double distance
+	@Schema(description = "사용자로부터의 거리 (km)", example = "1.0")
+	Double distance,
+
+	@Schema(description = "마커 색상 (영업 중: BLUE, 영업 안함: RED)", example = "BLUE", allowableValues = {"BLUE", "RED"})
+	String markerColor
 ) {
 }
