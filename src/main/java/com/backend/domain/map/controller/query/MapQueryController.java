@@ -45,7 +45,7 @@ class MapQueryController {
 		@Parameter(description = "사용자 경도", required = true, example = "126.9780")
 		@RequestParam @DecimalMin("-180") @DecimalMax("180") final BigDecimal longitude,
 
-		@Parameter(description = "최대 거리 (km), 미입력 시 1km 기본값 적용", required = false, example = "1.0")
+		@Parameter(description = "최대 거리 (km), 미입력 시 1km 기본값 적용", example = "1.0")
 		@RequestParam(required = false) @Positive final Double maxDistance
 	) {
 		final MapMarkersResDto response = mapQueryService.getStoresWithinDistance(latitude, longitude, maxDistance);

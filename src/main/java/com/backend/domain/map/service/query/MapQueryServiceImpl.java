@@ -1,6 +1,7 @@
 package com.backend.domain.map.service.query;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +57,7 @@ public class MapQueryServiceImpl implements MapQueryService {
 				}
 				return false;
 			})
-			.sorted((s1, s2) -> Double.compare(
-				distanceMap.get(s1.getStoreId()),
-				distanceMap.get(s2.getStoreId())
-			))
+			.sorted(Comparator.comparingDouble(s -> distanceMap.get(s.getStoreId())))
 			.toList();
 
 		// 4. 응답 DTO 변환
