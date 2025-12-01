@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.backend.domain.map.dto.request.MapBoundsReqDto;
+// import com.backend.domain.map.dto.request.MapBoundsReqDto;
 import com.backend.domain.map.dto.response.MapMarkerResDto;
 import com.backend.domain.map.dto.response.MapMarkersResDto;
 import com.backend.domain.map.entity.Store;
@@ -15,21 +15,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapConverter {
 
-	/**
-	 * 개별 파라미터를 MapBoundsReqDto로 변환
-	 * @param latitude 사용자 위도
-	 * @param longitude 사용자 경도
-	 * @param maxDistance 최대 거리 (km)
-	 * @return 지도 범위 검색 요청 DTO
-	 */
-	public static MapBoundsReqDto toMapBoundsReqDto(final BigDecimal latitude, final BigDecimal longitude,
-		final Double maxDistance) {
-		return MapBoundsReqDto.builder()
-			.latitude(latitude)
-			.longitude(longitude)
-			.maxDistance(maxDistance)
-			.build();
-	}
+	// /**
+	//  * 개별 파라미터를 MapBoundsReqDto로 변환
+	//  * @param latitude 사용자 위도
+	//  * @param longitude 사용자 경도
+	//  * @param maxDistance 최대 거리 (km)
+	//  * @return 지도 범위 검색 요청 DTO
+	//  */
+	// public static MapBoundsReqDto toMapBoundsReqDto(final BigDecimal latitude, final BigDecimal longitude,
+	// 	final Double maxDistance) {
+	// 	return MapBoundsReqDto.builder()
+	// 		.latitude(latitude)
+	// 		.longitude(longitude)
+	// 		.maxDistance(maxDistance)
+	// 		.build();
+	// }
 
 	/**
 	 * Store Entity와 거리 정보를 MapMarkerResDto로 변환

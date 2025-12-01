@@ -20,13 +20,14 @@ import lombok.RequiredArgsConstructor;
 public class MapQueryServiceImpl implements MapQueryService {
 	private static final double EARTH_RADIUS_KM = 6371.0;
 	private static final double LATITUDE_DEGREE_KM = 111.0;
+	private static final double DEFAULT_MAX_DISTANCE_KM = 1.0;
 
 	private final MapQueryMapper queryMapper;
 
 	@Override
 	public MapMarkersResDto getStoresWithinDistance(final BigDecimal latitude, final BigDecimal longitude,
 		final Double maxDistance) {
-		final double distance = (maxDistance != null) ? maxDistance : 1.0;
+		final double distance = (maxDistance != null) ? maxDistance : DEFAULT_MAX_DISTANCE_KM;
 
 		// 1. Bounding Box 경계 계산
 		final BoundingBox boundingBox = calculateBoundingBox(latitude, longitude, distance);
