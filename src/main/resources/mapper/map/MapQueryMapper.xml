@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.map.mapper.query.MapQueryMapper">
+
+    <select id="findStoresWithinBounds" resultType="Store">
+        SELECT
+            store_id,
+            roastery_id,
+            owner_id,
+            name,
+            description,
+            address,
+            latitude,
+            longitude,
+            phone_number,
+            category,
+            thumbnail_url,
+            open_time,
+            close_time,
+            average_rating,
+            review_count,
+            visit_count,
+            is_closed,
+            deleted_at,
+            created_at,
+            updated_at
+        FROM stores
+        WHERE latitude BETWEEN #{minLatitude} AND #{maxLatitude}
+          AND longitude BETWEEN #{minLongitude} AND #{maxLongitude}
+          AND deleted_at IS NULL
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>
