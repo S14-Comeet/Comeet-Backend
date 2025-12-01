@@ -23,7 +23,7 @@
             review_count,
             visit_count,
             is_closed,
-            deleted_at,del
+            deleted_at,
             created_at,
             updated_at
         FROM stores
