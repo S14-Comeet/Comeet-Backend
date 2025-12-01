@@ -2,6 +2,9 @@ package com.backend.domain.map.controller.query;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
-import com.backend.domain.map.converter.MapConverter;
-import com.backend.domain.map.dto.request.MapBoundsReqDto;
 import com.backend.domain.map.dto.response.MapMarkersResDto;
 import com.backend.domain.map.service.query.MapQueryService;
 
@@ -39,16 +40,15 @@ class MapQueryController {
 	@GetMapping("/markers")
 	public ResponseEntity<BaseResponse<MapMarkersResDto>> getStoresWithinDistance(
 		@Parameter(description = "사용자 위도", required = true, example = "37.5665")
-		@RequestParam final BigDecimal latitude,
+		@RequestParam @DecimalMin("-90") @DecimalMax("90") final BigDecimal latitude,
 
 		@Parameter(description = "사용자 경도", required = true, example = "126.9780")
-		@RequestParam final BigDecimal longitude,
+		@RequestParam @DecimalMin("-180") @DecimalMax("180") final BigDecimal longitude,
 
 		@Parameter(description = "최대 거리 (km), 미입력 시 1km 기본값 적용", required = false, example = "1.0")
-		@RequestParam(required = false) final Double maxDistance
+		@RequestParam(required = false) @Positive final Double maxDistance
 	) {
-		final MapBoundsReqDto reqDto = MapConverter.toMapBoundsReqDto(latitude, longitude, maxDistance);
-		final MapMarkersResDto response = mapQueryService.getStoresWithinDistance(reqDto);
+		final MapMarkersResDto response = mapQueryService.getStoresWithinDistance(latitude, longitude, maxDistance);
 		return ResponseUtils.ok(response);
 	}
 }

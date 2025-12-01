@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.backend.domain.map.converter.MapConverter;
-import com.backend.domain.map.dto.request.MapBoundsReqDto;
 import com.backend.domain.map.dto.response.MapMarkersResDto;
 import com.backend.domain.map.entity.Store;
 import com.backend.domain.map.mapper.query.MapQueryMapper;
@@ -25,13 +24,12 @@ public class MapQueryServiceImpl implements MapQueryService {
 	private final MapQueryMapper queryMapper;
 
 	@Override
-	public MapMarkersResDto getStoresWithinDistance(final MapBoundsReqDto reqDto) {
-		final BigDecimal userLat = reqDto.latitude();
-		final BigDecimal userLon = reqDto.longitude();
-		final double maxDistance = reqDto.getMaxDistance();
+	public MapMarkersResDto getStoresWithinDistance(final BigDecimal latitude, final BigDecimal longitude,
+		final Double maxDistance) {
+		final double distance = (maxDistance != null) ? maxDistance : 1.0;
 
 		// 1. Bounding Box 경계 계산
-		final BoundingBox boundingBox = calculateBoundingBox(userLat, userLon, maxDistance);
+		final BoundingBox boundingBox = calculateBoundingBox(latitude, longitude, distance);
 
 		// 2. Bounding Box 내의 매장 조회 (1차 필터링)
 		final List<Store> candidateStores = queryMapper.findStoresWithinBounds(
@@ -45,14 +43,14 @@ public class MapQueryServiceImpl implements MapQueryService {
 		final Map<String, Double> distanceMap = new HashMap<>();
 		final List<Store> filteredStores = candidateStores.stream()
 			.filter(store -> {
-				final double distance = calculateHaversineDistance(
-					userLat.doubleValue(),
-					userLon.doubleValue(),
+				final double storeDistance = calculateHaversineDistance(
+					latitude.doubleValue(),
+					longitude.doubleValue(),
 					store.getLatitude().doubleValue(),
 					store.getLongitude().doubleValue()
 				);
-				if (distance <= maxDistance) {
-					distanceMap.put(store.getStoreId(), distance);
+				if (storeDistance <= distance) {
+					distanceMap.put(store.getStoreId(), storeDistance);
 					return true;
 				}
 				return false;
