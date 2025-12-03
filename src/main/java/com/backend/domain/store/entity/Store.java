@@ -1,4 +1,4 @@
-package com.backend.domain.map.entity;
+package com.backend.domain.store.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ public class Store {
 	private BigDecimal averageRating;
 	private Integer reviewCount;
 	private Integer visitCount;
-	private Boolean isClosed;
+	private boolean isClosed;
 	private LocalDateTime deletedAt;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
@@ -52,14 +52,4 @@ public class Store {
 			.build();
 	}
 
-	public Store update(final String name, final String description, final String address) {
-		this.name = name;
-		this.description = description;
-		this.address = address;
-		return this;
-	}
-
-	public void updateClosedStatus(final Boolean isClosed) {
-		this.isClosed = isClosed;
-	}
 }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.store.mapper.query.StoreQueryMapper">
+
+    <select id="findStoresWithinBounds" resultType="Store">
+        SELECT
+            store_id,
+            roastery_id,
+            owner_id,
+            name,
+            description,
+            address,
+            latitude,
+            longitude,
+            phone_number,
+            category,
+            thumbnail_url,
+            open_time,
+            close_time,
+            average_rating,
+            review_count,
+            visit_count,
+            is_closed,
+            deleted_at,
+            created_at,
+            updated_at
+        FROM stores
+        WHERE latitude BETWEEN #{minLatitude} AND #{maxLatitude}
+          AND longitude BETWEEN #{minLongitude} AND #{maxLongitude}
+          AND deleted_at IS NULL
+          <if test="categories != null and categories.size() > 0">
+          AND (
+          <foreach collection="categories" item="category" separator=" OR ">
+              category LIKE CONCAT('%', #{category}, '%')
+          </foreach>
+          )
+          </if>
+          <if test="keyword != null and keyword != ''">
+          AND (name LIKE CONCAT('%', #{keyword}, '%') OR address LIKE CONCAT('%', #{keyword}, '%'))
+          </if>
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="findById" resultType="Store">
+        SELECT
+            store_id,
+            roastery_id,
+            owner_id,
+            name,
+            description,
+            address,
+            latitude,
+            longitude,
+            phone_number,
+            category,
+            thumbnail_url,
+            open_time,
+            close_time,
+            average_rating,
+            review_count,
+            visit_count,
+            is_closed,
+            deleted_at,
+            created_at,
+            updated_at
+        FROM stores
+        WHERE store_id = #{storeId}
+          AND deleted_at IS NULL
+    </select>
+
+</mapper>
