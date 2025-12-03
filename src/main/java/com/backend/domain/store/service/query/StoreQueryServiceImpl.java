@@ -1,5 +1,6 @@
 package com.backend.domain.store.service.query;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -63,5 +64,26 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 
 		// 4. 응답 DTO 변환 (항상 마커 정보 포함)
 		return StoreConverter.toStoreListResponse(filteredStores, distanceMap);
+	}
+
+	@Override
+	public boolean isStoreWithinDistance(final String storeId, final BigDecimal latitude,
+		final BigDecimal longitude, final double distanceInMeters) {
+		Store store = queryMapper.findById(storeId);
+        // 추후 커스텀 예외처리 고려해볼만 함.
+        if (store == null) {
+			return false;
+		}
+
+		double distanceKm = GeoUtils.calculateHaversineDistance(
+			latitude.doubleValue(),
+			longitude.doubleValue(),
+			store.getLatitude().doubleValue(),
+			store.getLongitude().doubleValue()
+		);
+
+		double actualDistanceMeters = GeoUtils.convertKmToMeters(distanceKm);
+
+		return actualDistanceMeters <= distanceInMeters;
 	}
 }

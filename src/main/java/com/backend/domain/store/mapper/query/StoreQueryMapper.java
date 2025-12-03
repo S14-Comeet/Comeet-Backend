@@ -31,4 +31,12 @@ public interface StoreQueryMapper {
 		@Param("categories") List<String> categories,
 		@Param("keyword") String keyword
 	);
+
+	/**
+	 * 매장 ID로 매장 정보를 조회합니다.
+	 *
+	 * @param storeId 매장 ID
+	 * @return 매장 정보 (삭제되지 않은 매장만)
+	 */
+	Store findById(@Param("storeId") String storeId);
 }

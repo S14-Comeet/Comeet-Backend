@@ -43,4 +43,31 @@
         ORDER BY created_at DESC
     </select>
 
+    <select id="findById" resultType="Store">
+        SELECT
+            store_id,
+            roastery_id,
+            owner_id,
+            name,
+            description,
+            address,
+            latitude,
+            longitude,
+            phone_number,
+            category,
+            thumbnail_url,
+            open_time,
+            close_time,
+            average_rating,
+            review_count,
+            visit_count,
+            is_closed,
+            deleted_at,
+            created_at,
+            updated_at
+        FROM stores
+        WHERE store_id = #{storeId}
+          AND deleted_at IS NULL
+    </select>
+
 </mapper>
