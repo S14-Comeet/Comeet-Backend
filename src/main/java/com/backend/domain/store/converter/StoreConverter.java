@@ -45,8 +45,8 @@ public class StoreConverter {
 	 * @param isClosed 영업 중지 여부
 	 * @return 마커 색상 (영업 중: BLUE, 영업 안함: RED)
 	 */
-	private static String determineMarkerColor(final Boolean isClosed) {
-		return (isClosed != null && isClosed) ? "RED" : "BLUE";
+	private static String determineMarkerColor(final boolean isClosed) {
+		return isClosed ? "RED" : "BLUE";
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class StoreConverter {
 	 */
 	public static StoreListResDto toStoreListResponse(final List<Store> stores,
 		final Map<String, Double> distanceMap) {
-		final List<StoreResDto> storeList = stores.stream()
+		List<StoreResDto> storeList = stores.stream()
 			.map(store -> toStoreResponse(store, distanceMap.get(store.getStoreId())))
 			.toList();
 

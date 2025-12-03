@@ -42,7 +42,7 @@ public record StoreResDto(
 	Double distance,
 
 	@Schema(description = "영업 중지 여부 (true: 영업 안함, false: 영업 중)", example = "false")
-	Boolean isClosed,
+	boolean isClosed,
 
 	@Schema(
 		description = "지도 마커 색상 (영업 중: BLUE, 영업 안함: RED)",

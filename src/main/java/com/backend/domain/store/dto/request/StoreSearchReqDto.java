@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public record StoreSearchReqDto(
 		example = "37.5665",
 		requiredMode = Schema.RequiredMode.REQUIRED
 	)
+	@NotNull
 	@DecimalMin("-90")
 	@DecimalMax("90")
 	BigDecimal latitude,
@@ -25,6 +27,7 @@ public record StoreSearchReqDto(
 		example = "126.9780",
 		requiredMode = Schema.RequiredMode.REQUIRED
 	)
+	@NotNull
 	@DecimalMin("-180")
 	@DecimalMax("180")
 	BigDecimal longitude,

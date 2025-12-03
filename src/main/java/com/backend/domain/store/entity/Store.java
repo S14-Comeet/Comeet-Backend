@@ -31,7 +31,7 @@ public class Store {
 	private BigDecimal averageRating;
 	private Integer reviewCount;
 	private Integer visitCount;
-	private Boolean isClosed;
+	private boolean isClosed;
 	private LocalDateTime deletedAt;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
@@ -59,7 +59,7 @@ public class Store {
 		return this;
 	}
 
-	public void updateClosedStatus(final Boolean isClosed) {
+	public void updateClosedStatus(final boolean isClosed) {
 		this.isClosed = isClosed;
 	}
 }
