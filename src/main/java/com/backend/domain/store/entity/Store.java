@@ -52,14 +52,4 @@ public class Store {
 			.build();
 	}
 
-	public Store update(final String name, final String description, final String address) {
-		this.name = name;
-		this.description = description;
-		this.address = address;
-		return this;
-	}
-
-	public void updateClosedStatus(final boolean isClosed) {
-		this.isClosed = isClosed;
-	}
 }
