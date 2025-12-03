@@ -3,10 +3,9 @@ package com.backend.common.util;
 import java.util.List;
 import java.util.stream.Stream;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class StringUtils {
 
 	/**

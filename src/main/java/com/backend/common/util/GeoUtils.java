@@ -2,10 +2,9 @@ package com.backend.common.util;
 
 import java.math.BigDecimal;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class GeoUtils {
 
 	private static final double EARTH_RADIUS_KM = 6371.0;
