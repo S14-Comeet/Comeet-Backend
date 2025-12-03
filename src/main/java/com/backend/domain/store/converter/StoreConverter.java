@@ -2,8 +2,8 @@ package com.backend.domain.store.converter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
+import com.backend.common.util.GeoUtils;
 import com.backend.domain.store.dto.response.StoreResDto;
 import com.backend.domain.store.dto.response.StoreListResDto;
 import com.backend.domain.store.entity.Store;
@@ -13,33 +13,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoreConverter {
-
-	private static final int DEFAULT_RADIUS_METERS = 1000;
-
-	/**
-	 * 카테고리 문자열을 리스트로 변환
-	 * @param categories 콤마로 구분된 카테고리 문자열
-	 * @return 카테고리 리스트
-	 */
-	public static List<String> parseCategoryList(final String categories) {
-		if (categories == null || categories.trim().isEmpty()) {
-			return List.of();
-		}
-		return Stream.of(categories.split(","))
-			.map(String::trim)
-			.filter(s -> !s.isEmpty())
-			.toList();
-	}
-
-	/**
-	 * 미터 단위 반경을 킬로미터로 변환 (기본값 처리 포함)
-	 * @param radiusInMeters 검색 반경 (m)
-	 * @return 검색 반경 (km)
-	 */
-	public static Double getRadiusInKm(final Integer radiusInMeters) {
-		final int radius = (radiusInMeters != null) ? radiusInMeters : DEFAULT_RADIUS_METERS;
-		return radius / 1000.0;
-	}
 
 	// === 응답 DTO 변환 메서드 ===
 
@@ -61,19 +34,10 @@ public class StoreConverter {
 			.averageRating(store.getAverageRating())
 			.reviewCount(store.getReviewCount())
 			.thumbnailUrl(store.getThumbnailUrl())
-			.distance(convertKmToMeters(distanceKm))
-			.isClosed(store.getIsClosed())
-			.markerColor(determineMarkerColor(store.getIsClosed()))
+			.distance(GeoUtils.convertKmToMeters(distanceKm))
+			.isClosed(store.isClosed())
+			.markerColor(determineMarkerColor(store.isClosed()))
 			.build();
-	}
-
-	/**
-	 * km를 미터로 변환
-	 * @param distanceKm 거리 (km)
-	 * @return 거리 (m)
-	 */
-	private static Double convertKmToMeters(final Double distanceKm) {
-		return distanceKm * 1000.0;
 	}
 
 	/**
