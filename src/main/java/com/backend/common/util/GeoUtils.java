@@ -16,7 +16,7 @@ public class GeoUtils {
 	 * @param radiusInMeters 검색 반경 (m)
 	 * @return 검색 반경 (km)
 	 */
-	public static Double getRadiusInKm(final Integer radiusInMeters) {
+	public Double getRadiusInKm(final Integer radiusInMeters) {
 		int radius = (radiusInMeters != null) ? radiusInMeters : DEFAULT_RADIUS_METERS;
 		return radius / 1000.0;
 	}
@@ -26,7 +26,7 @@ public class GeoUtils {
 	 * @param distanceKm 거리 (km)
 	 * @return 거리 (m)
 	 */
-	public static Double convertKmToMeters(final Double distanceKm) {
+	public Double convertKmToMeters(final Double distanceKm) {
 		return distanceKm * 1000.0;
 	}
 
@@ -38,7 +38,7 @@ public class GeoUtils {
 	 * @param distanceKm  거리 (km)
 	 * @return Bounding Box 좌표
 	 */
-	public static BoundingBox calculateBoundingBox(final BigDecimal latitude, final BigDecimal longitude,
+	public BoundingBox calculateBoundingBox(final BigDecimal latitude, final BigDecimal longitude,
 		final double distanceKm) {
 		double lat = latitude.doubleValue();
 		double lon = longitude.doubleValue();
@@ -66,7 +66,7 @@ public class GeoUtils {
 	 * @param lon2 두 번째 지점의 경도
 	 * @return 거리 (km)
 	 */
-	public static double calculateHaversineDistance(final double lat1, final double lon1, final double lat2,
+	public double calculateHaversineDistance(final double lat1, final double lon1, final double lat2,
 		final double lon2) {
 		double lat1Rad = Math.toRadians(lat1);
 		double lat2Rad = Math.toRadians(lat2);
