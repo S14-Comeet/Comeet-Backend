@@ -2,6 +2,7 @@ package com.backend.common.error.exception.handler;
 
 import java.sql.SQLException;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,61 +25,70 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<BaseResponse<ErrorResponse>> handleException(Exception e, HttpServletRequest request) {
-		LoggingUtil.logException("지정되지 않은 예외 발생", e, request);
+	public ResponseEntity<BaseResponse<ErrorResponse>> handleException(Exception ex, HttpServletRequest request) {
+		LoggingUtil.logException("지정되지 않은 예외 발생", ex, request);
 		ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, request);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.fail(response));
 	}
 
 	@ExceptionHandler(SQLException.class)
 	public ResponseEntity<BaseResponse<ErrorResponse>> handleSQLException(
-		SQLException e,
+		SQLException ex,
 		HttpServletRequest request
 	) {
-		LoggingUtil.logException("SQLException 발생", e, request);
+		LoggingUtil.logException("SQLException 발생", ex, request);
 		ErrorResponse response = ErrorResponse.of(ErrorCode.DATABASE_ERROR, request);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.fail(response));
 	}
 
-
 	@ExceptionHandler(BusinessException.class)
 	public ResponseEntity<BaseResponse<ErrorResponse>> handleBusinessException(
-		BusinessException e,
+		BusinessException ex,
 		HttpServletRequest request
 	) {
-		LoggingUtil.logException("BusinessException 발생", e, request);
-		ErrorResponse response = ErrorResponse.of(e.getErrorCode(), request);
-		return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
+		LoggingUtil.logException("BusinessException 발생", ex, request);
+		ErrorResponse response = ErrorResponse.of(ex.getErrorCode(), request);
+		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<BaseResponse<ErrorResponse>> handleMethodArgumentNotValid(
-		MethodArgumentNotValidException e,
+		MethodArgumentNotValidException ex,
 		HttpServletRequest request
 	) {
-		LoggingUtil.logValidationException(e, request);
+		LoggingUtil.logValidationException(ex, request);
 		ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT, request);
-		response.addValidationErrors(e.getBindingResult());
+		response.addValidationErrors(ex.getBindingResult());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.fail(response));
+	}
+
+	@ExceptionHandler(DataAccessException.class)
+	public ResponseEntity<BaseResponse<ErrorResponse>> handleDataAccessException(
+		DataAccessException ex,
+		HttpServletRequest request
+	) {
+		LoggingUtil.logException("DataBase 예외 발생", ex, request);
+		ErrorResponse response = ErrorResponse.of(ErrorCode.DATABASE_ERROR, request);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.fail(response));
 	}
 
 	@ExceptionHandler(UserException.class)
 	public ResponseEntity<BaseResponse<ErrorResponse>> handleUserException(
-		UserException e,
+		UserException ex,
 		HttpServletRequest request
 	) {
-		LoggingUtil.logException("UserException 발생", e, request);
-		ErrorResponse response = ErrorResponse.of(e.getErrorCode(), request);
-		return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
+		LoggingUtil.logException("UserException 발생", ex, request);
+		ErrorResponse response = ErrorResponse.of(ex.getErrorCode(), request);
+		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
 	}
 
 	@ExceptionHandler(AuthException.class)
 	public ResponseEntity<BaseResponse<ErrorResponse>> handleAuthException(
-		AuthException e,
+		AuthException ex,
 		HttpServletRequest request
 	) {
-		LoggingUtil.logException("AuthException 발생", e, request);
-		ErrorResponse response = ErrorResponse.of(e.getErrorCode(), request);
-		return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
+		LoggingUtil.logException("AuthException 발생", ex, request);
+		ErrorResponse response = ErrorResponse.of(ex.getErrorCode(), request);
+		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
 	}
 }
