@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(DuplicateKeyException.class)
 	public ResponseEntity<BaseResponse<ErrorResponse>> handleDuplicateKeyException(
-		DataAccessException ex,
+		DuplicateKeyException ex,
 		HttpServletRequest request
 	) {
 		LoggingUtil.logException("DuplicateKeyException 예외 발생", ex, request);
