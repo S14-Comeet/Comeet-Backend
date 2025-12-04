@@ -8,7 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.UserException;
 import com.backend.domain.user.converter.UserConverter;
-import com.backend.domain.user.dto.response.UserResDto;
+import com.backend.domain.user.dto.response.NicknameDuplicateResDto;
+import com.backend.domain.user.dto.response.UserInfoResDto;
 import com.backend.domain.user.entity.User;
 import com.backend.domain.user.mapper.query.UserQueryMapper;
 
@@ -25,19 +26,11 @@ public class UserQueryServiceImpl implements UserQueryService {
 	private final UserQueryMapper queryMapper;
 
 	@Override
-	public UserResDto findById(final Long userId) {
+	public UserInfoResDto findById(final Long userId) {
 		User user = queryMapper.findById(userId)
 			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 		log.info("[User] 사용자 조회 완료 - Id: {}", user.getId());
 		return UserConverter.toResponse(user);
-	}
-
-	@Override
-	public User findByEmail(final String email) {
-		User user = queryMapper.findByEmail(email)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
-		log.info("[User] 사용자 조회 완료 - Email: {}", user.getEmail());
-		return user;
 	}
 
 	@Override
@@ -47,7 +40,16 @@ public class UserQueryServiceImpl implements UserQueryService {
 	}
 
 	@Override
-	public Boolean existBySocialId(final String socialId) {
-		return queryMapper.existBySocialId(socialId);
+	public NicknameDuplicateResDto checkNicknameDuplicate(final String nickname) {
+		log.info("[User] 닉네임 중복 조회 - nickname: {}", nickname);
+		Boolean available = queryMapper.existByNickname(nickname);
+		return UserConverter.toNicknameDuplicateResDto(nickname, available);
+	}
+
+	@Override
+	public User findUnRegisterUserById(final Long userId) {
+		log.info("[User] 사용자 조회 - userId: {}", userId);
+		return queryMapper.findById(userId)
+			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 	}
 }

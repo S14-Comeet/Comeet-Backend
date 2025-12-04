@@ -1,22 +1,24 @@
 package com.backend.domain.user.controller.query;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.common.annotation.CurrentUser;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
-import com.backend.domain.user.dto.response.UserResDto;
+import com.backend.domain.user.dto.response.NicknameDuplicateResDto;
+import com.backend.domain.user.dto.response.UserInfoResDto;
 import com.backend.domain.user.service.query.UserQueryService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -34,10 +36,19 @@ public class UserQueryController {
 		@ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
 	})
 	@GetMapping
-	public ResponseEntity<BaseResponse<UserResDto>> findUser(
-		@Parameter(hidden = true) @AuthenticationPrincipal AuthenticatedUser user
+	public ResponseEntity<BaseResponse<UserInfoResDto>> findUser(
+		@CurrentUser AuthenticatedUser user
 	) {
-		UserResDto response = userQueryService.findById(user.getUser().getId());
+		UserInfoResDto response = userQueryService.findById(user.getUser().getId());
+		return ResponseUtils.ok(response);
+	}
+
+
+	@GetMapping("/nickname/check")
+	public ResponseEntity<BaseResponse<NicknameDuplicateResDto>> checkNicknameDuplicate(
+		@NotBlank @RequestParam String nickname
+	) {
+		NicknameDuplicateResDto response = userQueryService.checkNicknameDuplicate(nickname);
 		return ResponseUtils.ok(response);
 	}
 }
