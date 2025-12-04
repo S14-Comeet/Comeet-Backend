@@ -20,10 +20,10 @@ public class UserConverter {
 			.build();
 	}
 
-	public NicknameDuplicateResDto toNicknameDuplicateResDto(final String nickname, final Boolean available) {
+	public NicknameDuplicateResDto toNicknameDuplicateResDto(final String nickname, final Boolean exists) {
 		return NicknameDuplicateResDto.builder()
 			.nickname(nickname)
-			.available(!available)
+			.exists(exists)
 			.build();
 	}
 }

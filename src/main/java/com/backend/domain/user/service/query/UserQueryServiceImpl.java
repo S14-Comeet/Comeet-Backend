@@ -42,8 +42,8 @@ public class UserQueryServiceImpl implements UserQueryService {
 	@Override
 	public NicknameDuplicateResDto checkNicknameDuplicate(final String nickname) {
 		log.info("[User] 닉네임 중복 조회 - nickname: {}", nickname);
-		Boolean available = queryMapper.existByNickname(nickname);
-		return UserConverter.toNicknameDuplicateResDto(nickname, available);
+		Boolean exists = queryMapper.existByNickname(nickname);
+		return UserConverter.toNicknameDuplicateResDto(nickname, exists);
 	}
 
 	@Override
