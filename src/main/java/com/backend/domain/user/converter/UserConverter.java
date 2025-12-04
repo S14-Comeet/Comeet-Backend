@@ -12,9 +12,11 @@ public class UserConverter {
 	public UserInfoResDto toResponse(final User user) {
 		return UserInfoResDto.builder()
 			.userId(user.getId())
+			.name(user.getName())
 			.email(user.getEmail())
 			.nickname(user.getNickname())
 			.profileImageUrl(user.getProfileImageUrl())
+			.role(user.getRole())
 			.build();
 	}
 
