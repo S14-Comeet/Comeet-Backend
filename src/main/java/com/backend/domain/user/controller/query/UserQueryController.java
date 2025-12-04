@@ -12,7 +12,7 @@ import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.user.dto.response.NicknameDuplicateResDto;
 import com.backend.domain.user.dto.response.UserInfoResDto;
-import com.backend.domain.user.service.query.UserQueryService;
+import com.backend.domain.user.service.facade.UserFacadeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/user")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserQueryController {
-	private final UserQueryService userQueryService;
+	private final UserFacadeService userFacadeService;
 
 	@Operation(summary = "사용자 정보 조회", description = "인증된 사용자의 정보를 조회합니다.")
 	@ApiResponses(value = {
@@ -39,7 +39,7 @@ public class UserQueryController {
 	public ResponseEntity<BaseResponse<UserInfoResDto>> findUser(
 		@CurrentUser AuthenticatedUser user
 	) {
-		UserInfoResDto response = userQueryService.findById(user.getUser().getId());
+		UserInfoResDto response = userFacadeService.findUserInfo(user.getUser().getId());
 		return ResponseUtils.ok(response);
 	}
 
@@ -48,7 +48,7 @@ public class UserQueryController {
 	public ResponseEntity<BaseResponse<NicknameDuplicateResDto>> checkNicknameDuplicate(
 		@NotBlank @RequestParam String nickname
 	) {
-		NicknameDuplicateResDto response = userQueryService.checkNicknameDuplicate(nickname);
+		NicknameDuplicateResDto response = userFacadeService.checkNicknameDuplicate(nickname);
 		return ResponseUtils.ok(response);
 	}
 }
