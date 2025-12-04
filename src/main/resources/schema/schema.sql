@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS user
     nick_name         VARCHAR(255),
     profile_image_url TEXT,
     social_id         VARCHAR(255),
-    role              VARCHAR(50)  NOT NULL DEFAULT 'USER, GUEST, OWNER, WITHDRAWN',
+    role              VARCHAR(50)  NOT NULL DEFAULT 'GUEST',
     created_at        TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
