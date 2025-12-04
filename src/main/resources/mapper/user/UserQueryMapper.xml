@@ -23,15 +23,20 @@
     </select>
 
     <select id="existByNickname" parameterType="string" resultType="boolean">
-        SELECT COUNT(*) > 0
-        FROM user
-        WHERE nick_name = #{nickname}
+        SELECT EXISTS (
+            SELECT 1
+            FROM user
+            WHERE nick_name = #{nickname}
+              AND nick_name IS NOT NULL
+        )
     </select>
 
     <select id="existBySocialId" parameterType="string" resultType="boolean">
-        SELECT COUNT(*) > 0
-        FROM user
-        WHERE social_id = #{socialId}
+        SELECT EXISTS (
+            SELECT 1
+            FROM user
+            WHERE social_id = #{socialId}
+        )
     </select>
 
 </mapper>
