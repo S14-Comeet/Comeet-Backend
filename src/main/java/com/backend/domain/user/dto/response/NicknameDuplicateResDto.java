@@ -9,6 +9,6 @@ public record NicknameDuplicateResDto(
 	@Schema(description = "확인한 닉네임", example = "김싸피")
 	String nickname,
 	@Schema(description = "닉네임 사용 가능 여부 (true: 사용 가능, false: 중복)", example = "true")
-	Boolean available
+	Boolean exists
 ) {
 }
