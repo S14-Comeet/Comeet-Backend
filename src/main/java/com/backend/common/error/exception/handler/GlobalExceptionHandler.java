@@ -3,6 +3,7 @@ package com.backend.common.error.exception.handler;
 import java.sql.SQLException;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -67,9 +68,19 @@ public class GlobalExceptionHandler {
 		DataAccessException ex,
 		HttpServletRequest request
 	) {
-		LoggingUtil.logException("DataBase 예외 발생", ex, request);
+		LoggingUtil.logException("DataAccessException 예외 발생", ex, request);
 		ErrorResponse response = ErrorResponse.of(ErrorCode.DATABASE_ERROR, request);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.fail(response));
+	}
+
+	@ExceptionHandler(DuplicateKeyException.class)
+	public ResponseEntity<BaseResponse<ErrorResponse>> handleDuplicateKeyException(
+		DataAccessException ex,
+		HttpServletRequest request
+	) {
+		LoggingUtil.logException("DuplicateKeyException 예외 발생", ex, request);
+		ErrorResponse response = ErrorResponse.of(ErrorCode.DUPLICATED_KEY, request);
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponse.fail(response));
 	}
 
 	@ExceptionHandler(UserException.class)
@@ -77,6 +88,7 @@ public class GlobalExceptionHandler {
 		UserException ex,
 		HttpServletRequest request
 	) {
+
 		LoggingUtil.logException("UserException 발생", ex, request);
 		ErrorResponse response = ErrorResponse.of(ex.getErrorCode(), request);
 		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
