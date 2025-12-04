@@ -22,7 +22,7 @@ public enum ErrorCode {
 	/**
 	 * Database Error
 	 */
-	DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C-001", "데이터베이스 오류입니다."),
+	DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "D-001", "데이터베이스 오류입니다."),
 	DUPLICATED_KEY(HttpStatus.CONFLICT,"D-002" , "중복된 키입니다."),
 
 	/**
