@@ -31,8 +31,10 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) throws IOException {
+	public void onAuthenticationSuccess(
+		HttpServletRequest request, HttpServletResponse response,
+		Authentication authentication
+	) throws IOException {
 
 		CustomOAuth2User oAuth2User = (CustomOAuth2User)authentication.getPrincipal();
 
@@ -50,6 +52,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 		Cookie cookie = CookieUtil.generateCookie(token.refreshToken(), jwtProperties.refreshTokenExpiration());
 		response.addCookie(cookie);
 		log.info("[Token] JWT 토큰 생성 및 발급 socialId : {}", oAuth2User.getUser().getSocialId());
-		response.sendRedirect(AuthConstant.LOCAL_OAUTH_REDIRECT_URI);
+		String redirectUrl = AuthConstant.LOCAL_OAUTH_REDIRECT_URI + "?accessToken=" + token.accessToken();
+		response.sendRedirect(redirectUrl);
 	}
 }
