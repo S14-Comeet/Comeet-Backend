@@ -35,8 +35,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		OAuth2Attribute oAuth2Attribute = OAuth2Attribute.of(registrationId, oAuth2User.getAttributes());
 
 		String socialId = generateSocialId(registrationId, oAuth2Attribute);
+		String profileImageUrl = oAuth2Attribute.getProfileUrl();
 
-		User user = findOrCreate(oAuth2Attribute, socialId);
+		User user = findOrCreate(oAuth2Attribute, socialId, profileImageUrl);
 
 		return new CustomOAuth2User(user);
 	}
@@ -45,9 +46,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		return registrationId + UNDER_LINE + oAuth2Attribute.getProviderId();
 	}
 
-	private User findOrCreate(final OAuth2Attribute oAuth2Attribute, final String socialId) {
+	private User findOrCreate(
+		final OAuth2Attribute oAuth2Attribute,
+		final String socialId,
+		final String profileImageUrl
+	) {
 		return userQueryService.findBySocialId(socialId).orElseGet(() -> {
-			User newUser = oAuth2Attribute.toEntity(socialId);
+			User newUser = oAuth2Attribute.toEntity(socialId, profileImageUrl);
 			return userCommandService.save(newUser);
 		});
 	}

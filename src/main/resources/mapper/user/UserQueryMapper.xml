@@ -22,7 +22,7 @@
         WHERE social_id = #{socialId}
     </select>
 
-    <select id="existByNickName" parameterType="string" resultType="boolean">
+    <select id="existByNickname" parameterType="string" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM user
         WHERE nick_name = #{nickname}
