@@ -2,6 +2,7 @@ package com.backend.domain.user.controller.command;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +14,7 @@ import com.backend.domain.user.dto.request.UserRegisterReqDto;
 import com.backend.domain.user.dto.response.UserInfoResDto;
 import com.backend.domain.user.service.facade.UserFacadeService;
 
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +27,7 @@ public class UserCommandController {
 	@PostMapping("/register")
 	public ResponseEntity<BaseResponse<UserInfoResDto>> userRegistration(
 		@CurrentUser AuthenticatedUser token,
-		UserRegisterReqDto reqDto
+		@RequestBody @Valid UserRegisterReqDto reqDto
 	) {
 		UserInfoResDto response = userFacadeService.registerUser(token.getUser().getId(), reqDto);
 		return ResponseUtils.ok(response);

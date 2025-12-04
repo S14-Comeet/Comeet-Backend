@@ -1,6 +1,7 @@
 package com.backend.domain.user.controller.query;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "User", description = "유저 관련 API")
+@Validated
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
