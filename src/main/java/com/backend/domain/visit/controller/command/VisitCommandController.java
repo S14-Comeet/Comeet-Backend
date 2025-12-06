@@ -12,6 +12,7 @@ import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.visit.dto.request.VerifyReqDto;
 import com.backend.domain.visit.dto.response.VerifiedResDto;
+import com.backend.domain.visit.service.facade.VisitFacadeService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
@@ -22,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/visit")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class VisitCommandController {
+
+	private final VisitFacadeService visitFacadeService;
 
 	@PostMapping("/verify")
 	public ResponseEntity<BaseResponse<VerifiedResDto>> verifyStoreVisit(
