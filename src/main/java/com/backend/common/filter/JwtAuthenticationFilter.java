@@ -13,10 +13,10 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.backend.common.auth.constants.AuthConstant;
+import com.backend.common.auth.jwt.JwtTokenProvider;
 import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BusinessException;
-import com.backend.common.auth.jwt.JwtTokenProvider;
+import com.backend.common.error.exception.AuthException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -96,7 +96,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private String getBearerToken(String authorizationHeader) {
 		if (authorizationHeader == null || !authorizationHeader.startsWith(AuthConstant.BEARER)) {
-			throw new BusinessException(ErrorCode.MALFORMED_TOKEN_EXCEPTION);
+			throw new AuthException(ErrorCode.MALFORMED_TOKEN_EXCEPTION);
 		}
 		return authorizationHeader.replace(AuthConstant.BEARER, "");
 	}

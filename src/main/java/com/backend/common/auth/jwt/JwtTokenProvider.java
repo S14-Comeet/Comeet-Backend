@@ -1,18 +1,12 @@
 package com.backend.common.auth.jwt;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.stereotype.Component;
 
 import com.backend.common.auth.constants.AuthConstant;
 import com.backend.common.auth.dto.CustomOAuth2User;
@@ -21,9 +15,16 @@ import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.auth.redis.BlackList;
 import com.backend.common.auth.redis.repository.BlackListRepository;
 import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.BusinessException;
+import com.backend.common.error.exception.AuthException;
 import com.backend.domain.user.entity.User;
 import com.backend.domain.user.mapper.query.UserQueryMapper;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JWT 토큰 생성 및 검증
@@ -81,7 +82,7 @@ public class JwtTokenProvider {
 		validateTokenType(claims, ACCESS_TOKEN);
 
 		if (blackListRepository.existsById(accessToken)) {
-			throw new BusinessException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
+			throw new AuthException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
 		}
 	}
 
@@ -122,18 +123,18 @@ public class JwtTokenProvider {
 
 		return queryMapper.findBySocialId(claims.getSubject())
 			.map(CustomOAuth2User::new)
-			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
 	}
 
 	private void validateTokenType(Claims claims, String tokenType) {
 		getType(claims)
 			.filter(type -> type.equals(tokenType))
-			.orElseThrow(() -> new BusinessException(ErrorCode.INVALID_TOKEN_TYPE));
+			.orElseThrow(() -> new AuthException(ErrorCode.INVALID_TOKEN_TYPE));
 	}
 
 	private void validateUndeformedToken(String accessToken) {
 		if (accessToken == null || accessToken.isEmpty()) {
-			throw new BusinessException(ErrorCode.MALFORMED_TOKEN_EXCEPTION);
+			throw new AuthException(ErrorCode.MALFORMED_TOKEN_EXCEPTION);
 		}
 	}
 }

@@ -18,28 +18,26 @@ public class User {
 	private String name;
 	private String email;
 	private String password;
-	private String nickName;
+	private String nickname;
 	private String profileImageUrl;
 	private String socialId;
 	private Role role;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-	public static User of(final String name, final String email, final String password, final String socialId) {
-		return User.builder().name(name)
+	public static User of(
+		final String name,
+		final String email,
+		final String profileImageUrl,
+		final String socialId
+	) {
+		return User.builder()
+			.name(name)
 			.email(email)
-			.password(password != null ? password : generateTemporaryPassword())
+			.profileImageUrl(profileImageUrl)
+			.password(generateTemporaryPassword())
 			.socialId(socialId)
-			.role(Role.USER) // 기본값 USER
-			.build();
-	}
-
-	public static User of(final String name, final String email, final String password, final String socialId, final Role role) {
-		return User.builder().name(name)
-			.email(email)
-			.password(password != null ? password : generateTemporaryPassword())
-			.socialId(socialId)
-			.role(role != null ? role : Role.USER)
+			.role(Role.GUEST)
 			.build();
 	}
 

@@ -11,11 +11,9 @@ import com.backend.common.auth.redis.repository.BlackListRepository;
 import com.backend.common.auth.redis.repository.RefreshTokenRepository;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.AuthException;
-import com.backend.common.error.exception.BusinessException;
 import com.backend.common.error.exception.UserException;
 import com.backend.common.util.CookieUtil;
 import com.backend.domain.user.entity.User;
-import com.backend.domain.user.service.command.UserCommandService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +30,6 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final BlackListRepository blackListRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
-	private final UserCommandService userCommandService;
 
 	@Override
 	public void logout(
@@ -60,7 +57,7 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 		String refreshToken = CookieUtil.extractRefreshToken(request);
 
 		if (blackListRepository.existsById(refreshToken)) {
-			throw new BusinessException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
+			throw new AuthException(ErrorCode.TOKEN_BLACKLISTED_EXCEPTION);
 		}
 
 		User user = jwtTokenProvider.getUser(refreshToken)
@@ -84,13 +81,5 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 		Cookie cookie = CookieUtil.generateCookie(savedRefreshToken.toString(),
 			jwtProperties.refreshTokenExpiration());
 		response.addCookie(cookie);
-	}
-
-	@Override
-	public void updateRole(final String socialId, final com.backend.domain.user.entity.Role role) {
-		User user = jwtTokenProvider.getAuthenticatedUser(socialId).getUser();
-		user.updateRole(role);
-		userCommandService.save(user);
-		log.info("[Auth] User role updated to: {} for socialId: {}", role, socialId);
 	}
 }

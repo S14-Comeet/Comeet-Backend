@@ -17,5 +17,5 @@ public interface UserQueryMapper extends QueryMapper<User> {
 
 	Boolean existBySocialId(String socialId);
 
-	Boolean existByNickName(String nickname);
+	Boolean existByNickname(String nickname);
 }

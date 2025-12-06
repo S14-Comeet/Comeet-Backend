@@ -39,11 +39,7 @@ public class OAuth2Attribute {
 			.build();
 	}
 
-	public User toEntity(String socialId) {
-		return User.of(name, email, null, socialId, Role.USER);
-	}
-
-	public User toEntity(String socialId, Role role) {
-		return User.of(name, email, null, socialId, role);
+	public User toEntity(String socialId, String profileImageUrl) {
+		return User.of(name, email, profileImageUrl, socialId);
 	}
 }
