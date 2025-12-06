@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserValidator implements Validator<User> {
 
-	private static final String NICKNAME_REGEX = "^[a-zA-Z가-힣]++(?:\\s[a-zA-Z가-힣]++)*+$";
+	private static final String NICKNAME_REGEX = "^[a-zA-Z가-힣0-9]++(?: [a-zA-Z가-힣0-9]++)*+$";
 
 	@Override
 	public void validate(final User user) {
