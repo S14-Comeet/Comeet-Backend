@@ -1,6 +1,5 @@
 package com.backend.domain.visit.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
@@ -17,8 +16,9 @@ public class Visit {
 	private Long id;
 	private Long userId;
 	private Long menuId;
-	private BigDecimal latitude;
-	private BigDecimal longitude;
+	private Double latitude;
+	private Double longitude;
+	private Boolean isVerified;
 	private LocalDateTime createdAt;
 
 	public static Visit insertOf() {
