@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.backend.domain.visit.mapper.command.VisitCommandMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO visits
+            (user_id, menu_id, latitude, longitude, is_verified, created_at)
+        VALUES (#{userId}, #{menuId}, #{latitude}, #{longitude}, #{isVerified}, NOW())
+    </insert>
 </mapper>
