@@ -75,7 +75,6 @@ public class VisitFacadeService {
 	public Page<VisitPageDto> findAllWithPageableUserId(final User user, final Pageable pageable) {
 		userValidator.validate(user);
 		List<VisitPageDto> list = visitQueryService.findAllByUserId(user.getId(), pageable).stream()
-			.peek(visit -> visitValidator.validateVisitBelongsToUser(visit.getUserId(), user.getId()))
 			.map(VisitConverter::toVisitPageDto).toList();
 		int total = visitQueryService.countAllByUserId(user.getId());
 		return new PageImpl<>(list, pageable, total);

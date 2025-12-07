@@ -13,29 +13,19 @@ import com.backend.domain.visit.entity.Visit;
 public class VisitValidator implements Validator<Visit> {
 
 	private static final double KOREA_MIN_LATITUDE = 33.0;
-	private static final double KOREA_MAX_LATITUDE = 43.0;
+	private static final double KOREA_MAX_LATITUDE = 38.6;
 	private static final double KOREA_MIN_LONGITUDE = 124.0;
-	private static final double KOREA_MAX_LONGITUDE = 132.0;
+	private static final double KOREA_MAX_LONGITUDE = 131.9;
 
 	@Override
 	public void validate(final Visit visit) {
 		validateNotNull(visit);
-		validateRequiredFields(visit);
 		validateKoreaBoundary(visit);
 	}
 
 	private void validateNotNull(final Visit visit) {
 		if (visit == null) {
 			throw new VisitException(INVALID_VISIT_REQUEST);
-		}
-	}
-
-	private void validateRequiredFields(final Visit visit) {
-		if (visit.getMenuId() == null) {
-			throw new VisitException(MENU_ID_REQUIRED);
-		}
-		if (visit.getLatitude() == null || visit.getLongitude() == null) {
-			throw new VisitException(COORDINATES_REQUIRED);
 		}
 	}
 
