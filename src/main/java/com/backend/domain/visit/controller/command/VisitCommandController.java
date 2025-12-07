@@ -31,9 +31,7 @@ public class VisitCommandController {
 		@CurrentUser AuthenticatedUser token,
 		@RequestBody VerifyReqDto reqDto
 	) {
-		//TODO 방문 인증 서비스 로직 완성
-		return ResponseUtils.noContent();
+		return ResponseUtils.ok(visitFacadeService.verifyVisit(token.getUser(), reqDto));
 	}
-
 
 }
