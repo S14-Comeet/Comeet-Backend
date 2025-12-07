@@ -1,5 +1,5 @@
 -- User Table
-CREATE TABLE IF NOT EXISTS user
+CREATE TABLE IF NOT EXISTS users
 (
     id                BIGINT AUTO_INCREMENT PRIMARY KEY,
     name              VARCHAR(255) NOT NULL,
@@ -46,5 +46,17 @@ CREATE TABLE IF NOT EXISTS stores
     created_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (roastery_id) REFERENCES roasteries (roastery_id),
-    FOREIGN KEY (owner_id) REFERENCES user (id)
+    FOREIGN KEY (owner_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS visits
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id     BIGINT         NOT NULL,
+    menu_id     BIGINT         NOT NULL,
+    latitude    DECIMAL(10, 8) NOT NULL,
+    longitude   DECIMAL(11, 8) NOT NULL,
+    is_verified BOOLEAN        NOT NULL DEFAULT FALSE,
+    created_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );

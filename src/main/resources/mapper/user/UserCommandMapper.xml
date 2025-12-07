@@ -5,11 +5,11 @@
 <mapper namespace="com.backend.domain.user.mapper.command.UserCommandMapper">
 
     <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user (name, email, password, profile_image_url, social_id, role, created_at, updated_at)
+        INSERT INTO users (name, email, password, profile_image_url, social_id, role, created_at, updated_at)
         VALUES (#{name}, #{email}, #{password}, #{profileImageUrl}, #{socialId}, #{role}, NOW(), NOW())
     </insert>
     <update id="register">
-        UPDATE user
+        UPDATE users
         SET nick_name  = #{reqDto.nickname},
             role       = #{reqDto.role},
             updated_at = now()
