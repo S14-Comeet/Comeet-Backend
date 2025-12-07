@@ -6,26 +6,26 @@
 
     <select id="findById" parameterType="long" resultType="User">
         SELECT *
-        FROM user
+        FROM users
         WHERE id = #{userId}
     </select>
 
     <select id="findByEmail" parameterType="string" resultType="User">
         SELECT *
-        FROM user
+        FROM users
         WHERE email = #{email}
     </select>
 
     <select id="findBySocialId" parameterType="string" resultType="User">
         SELECT *
-        FROM user
+        FROM users
         WHERE social_id = #{socialId}
     </select>
 
     <select id="existByNickname" parameterType="string" resultType="boolean">
         SELECT EXISTS (
             SELECT 1
-            FROM user
+            FROM users
             WHERE nick_name = #{nickname}
               AND nick_name IS NOT NULL
         )
@@ -34,7 +34,7 @@
     <select id="existBySocialId" parameterType="string" resultType="boolean">
         SELECT EXISTS (
             SELECT 1
-            FROM user
+            FROM users
             WHERE social_id = #{socialId}
         )
     </select>
