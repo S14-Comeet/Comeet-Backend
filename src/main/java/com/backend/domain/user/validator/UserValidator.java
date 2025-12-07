@@ -6,6 +6,7 @@ import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.UserException;
 import com.backend.common.validator.Validator;
 import com.backend.domain.user.dto.request.UserRegisterReqDto;
+import com.backend.domain.user.entity.Role;
 import com.backend.domain.user.entity.User;
 
 import lombok.AccessLevel;
@@ -19,7 +20,8 @@ public class UserValidator implements Validator<User> {
 
 	@Override
 	public void validate(final User user) {
-		// TODO 유저 객체를 검증할때 구현 예정
+		validateUserId(user.getId());
+		validateUserRole(user.getRole());
 	}
 
 	public void validate(final UserRegisterReqDto reqDto) {
@@ -32,6 +34,18 @@ public class UserValidator implements Validator<User> {
 		}
 		if (!nickname.matches(NICKNAME_REGEX)) {
 			throw new UserException(ErrorCode.NICKNAME_INVALID_FORMAT);
+		}
+	}
+
+	private void validateUserId(final Long userId) {
+		if (userId == null) {
+			throw new UserException(ErrorCode.USER_NOT_FOUND);
+		}
+	}
+
+	private void validateUserRole(final Role role) {
+		if (role == null || Role.isNotActiveUser(role)) {
+			throw new UserException(ErrorCode.ACCESS_DENIED);
 		}
 	}
 }

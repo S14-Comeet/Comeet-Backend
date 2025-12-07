@@ -15,4 +15,8 @@ public enum Role {
 
 	private final String key;
 	private final String description;
+
+	public static boolean isNotActiveUser(final Role role) {
+		return role == GUEST || role == WITHDRAWN;
+	}
 }
