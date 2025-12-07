@@ -22,7 +22,7 @@
                 <choose>
                     <when test="order.direction.name() == 'ASC'">ASC</when>
                     <when test="order.direction.name() == 'DESC'">DESC</when>
-                    <otherwise>`DESC`</otherwise>
+                    <otherwise>DESC</otherwise>
                 </choose>
             </foreach>
         </if>
