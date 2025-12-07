@@ -1,12 +1,11 @@
 package com.backend.domain.visit.controller.query;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.common.annotation.CurrentUser;
@@ -19,6 +18,7 @@ import com.backend.domain.visit.dto.common.VisitPageDto;
 import com.backend.domain.visit.service.facade.VisitFacadeService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -33,9 +33,10 @@ public class VisitQueryController {
 	@GetMapping("/history")
 	public ResponseEntity<PageResponse<VisitPageDto>> getVisitHistory(
 		@CurrentUser AuthenticatedUser token,
-		@PageableDefault Pageable pageable
+		@RequestParam(defaultValue = "1") @Min(1) int page,
+		@RequestParam(defaultValue = "10") @Min(1) int size
 	) {
-		Page<VisitPageDto> response = visitFacadeService.findAllWithPageableUserId(token.getUser(), pageable);
+		Page<VisitPageDto> response = visitFacadeService.findAllWithPageableUserId(token.getUser(), page, size);
 		return ResponseUtils.page(response);
 	}
 

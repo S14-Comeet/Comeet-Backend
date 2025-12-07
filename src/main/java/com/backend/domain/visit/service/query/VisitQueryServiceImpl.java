@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor(access = PROTECTED)
 public class VisitQueryServiceImpl implements VisitQueryService {
-	private VisitQueryMapper queryMapper;
+	private final VisitQueryMapper queryMapper;
 
 	@Override
 	public Visit findById(final Long visitId) {

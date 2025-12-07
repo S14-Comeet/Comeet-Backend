@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,11 +73,16 @@ public class VisitFacadeService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<VisitPageDto> findAllWithPageableUserId(final User user, final Pageable pageable) {
+	public Page<VisitPageDto> findAllWithPageableUserId(final User user, final int page, final int size) {
 		userValidator.validate(user);
+		Pageable pageable = getPageable(page, size);
 		List<VisitPageDto> list = visitQueryService.findAllByUserId(user.getId(), pageable).stream()
 			.map(VisitConverter::toVisitPageDto).toList();
 		int total = visitQueryService.countAllByUserId(user.getId());
 		return new PageImpl<>(list, pageable, total);
+	}
+
+	private Pageable getPageable(final int page, final int size) {
+		return PageRequest.of(page - 1, size);
 	}
 }
