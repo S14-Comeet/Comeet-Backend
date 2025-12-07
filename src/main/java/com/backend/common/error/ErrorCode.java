@@ -32,7 +32,7 @@ public enum ErrorCode {
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U-001", "유저를 찾을 수 없습니다."),
 	NICKNAME_NOT_BLANK(HttpStatus.BAD_REQUEST, "U-002", "닉네임은 필수 입력값입니다."),
 	NICKNAME_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "U-003", "닉네임 형식이 올바르지 않습니다."),
-
+	INVALID_USER(HttpStatus.BAD_REQUEST, "U-004", "유효하지 않은 사용자입니다."),
 	/**
 	 * Auth/JWT Error
 	 */

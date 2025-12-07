@@ -33,6 +33,10 @@ public class VisitValidator implements Validator<Visit> {
 		Double latitude = visit.getLatitude();
 		Double longitude = visit.getLongitude();
 
+		if (latitude == null || longitude == null) {
+			throw new VisitException(INVALID_VISIT_REQUEST);
+		}
+
 		if (isOutOfKorea(latitude, longitude)) {
 			throw new VisitException(LOCATION_OUT_OF_KOREA);
 		}

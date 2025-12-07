@@ -39,7 +39,7 @@ public class UserValidator implements Validator<User> {
 
 	private void validateUserId(final Long userId) {
 		if (userId == null) {
-			throw new UserException(ErrorCode.USER_NOT_FOUND);
+			throw new UserException(ErrorCode.INVALID_USER);
 		}
 	}
 
