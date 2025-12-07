@@ -4,6 +4,7 @@ import static com.backend.common.error.ErrorCode.*;
 
 import org.springframework.stereotype.Component;
 
+import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.VisitException;
 import com.backend.common.validator.Validator;
 import com.backend.domain.visit.entity.Visit;
@@ -50,6 +51,12 @@ public class VisitValidator implements Validator<Visit> {
 	private boolean isOutOfKorea(final Double latitude, final Double longitude) {
 		return latitude < KOREA_MIN_LATITUDE || latitude > KOREA_MAX_LATITUDE
 			|| longitude < KOREA_MIN_LONGITUDE || longitude > KOREA_MAX_LONGITUDE;
+	}
+
+	public void validateVisitBelongsToUser(final Long visitUserId, final Long userId) {
+		if (!visitUserId.equals(userId)) {
+			throw new VisitException(ErrorCode.VISIT_NOT_BELONG_TO_USER);
+		}
 	}
 }
 

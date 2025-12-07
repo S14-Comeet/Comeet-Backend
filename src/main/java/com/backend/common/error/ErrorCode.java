@@ -49,7 +49,6 @@ public enum ErrorCode {
 	MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "M-001", "메뉴를 찾을 수 없습니다."),
 	MENU_ID_REQUIRED(HttpStatus.BAD_REQUEST, "M-002", "메뉴 ID가 필요합니다."),
 
-
 	/**
 	 * Visit Error
 	 */
@@ -57,7 +56,9 @@ public enum ErrorCode {
 	INVALID_VISIT_REQUEST(HttpStatus.BAD_REQUEST, "V-002", "요청 데이터가 유효하지 않습니다."),
 	LOCATION_REQUIRED(HttpStatus.BAD_REQUEST, "V-003", "위치 정보가 필요합니다."),
 	COORDINATES_REQUIRED(HttpStatus.BAD_REQUEST, "V-004", "위도와 경도는 필수입니다."),
-	LOCATION_OUT_OF_KOREA(HttpStatus.BAD_REQUEST, "V-005", "위치가 한국 내부가 아닙니다.");
+	LOCATION_OUT_OF_KOREA(HttpStatus.BAD_REQUEST, "V-005", "위치가 한국 내부가 아닙니다."),
+	VISIT_NOT_FOUND(HttpStatus.NOT_FOUND, "V-006", "방문 기록을 찾을 수 없습니다."),
+	VISIT_NOT_BELONG_TO_USER(HttpStatus.FORBIDDEN, "V-007", "해당 방문 기록에 대한 권한이 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
