@@ -52,7 +52,7 @@ public class VisitFacadeService {
 		return VisitConverter.toVerifiedResDto(visit);
 	}
 
-	private static Boolean checkDistance(final VerifyReqDto reqDto) {
+	private Boolean checkDistance(final VerifyReqDto reqDto) {
 		double calculatedDistance = GeoUtils.calculateHaversineDistance(
 			reqDto.storeLocationDto().latitude(),
 			reqDto.storeLocationDto().longitude(),
