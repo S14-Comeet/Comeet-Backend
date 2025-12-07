@@ -13,6 +13,7 @@ public class GeoUtils {
 
 	/**
 	 * 미터 단위 반경을 킬로미터로 변환 (기본값 처리 포함)
+	 *
 	 * @param radiusInMeters 검색 반경 (m)
 	 * @return 검색 반경 (km)
 	 */
@@ -23,6 +24,7 @@ public class GeoUtils {
 
 	/**
 	 * km를 미터로 변환
+	 *
 	 * @param distanceKm 거리 (km)
 	 * @return 거리 (m)
 	 */
@@ -33,13 +35,15 @@ public class GeoUtils {
 	/**
 	 * 주어진 위치와 거리를 기준으로 Bounding Box 계산
 	 *
-	 * @param latitude    중심 위도
-	 * @param longitude   중심 경도
-	 * @param distanceKm  거리 (km)
+	 * @param latitude   중심 위도
+	 * @param longitude  중심 경도
+	 * @param distanceKm 거리 (km)
 	 * @return Bounding Box 좌표
 	 */
-	public BoundingBox calculateBoundingBox(final BigDecimal latitude, final BigDecimal longitude,
-		final double distanceKm) {
+	public BoundingBox calculateBoundingBox(
+		final BigDecimal latitude, final BigDecimal longitude,
+		final double distanceKm
+	) {
 		double lat = latitude.doubleValue();
 		double lon = longitude.doubleValue();
 
@@ -66,8 +70,10 @@ public class GeoUtils {
 	 * @param lon2 두 번째 지점의 경도
 	 * @return 거리 (km)
 	 */
-	public double calculateHaversineDistance(final double lat1, final double lon1, final double lat2,
-		final double lon2) {
+	public double calculateHaversineDistance(
+		final double lat1, final double lon1, final double lat2,
+		final double lon2
+	) {
 		double lat1Rad = Math.toRadians(lat1);
 		double lat2Rad = Math.toRadians(lat2);
 		double deltaLatRad = Math.toRadians(lat2 - lat1);
@@ -80,6 +86,17 @@ public class GeoUtils {
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
 		return EARTH_RADIUS_KM * c;
+	}
+
+	/**
+	 * 주어진 거리(km)가 허용 반경(m) 이내인지 판별 *
+	 *
+	 * @param distanceKm   거리 (km)
+	 * @param radiusMeters 허용 반경 (m)
+	 * @return 거리가 반경 이내이면 true, 아니면 false
+	 */
+	public boolean isWithinRadius(final double distanceKm, final int radiusMeters) {
+		return convertKmToMeters(distanceKm) <= radiusMeters;
 	}
 
 	/**
