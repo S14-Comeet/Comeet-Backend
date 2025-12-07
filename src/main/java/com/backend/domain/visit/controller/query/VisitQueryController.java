@@ -15,6 +15,7 @@ import com.backend.common.response.PageResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.visit.dto.common.VisitInfoDto;
 import com.backend.domain.visit.dto.common.VisitPageDto;
+import com.backend.domain.visit.service.facade.VisitFacadeService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
@@ -25,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/visit")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class VisitQueryController {
+
+	private final VisitFacadeService visitFacadeService;
 
 	@GetMapping("/history")
 	public ResponseEntity<PageResponse<VisitPageDto>> getVisitHistory(
@@ -41,8 +44,8 @@ public class VisitQueryController {
 		@CurrentUser AuthenticatedUser token,
 		@PathVariable Long visitId
 	) {
-		//TODO 방문 인증 내역 상세 조회 로직 구현 (noContent -> ok)
-		return ResponseUtils.noContent();
+		VisitInfoDto response = visitFacadeService.findVisitById(token.getUser(), visitId);
+		return ResponseUtils.ok(response);
 	}
 }
 

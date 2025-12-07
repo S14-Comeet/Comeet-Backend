@@ -1,6 +1,7 @@
 package com.backend.domain.visit.service.facade;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.VisitException;
@@ -8,11 +9,14 @@ import com.backend.common.util.GeoUtils;
 import com.backend.domain.user.entity.User;
 import com.backend.domain.user.validator.UserValidator;
 import com.backend.domain.visit.converter.VisitConverter;
+import com.backend.domain.visit.dto.common.VisitInfoDto;
 import com.backend.domain.visit.dto.request.VerifyReqDto;
 import com.backend.domain.visit.dto.response.VerifiedResDto;
 import com.backend.domain.visit.entity.Visit;
 import com.backend.domain.visit.factory.VisitFactory;
 import com.backend.domain.visit.service.command.VisitCommandService;
+import com.backend.domain.visit.service.query.VisitQueryService;
+import com.backend.domain.visit.validator.VisitValidator;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +27,13 @@ public class VisitFacadeService {
 	private static final int ALLOWABLE_RANGE = 100;
 
 	private final VisitCommandService visitCommandService;
-	private final UserValidator userValidator;
+	private final VisitQueryService visitQueryService;
+	private final VisitValidator visitValidator;
 	private final VisitFactory visitFactory;
 
+	private final UserValidator userValidator;
+
+	@Transactional
 	public VerifiedResDto verifyVisit(final User user, final VerifyReqDto reqDto) {
 		userValidator.validate(user);
 		Boolean isVerified = checkDistance(reqDto);
@@ -48,4 +56,13 @@ public class VisitFacadeService {
 
 		return GeoUtils.isWithinRadius(calculatedDistance, ALLOWABLE_RANGE);
 	}
+
+	@Transactional(readOnly = true)
+	public VisitInfoDto findVisitById(final User user, final Long visitId) {
+		userValidator.validate(user);
+		Visit visit = visitQueryService.findById(visitId);
+		visitValidator.validateVisitBelongsToUser(visit.getUserId(), user.getId());
+		return VisitConverter.toVisitInfoDto(visit);
+	}
+
 }
