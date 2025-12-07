@@ -6,4 +6,36 @@
         FROM visits
         WHERE id = #{visitId}
     </select>
+    <select id="findAllByUserId" resultType="com.backend.domain.visit.entity.Visit">
+        SELECT *
+        FROM visits
+        WHERE user_id = #{userId}
+        <if test="pageable.sort != null and pageable.sort.isSorted()">
+            ORDER BY
+            <foreach collection="pageable.sort" item="order" separator=",">
+                <choose>
+                    <when test="order.property == 'id'">id</when>
+                    <when test="order.property == 'createdAt'">created_at</when>
+                    <when test="order.property == 'updatedAt'">updated_at</when>
+                    <otherwise>id</otherwise>
+                </choose>
+                <choose>
+                    <when test="order.direction.name() == 'ASC'">ASC</when>
+                    <when test="order.direction.name() == 'DESC'">DESC</when>
+                    <otherwise>`DESC`</otherwise>
+                </choose>
+            </foreach>
+        </if>
+        <if test="pageable.sort == null or !pageable.sort.isSorted()">
+            ORDER BY id DESC
+        </if>
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+
+    <select id="countAllByUserId" resultType="int">
+        SELECT COUNT(*)
+        FROM visits
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

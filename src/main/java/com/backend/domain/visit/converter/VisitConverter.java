@@ -1,6 +1,7 @@
 package com.backend.domain.visit.converter;
 
 import com.backend.domain.visit.dto.common.VisitInfoDto;
+import com.backend.domain.visit.dto.common.VisitPageDto;
 import com.backend.domain.visit.dto.response.VerifiedResDto;
 import com.backend.domain.visit.entity.Visit;
 
@@ -26,5 +27,14 @@ public class VisitConverter {
 			.visitedAt(visit.getCreatedAt())
 			.build();
 
+	}
+
+	public static VisitPageDto toVisitPageDto(final Visit visit) {
+		return VisitPageDto.builder()
+			.visitId(visit.getId())
+			.menuId(visit.getMenuId())
+			.verified(visit.getIsVerified())
+			.visitedAt(visit.getCreatedAt())
+			.build();
 	}
 }

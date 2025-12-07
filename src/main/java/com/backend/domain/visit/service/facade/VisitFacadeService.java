@@ -1,5 +1,10 @@
 package com.backend.domain.visit.service.facade;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +15,7 @@ import com.backend.domain.user.entity.User;
 import com.backend.domain.user.validator.UserValidator;
 import com.backend.domain.visit.converter.VisitConverter;
 import com.backend.domain.visit.dto.common.VisitInfoDto;
+import com.backend.domain.visit.dto.common.VisitPageDto;
 import com.backend.domain.visit.dto.request.VerifyReqDto;
 import com.backend.domain.visit.dto.response.VerifiedResDto;
 import com.backend.domain.visit.entity.Visit;
@@ -65,4 +71,13 @@ public class VisitFacadeService {
 		return VisitConverter.toVisitInfoDto(visit);
 	}
 
+	@Transactional(readOnly = true)
+	public Page<VisitPageDto> findAllWithPageableUserId(final User user, final Pageable pageable) {
+		userValidator.validate(user);
+		List<VisitPageDto> list = visitQueryService.findAllByUserId(user.getId(), pageable).stream()
+			.peek(visit -> visitValidator.validateVisitBelongsToUser(visit.getUserId(), user.getId()))
+			.map(VisitConverter::toVisitPageDto).toList();
+		int total = visitQueryService.countAllByUserId(user.getId());
+		return new PageImpl<>(list, pageable, total);
+	}
 }

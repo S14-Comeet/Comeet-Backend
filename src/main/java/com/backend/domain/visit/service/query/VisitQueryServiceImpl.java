@@ -2,6 +2,9 @@ package com.backend.domain.visit.service.query;
 
 import static lombok.AccessLevel.*;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,5 +29,17 @@ public class VisitQueryServiceImpl implements VisitQueryService {
 			.orElseThrow(() -> new VisitException(ErrorCode.VISIT_NOT_FOUND));
 		log.info("[Visit] 방문 기록 상세 조회 id : {}", visit.getId());
 		return visit;
+	}
+
+	@Override
+	public List<Visit> findAllByUserId(final Long userId, final Pageable pageable) {
+		List<Visit> list = queryMapper.findAllByUserId(userId, pageable);
+		log.info("[Visit] 사용자의 모든 방문 기록 조회 size: {}", list.size());
+		return list;
+	}
+
+	@Override
+	public int countAllByUserId(final Long userId) {
+		return queryMapper.countAllByUserId(userId);
 	}
 }
