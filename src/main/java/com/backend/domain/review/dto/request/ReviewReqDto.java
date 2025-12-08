@@ -5,7 +5,7 @@ import java.util.List;
 public record ReviewReqDto(
 	Long visitId,
 	Long menuId,
-	String textContent,
+	String content,
 	Boolean isPublic,
 	String imageUrl,
 	List<Long> flavorWheelIdList

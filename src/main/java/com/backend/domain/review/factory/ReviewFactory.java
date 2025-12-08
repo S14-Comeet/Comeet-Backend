@@ -19,7 +19,7 @@ public class ReviewFactory {
 			.userId(userId)
 			.menuId(dto.menuId())
 			.visitId(dto.visitId())
-			.content(dto.textContent())
+			.content(dto.content())
 			.isPublic(dto.isPublic())
 			.imageUrl(dto.imageUrl())
 			.build();
