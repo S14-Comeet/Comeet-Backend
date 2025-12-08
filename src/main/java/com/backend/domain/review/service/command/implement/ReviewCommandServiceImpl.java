@@ -20,6 +20,8 @@ public class ReviewCommandServiceImpl implements ReviewCommandService {
 
 	@Override
 	public int insert(final Review review) {
-		return commandMapper.insert(review);
+		int result = commandMapper.insert(review);
+		log.info("[Review] 리뷰 저장 완료 - id: {}", review.getId());
+		return result;
 	}
 }
