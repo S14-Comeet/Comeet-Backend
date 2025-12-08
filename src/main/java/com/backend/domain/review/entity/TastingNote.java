@@ -1,5 +1,7 @@
 package com.backend.domain.review.entity;
 
+import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,12 +16,7 @@ public class TastingNote {
 	private Long id;
 	private Long reviewId;
 	private Long flavorWheelId;
-
-	public static TastingNote of(final Long reviewId, final Long flavorWheelId) {
-		return TastingNote.builder()
-			.reviewId(reviewId)
-			.flavorWheelId(flavorWheelId)
-			.build();
-	}
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 }
 

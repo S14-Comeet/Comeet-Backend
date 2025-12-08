@@ -100,6 +100,8 @@ CREATE TABLE IF NOT EXISTS tasting_notes
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
     review_id        BIGINT NOT NULL,
     flavor_wheels_id BIGINT NOT NULL,
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (review_id) REFERENCES reviews (id),
     FOREIGN KEY (flavor_wheels_id) REFERENCES flavor_wheels (id)
 );
