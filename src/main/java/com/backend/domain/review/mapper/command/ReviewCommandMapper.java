@@ -9,4 +9,6 @@ public interface ReviewCommandMapper {
 	int insert(Review review);
 
 	int update(Review review);
+
+	int softDelete(Long id);
 }

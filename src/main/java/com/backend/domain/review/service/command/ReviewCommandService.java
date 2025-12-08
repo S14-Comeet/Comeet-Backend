@@ -6,4 +6,6 @@ public interface ReviewCommandService {
 	int insert(Review newReview);
 
 	int update(Review review);
+
+	int softDelete(Long reviewId);
 }

@@ -14,4 +14,9 @@
             updated_at = now()
         WHERE id = #{id}
     </update>
+    <update id="softDelete">
+        UPDATE reviews
+        SET deleted_at = NOW()
+                WHERE id = #{id}
+    </update>
 </mapper>

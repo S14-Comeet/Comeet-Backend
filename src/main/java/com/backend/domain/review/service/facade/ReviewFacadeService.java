@@ -55,7 +55,11 @@ public class ReviewFacadeService {
 
 	@Transactional
 	public void deleteReview(final Long reviewId, final User user) {
-		//TODO reviewCommandService.deleteReview(reviewId);
+		Review review = getValidatedReview(reviewId, user);
+		int affectedRows = reviewCommandService.softDelete(review.getId());
+		if (affectedRows == 0) {
+			throw new ReviewException(ErrorCode.REVIEW_SOFT_DELETE_FAILED);
+		}
 	}
 
 	@Transactional
