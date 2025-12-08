@@ -1,10 +1,11 @@
-package com.backend.domain.review.service.command;
+package com.backend.domain.review.service.command.implement;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.domain.review.entity.Review;
 import com.backend.domain.review.mapper.command.ReviewCommandMapper;
+import com.backend.domain.review.service.command.ReviewCommandService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class ReviewCommandServiceImpl implements ReviewCommandService {
 	private final ReviewCommandMapper commandMapper;
 
 	@Override
-	public int save(final Review review) {
-		return commandMapper.save(review);
+	public int insert(final Review review) {
+		return commandMapper.insert(review);
 	}
 }

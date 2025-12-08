@@ -1,9 +1,10 @@
-package com.backend.domain.review.service.query;
+package com.backend.domain.review.service.query.implement;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.domain.review.mapper.query.ReviewQueryMapper;
+import com.backend.domain.review.service.query.ReviewQueryService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
