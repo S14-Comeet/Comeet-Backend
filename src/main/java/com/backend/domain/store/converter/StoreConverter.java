@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.backend.common.util.GeoUtils;
-import com.backend.domain.store.dto.response.StoreResDto;
 import com.backend.domain.store.dto.response.StoreListResDto;
+import com.backend.domain.store.dto.response.StoreResDto;
 import com.backend.domain.store.entity.Store;
 
 import lombok.AccessLevel;
@@ -24,7 +24,7 @@ public class StoreConverter {
 	 */
 	public static StoreResDto toStoreResponse(final Store store, final Double distanceKm) {
 		return StoreResDto.builder()
-			.storeId(store.getStoreId())
+			.id(store.getId())
 			.name(store.getName())
 			.description(store.getDescription())
 			.address(store.getAddress())
@@ -52,13 +52,13 @@ public class StoreConverter {
 	/**
 	 * Store 리스트와 거리 맵을 StoreListResDto로 변환
 	 * @param stores 매장 엔티티 리스트
-	 * @param distanceMap 매장별 거리 정보 (storeId -> distance in km)
+	 * @param distanceMap 매장별 거리 정보 (id -> distance in km)
 	 * @return 가맹점 목록 응답 DTO
 	 */
 	public static StoreListResDto toStoreListResponse(final List<Store> stores,
 		final Map<String, Double> distanceMap) {
 		List<StoreResDto> storeList = stores.stream()
-			.map(store -> toStoreResponse(store, distanceMap.get(store.getStoreId())))
+			.map(store -> toStoreResponse(store, distanceMap.get(store.getId())))
 			.toList();
 
 		return StoreListResDto.builder()
