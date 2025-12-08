@@ -2,6 +2,8 @@ package com.backend.domain.review.entity;
 
 import java.time.LocalDateTime;
 
+import com.backend.domain.review.dto.request.ReviewUpdateReqDto;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +32,18 @@ public class Review {
 
 	public boolean isDeleted() {
 		return this.deletedAt != null;
+	}
+
+	public void update(final ReviewUpdateReqDto reqDto) {
+		if (reqDto.content() != null) {
+			this.content = reqDto.content();
+		}
+		if (reqDto.isPublic() != null) {
+			this.isPublic = reqDto.isPublic();
+		}
+		if (reqDto.imageUrl() != null) {
+			this.imageUrl = reqDto.imageUrl();
+		}
+				// this.updatedAt = LocalDateTime.now();
 	}
 }

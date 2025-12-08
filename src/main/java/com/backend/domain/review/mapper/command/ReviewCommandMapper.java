@@ -7,4 +7,6 @@ import com.backend.domain.review.entity.Review;
 @Mapper
 public interface ReviewCommandMapper {
 	int insert(Review review);
+
+	int update(Review review);
 }

@@ -29,4 +29,15 @@ public class TastingNoteCommandServiceImpl implements TastingNoteCommandService 
 		log.info("[TastingNote] 테이스팅 노트 저장 - reviewId: {}, 개수: {}건", reviewId, flavorWheelIdList.size());
 		commandMapper.insertTastingNotes(reviewId, flavorWheelIdList);
 	}
+
+	@Override
+	public void overwriteTastingNotes(Long reviewId, List<Long> flavorWheelIdList) {
+		commandMapper.deleteAllByReviewId(reviewId);
+		if (CollectionUtils.isEmpty(flavorWheelIdList)) {
+			log.info("[TastingNote] 초기화 완료 - reviewId: {}", reviewId);
+			return;
+		}
+		commandMapper.insertTastingNotes(reviewId, flavorWheelIdList);
+	}
+
 }

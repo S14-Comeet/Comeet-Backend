@@ -6,4 +6,12 @@
                              updated_at)
         VALUES (#{visitId}, #{userId}, #{menuId}, #{content}, #{isPublic}, #{imageUrl}, NULL, NOW(), NOW())
     </insert>
+    <update id="update">
+        UPDATE reviews
+        SET content    = #{content},
+            is_public  = #{isPublic},
+            image_url  = #{imageUrl},
+            updated_at = now()
+        WHERE id = #{id}
+    </update>
 </mapper>

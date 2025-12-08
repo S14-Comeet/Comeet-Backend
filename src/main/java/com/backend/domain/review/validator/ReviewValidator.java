@@ -19,4 +19,10 @@ public class ReviewValidator implements Validator<Review> {
 			throw new ReviewException(ErrorCode.INVALID_REVIEW_REQUEST);
 		}
 	}
+
+	public void validateReviewBelongsToUser(final Review review, final Long userId) {
+		if (!review.getUserId().equals(userId)) {
+			throw new ReviewException(ErrorCode.ACCESS_DENIED);
+		}
+	}
 }

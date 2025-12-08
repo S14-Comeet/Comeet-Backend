@@ -24,4 +24,11 @@ public class ReviewCommandServiceImpl implements ReviewCommandService {
 		log.info("[Review] 리뷰 저장 완료 - id: {}", review.getId());
 		return result;
 	}
+
+	@Override
+	public int update(final Review review) {
+		int result = commandMapper.update(review);
+		log.info("[Review] 리뷰 업데이트 완료 - id: {}", review.getId());
+		return result;
+	}
 }

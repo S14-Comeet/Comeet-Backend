@@ -14,6 +14,7 @@ import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.review.dto.request.ReviewReqDto;
+import com.backend.domain.review.dto.request.ReviewUpdateReqDto;
 import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.service.facade.ReviewFacadeService;
@@ -43,7 +44,7 @@ public class ReviewCommandController {
 	public ResponseEntity<BaseResponse<ReviewedResDto>> updatedReview(
 		@PathVariable Long reviewId,
 		@CurrentUser AuthenticatedUser token,
-		@RequestBody @Valid ReviewReqDto reqDto
+		@RequestBody @Valid ReviewUpdateReqDto reqDto
 	) {
 		return ResponseUtils.ok(reviewFacadeService.updateReview(reviewId, token.getUser(), reqDto));
 	}

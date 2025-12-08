@@ -8,4 +8,9 @@
             (#{reviewId}, #{flavorWheelId}, now(), now())
         </foreach>
     </insert>
+    <delete id="deleteAllByReviewId">
+        DELETE
+        FROM tasting_notes
+        WHERE review_id = #{reviewId}
+    </delete>
 </mapper>
