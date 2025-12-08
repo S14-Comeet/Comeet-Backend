@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS roasteries
 
 CREATE TABLE IF NOT EXISTS stores
 (
-    id             VARCHAR(255) PRIMARY KEY,
+    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
     roastery_id    BIGINT         NOT NULL,
     owner_id       BIGINT,
     name           VARCHAR(100)   NOT NULL,
@@ -59,4 +59,47 @@ CREATE TABLE IF NOT EXISTS visits
     is_verified BOOLEAN        NOT NULL DEFAULT FALSE,
     created_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS reviews
+(
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    visit_id     BIGINT    NOT NULL,
+    user_id      BIGINT    NOT NULL,
+    store_id     BIGINT    NOT NULL,
+    menu_id      BIGINT    NOT NULL,
+    text_content TEXT,
+    is_public    BOOLEAN   NOT NULL,
+    image_url    TEXT,
+    deleted_at   TIMESTAMP,
+    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (visit_id) REFERENCES visits (id),
+    FOREIGN KEY (store_id) REFERENCES stores (id)
+    -- FOREIGN KEY (menu_id) REFERENCES menus (id),
+);
+
+CREATE TABLE IF NOT EXISTS flavor_wheels
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    code        VARCHAR(50)  NOT NULL COMMENT '고유 코드 (FRUITY, BERRY 등)',
+    parent_id   BIGINT COMMENT '상위 카테고리 ID',
+    level       TINYINT      NOT NULL COMMENT '1:대분류, 2:중분류, 3:소분류',
+    path        VARCHAR(255) NOT NULL COMMENT '계층 경로 (fruity/berry/blackberry)',
+    name        VARCHAR(100) NOT NULL COMMENT '이름',
+    description VARCHAR(500) COMMENT '설명',
+    color_hex   VARCHAR(7) COMMENT 'SCA Wheel 색상',
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS tasting_notes
+(
+    id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+    review_id        BIGINT NOT NULL,
+    flavor_wheels_id BIGINT NOT NULL,
+    FOREIGN KEY (review_id) REFERENCES reviews (id),
+    FOREIGN KEY (flavor_wheels_id) REFERENCES flavor_wheels (id)
 );
