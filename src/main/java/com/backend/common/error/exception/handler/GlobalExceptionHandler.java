@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.AuthException;
 import com.backend.common.error.exception.BusinessException;
+import com.backend.common.error.exception.ReviewException;
 import com.backend.common.error.exception.UserException;
+import com.backend.common.error.exception.VisitException;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.response.ErrorResponse;
 import com.backend.common.util.LoggingUtil;
@@ -100,6 +102,26 @@ public class GlobalExceptionHandler {
 		HttpServletRequest request
 	) {
 		LoggingUtil.logException("AuthException 발생", ex, request);
+		ErrorResponse response = ErrorResponse.of(ex.getErrorCode(), request);
+		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
+	}
+
+	@ExceptionHandler(VisitException.class)
+	public ResponseEntity<BaseResponse<ErrorResponse>> handleVisitException(
+		VisitException ex,
+		HttpServletRequest request
+	) {
+		LoggingUtil.logException("VisitException 발생", ex, request);
+		ErrorResponse response = ErrorResponse.of(ex.getErrorCode(), request);
+		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
+	}
+
+	@ExceptionHandler(ReviewException.class)
+	public ResponseEntity<BaseResponse<ErrorResponse>> handleReviewException(
+		ReviewException ex,
+		HttpServletRequest request
+	) {
+		LoggingUtil.logException("ReviewException 발생", ex, request);
 		ErrorResponse response = ErrorResponse.of(ex.getErrorCode(), request);
 		return ResponseEntity.status(ex.getErrorCode().getHttpStatus()).body(BaseResponse.fail(response));
 	}
