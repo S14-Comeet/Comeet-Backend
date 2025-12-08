@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.UserException;
-import com.backend.domain.user.entity.Role;
 import com.backend.domain.user.entity.User;
 
 import lombok.Builder;
@@ -30,16 +29,27 @@ public class OAuth2Attribute {
 	private static OAuth2Attribute ofNaver(Map<String, Object> attributes) {
 		Map<String, Object> naverAttributes = (Map<String, Object>)attributes.get("response");
 
+		String name = extractString(naverAttributes, "name");
+		String email = extractString(naverAttributes, "email");
+		String providerId = extractString(naverAttributes, "id");
+		String profileImage = extractString(naverAttributes, "profile_image");
+
 		return OAuth2Attribute.builder()
-			.name(naverAttributes.get("name").toString())
-			.email(naverAttributes.get("email").toString())
-			.providerId(naverAttributes.get("id").toString())
-			.profileUrl(naverAttributes.get("profile_image").toString())
+			.name(name)
+			.email(email)
+			.providerId(providerId)
+			.profileUrl(profileImage)
 			.attributes(naverAttributes)
 			.build();
+
 	}
 
 	public User toEntity(String socialId, String profileImageUrl) {
 		return User.of(name, email, profileImageUrl, socialId);
+	}
+
+	private static String extractString(Map<String, Object> attributes, String key) {
+		Object value = attributes.get(key);
+		return value != null ? value.toString() : null;
 	}
 }
