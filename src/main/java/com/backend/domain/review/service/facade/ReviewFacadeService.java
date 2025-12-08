@@ -74,7 +74,6 @@ public class ReviewFacadeService {
 		Review review = reviewFactory.create(userId, reqDto);
 		reviewCommandService.insert(review);
 		return review;
-
 	}
 
 	private ReviewedResDto createReviewedResDto(final Review review, final List<Long> flavorWheelIds) {
