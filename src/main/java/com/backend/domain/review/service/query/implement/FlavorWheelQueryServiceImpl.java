@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.common.error.ErrorCode;
+import com.backend.common.error.exception.ReviewException;
 import com.backend.domain.review.entity.FlavorWheel;
 import com.backend.domain.review.mapper.query.FlavorWheelQueryMapper;
 import com.backend.domain.review.service.query.FlavorWheelQueryService;
@@ -28,6 +30,16 @@ public class FlavorWheelQueryServiceImpl implements FlavorWheelQueryService {
 		}
 		List<FlavorWheel> flavorWheels = queryMapper.findAllByIds(flavorWheelIdList);
 		log.info("[Review] FlavorWheel 조회 완료 - 요청: {}건, 조회성공: {}건", flavorWheelIdList.size(), flavorWheels.size());
+		return flavorWheels;
+	}
+
+	@Override
+	public List<FlavorWheel> findFlavorWheelsByReviewId(final Long reviewId) {
+		if (reviewId == null) {
+			throw new ReviewException(ErrorCode.INVALID_REVIEW_REQUEST);
+		}
+		List<FlavorWheel> flavorWheels = queryMapper.findAllByReviewId(reviewId);
+		log.info("[Review] FlavorWheel 조회 완료 - review ID: {}, 조회성공: {}건", reviewId, flavorWheels.size());
 		return flavorWheels;
 	}
 }

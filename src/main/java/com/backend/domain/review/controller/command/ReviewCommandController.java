@@ -58,7 +58,10 @@ public class ReviewCommandController {
 		return ResponseUtils.noContent();
 	}
 
-	//TODO Role_OWNER만 동작할 수 있도록 정의 필요
+	/**
+	 * @deprecated 이 기능은 관리자 기능이 먼저 구현되어야 합니다.
+	 */
+	@Deprecated(since = "1.0")
 	@PostMapping("/{reviewId}/report")
 	public ResponseEntity<BaseResponse<ReportResDto>> reportReview(
 		@PathVariable Long reviewId,

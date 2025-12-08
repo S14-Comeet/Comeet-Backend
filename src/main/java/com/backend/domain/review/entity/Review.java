@@ -44,6 +44,5 @@ public class Review {
 		if (reqDto.imageUrl() != null) {
 			this.imageUrl = reqDto.imageUrl();
 		}
-				// this.updatedAt = LocalDateTime.now();
 	}
 }

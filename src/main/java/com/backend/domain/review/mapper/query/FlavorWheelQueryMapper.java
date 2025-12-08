@@ -9,4 +9,6 @@ import com.backend.domain.review.entity.FlavorWheel;
 @Mapper
 public interface FlavorWheelQueryMapper {
 	List<FlavorWheel> findAllByIds(List<Long> flavorWheelIdList);
+
+	List<FlavorWheel> findAllByReviewId(Long reviewId);
 }

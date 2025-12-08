@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.common.annotation.CurrentUser;
-import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.review.dto.response.ReviewedResDto;
@@ -26,10 +24,7 @@ public class ReviewQueryController {
 	private final ReviewFacadeService reviewFacadeService;
 
 	@GetMapping("{reviewId}")
-	public ResponseEntity<BaseResponse<ReviewedResDto>> getReviewDetails(
-		@PathVariable Long reviewId,
-		@CurrentUser AuthenticatedUser token
-	) {
-		return ResponseUtils.ok(reviewFacadeService.getReviewDetails(reviewId, token.getUser()));
+	public ResponseEntity<BaseResponse<ReviewedResDto>> getReviewDetails(@PathVariable Long reviewId) {
+		return ResponseUtils.ok(reviewFacadeService.getReviewDetails(reviewId));
 	}
 }

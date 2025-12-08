@@ -32,9 +32,9 @@ public class ReviewFacadeService {
 
 	private final TastingNoteCommandService tastingNoteCommandService;
 	private final FlavorWheelQueryService flavorWheelQueryService;
+
 	private final ReviewCommandService reviewCommandService;
 	private final ReviewQueryService reviewQueryService;
-
 	private final ReviewFactory reviewFactory;
 	private final ReviewValidator reviewValidator;
 
@@ -64,14 +64,17 @@ public class ReviewFacadeService {
 
 	@Transactional
 	public ReportResDto reportReview(final Long reviewId, final User user) {
-		//TODO reviewCommandService.reportReview(reviewId);
+		//TODO 관리자 기능 구현이 선행되어야 한다.
 		return null;
 	}
 
 	@Transactional(readOnly = true)
-	public ReviewedResDto getReviewDetails(final Long reviewId, final User user) {
-		//TODO reviewQueryService.findReviewById(reviewId);
-		return null;
+	public ReviewedResDto getReviewDetails(final Long reviewId) {
+		Review review = reviewQueryService.findById(reviewId);
+		List<FlavorWheelBadgeDto> badges = flavorWheelQueryService.findFlavorWheelsByReviewId(reviewId).stream()
+			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
+			.toList();
+		return ReviewConverter.toReviewedResDto(review, badges);
 	}
 
 	private Review processCreate(final Long userId, final ReviewReqDto reqDto) {
