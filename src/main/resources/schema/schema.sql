@@ -15,17 +15,17 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS roasteries
 (
-    roastery_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(100) NOT NULL,
-    logo_url        VARCHAR(500),
-    website_url     VARCHAR(500),
-    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    logo_url    VARCHAR(500),
+    website_url VARCHAR(500),
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS stores
 (
-    store_id       VARCHAR(255) PRIMARY KEY,
+    id             VARCHAR(255) PRIMARY KEY,
     roastery_id    BIGINT         NOT NULL,
     owner_id       BIGINT,
     name           VARCHAR(100)   NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS stores
     deleted_at     TIMESTAMP,
     created_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (roastery_id) REFERENCES roasteries (roastery_id),
+    FOREIGN KEY (roastery_id) REFERENCES roasteries (id),
     FOREIGN KEY (owner_id) REFERENCES users (id)
 );
 

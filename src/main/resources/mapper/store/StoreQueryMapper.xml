@@ -6,7 +6,7 @@
 
     <select id="findStoresWithinBounds" resultType="Store">
         SELECT
-            store_id,
+            id,
             roastery_id,
             owner_id,
             name,
@@ -45,7 +45,7 @@
 
     <select id="findById" resultType="Store">
         SELECT
-            store_id,
+            id,
             roastery_id,
             owner_id,
             name,
@@ -66,7 +66,7 @@
             created_at,
             updated_at
         FROM stores
-        WHERE store_id = #{storeId}
+        WHERE id = #{storeId}
           AND deleted_at IS NULL
     </select>
 

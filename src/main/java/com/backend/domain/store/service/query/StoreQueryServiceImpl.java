@@ -54,12 +54,12 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 					store.getLongitude().doubleValue()
 				);
 				if (storeDistance <= distanceKm) {
-					distanceMap.put(store.getStoreId(), storeDistance);
+					distanceMap.put(store.getId(), storeDistance);
 					return true;
 				}
 				return false;
 			})
-			.sorted(Comparator.comparingDouble(store -> distanceMap.get(store.getStoreId())))
+			.sorted(Comparator.comparingDouble(store -> distanceMap.get(store.getId())))
 			.toList();
 
 		// 4. 응답 DTO 변환 (항상 마커 정보 포함)
