@@ -3,9 +3,14 @@ package com.backend.domain.review.service.facade;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.common.error.ErrorCode;
+import com.backend.common.error.exception.ReviewException;
+import com.backend.domain.review.converter.ReviewConverter;
 import com.backend.domain.review.dto.request.ReviewReqDto;
 import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
+import com.backend.domain.review.entity.Review;
+import com.backend.domain.review.factory.ReviewFactory;
 import com.backend.domain.review.service.command.ReviewCommandService;
 import com.backend.domain.review.service.query.ReviewQueryService;
 import com.backend.domain.user.entity.User;
@@ -19,11 +24,16 @@ public class ReviewFacadeService {
 
 	private final ReviewCommandService reviewCommandService;
 	private final ReviewQueryService reviewQueryService;
+	private final ReviewFactory reviewFactory;
 
 	@Transactional
 	public ReviewedResDto createReview(final User user, final ReviewReqDto reqDto) {
-		//TODO reviewCommandService.saveReview();
-		return null;
+		Review review = reviewFactory.create(user.getId(), reqDto);
+		int change = reviewCommandService.save(review);
+		if (change == 0) {
+			throw new ReviewException(ErrorCode.REVIEW_SAVE_FAILED);
+		}
+		return ReviewConverter.toReviewedResDto(review);
 	}
 
 	@Transactional

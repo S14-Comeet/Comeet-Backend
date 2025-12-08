@@ -52,7 +52,7 @@ public enum ErrorCode {
 	 * Visit Error
 	 */
 	VISIT_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "V-001", "방문 기록 저장에 실패했습니다."),
-	INVALID_VISIT_REQUEST(HttpStatus.BAD_REQUEST, "V-002", "요청 데이터가 유효하지 않습니다."),
+	INVALID_VISIT_REQUEST(HttpStatus.BAD_REQUEST, "V-002", "방문 기록 요청 데이터가 유효하지 않습니다."),
 	LOCATION_REQUIRED(HttpStatus.BAD_REQUEST, "V-003", "위치 정보가 필요합니다."),
 	COORDINATES_REQUIRED(HttpStatus.BAD_REQUEST, "V-004", "위도와 경도는 필수입니다."),
 	LOCATION_OUT_OF_KOREA(HttpStatus.BAD_REQUEST, "V-005", "위치가 한국 내부가 아닙니다."),
@@ -62,7 +62,8 @@ public enum ErrorCode {
 	/**
 	 * Review Error
 	 */
-	REVIEW_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-001", "리뷰 저장에 실패했습니다.");
+	REVIEW_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-001", "리뷰 저장에 실패했습니다."),
+	INVALID_REVIEW_REQUEST(HttpStatus.BAD_REQUEST, "V-002", "리뷰 요청 데이터가 유효하지 않습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;

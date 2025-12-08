@@ -14,16 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Review {
 	private Long id;
-	private Long visitId;
 	private Long userId;
-	private Long storeId;
 	private Long menuId;
-	private String textContent;
-	private Boolean isPublic;
+	private Long visitId;
+	private String content;
 	private String imageUrl;
-	private LocalDateTime deletedAt;
+	private Boolean isPublic;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private LocalDateTime deletedAt;
 
 	public void softDelete() {
 		this.deletedAt = LocalDateTime.now();

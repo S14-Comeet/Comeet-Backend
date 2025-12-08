@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.backend.domain.review.mapper.command.ReviewCommandMapper">
+    <insert id="save">
+        INSERT INTO reviews (visit_id, user_id, menu_id, content, is_public, image_url, deleted_at, created_at,
+                             updated_at)
+        VALUES (#{visitId}, #{userId}, #{menuId}, #{content}, #{isPublic}, #{imageUrl}, NULL, NOW(), NOW())
+    </insert>
 </mapper>
