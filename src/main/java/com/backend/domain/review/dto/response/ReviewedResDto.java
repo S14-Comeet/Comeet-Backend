@@ -1,18 +1,15 @@
 package com.backend.domain.review.dto.response;
 
-import java.time.LocalDateTime;
+import java.util.List;
+
+import com.backend.domain.review.dto.common.FlavorWheelBadgeDto;
+import com.backend.domain.review.dto.common.ReviewInfoDto;
 
 import lombok.Builder;
 
 @Builder
 public record ReviewedResDto(
-	Long reviewId,
-	Long userId,
-	Long menuId,
-	Long visitId,
-	String content,
-	String imageUrl,
-	Boolean isPublic,
-	LocalDateTime createdAt
+	ReviewInfoDto reviewInfoDto,
+	List<FlavorWheelBadgeDto> flavorWheelBadgeDto
 ) {
 }

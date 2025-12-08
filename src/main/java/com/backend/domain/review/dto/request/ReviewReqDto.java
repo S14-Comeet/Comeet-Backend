@@ -1,10 +1,13 @@
 package com.backend.domain.review.dto.request;
 
+import java.util.List;
+
 public record ReviewReqDto(
 	Long visitId,
 	Long menuId,
 	String textContent,
 	Boolean isPublic,
-	String imageUrl
+	String imageUrl,
+	List<Long> flavorWheelIdList
 ) {
 }
