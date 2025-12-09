@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
 import com.backend.domain.flavor.entity.Flavor;
-import com.backend.domain.flavor.mapper.FlavorQueryMapper;
+import com.backend.domain.flavor.mapper.query.FlavorQueryMapper;
 
 import io.jsonwebtoken.lang.Collections;
 import lombok.AccessLevel;
@@ -39,6 +39,13 @@ public class FlavorQueryServiceImpl implements FlavorQueryService {
 		}
 		List<Flavor> flavors = queryMapper.findAllByReviewId(reviewId);
 		log.info("[Review] Flavor 조회 완료 - review ID: {}, 조회성공: {}건", reviewId, flavors.size());
+		return flavors;
+	}
+
+	@Override
+	public List<Flavor> findAll() {
+		List<Flavor> flavors = queryMapper.findAll();
+		log.info("[Review] 모든 Flavor 조회 완료 - 조회성공: {}건", flavors.size());
 		return flavors;
 	}
 }

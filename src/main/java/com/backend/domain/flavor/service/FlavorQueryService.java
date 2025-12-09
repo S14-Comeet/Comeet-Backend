@@ -8,4 +8,7 @@ public interface FlavorQueryService {
 	List<Flavor> findAllByIds(List<Long> flavorIdList);
 
 	List<Flavor> findFlavorsByReviewId(final Long reviewId);
+
+	List<Flavor> findAll();
+
 }

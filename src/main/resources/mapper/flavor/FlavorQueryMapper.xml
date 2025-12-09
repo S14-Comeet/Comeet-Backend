@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.backend.domain.flavor.mapper.FlavorQueryMapper">
+<mapper namespace="com.backend.domain.flavor.mapper.query.FlavorQueryMapper">
     <select id="findAllByIds" resultType="com.backend.domain.flavor.entity.Flavor">
         SELECT *
         FROM flavor_wheels
@@ -14,5 +14,9 @@
         FROM flavors fw
                  INNER JOIN tasting_notes tn ON fw.id = tn.flavor_id
         WHERE tn.review_id = #{reviewId}
+    </select>
+    <select id="findAll" resultType="com.backend.domain.flavor.entity.Flavor">
+        SELECT *
+        FROM flavors
     </select>
 </mapper>

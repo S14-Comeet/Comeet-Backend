@@ -1,4 +1,4 @@
-package com.backend.domain.flavor.mapper;
+package com.backend.domain.flavor.mapper.query;
 
 import java.util.List;
 
@@ -11,4 +11,6 @@ public interface FlavorQueryMapper {
 	List<Flavor> findAllByIds(List<Long> flavorIdList);
 
 	List<Flavor> findAllByReviewId(Long reviewId);
+
+	List<Flavor> findAll();
 }
