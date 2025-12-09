@@ -10,7 +10,7 @@ public class FlavorWheelConverter {
 
 	public FlavorWheelBadgeDto toFlavorWheelBadgeDto(final FlavorWheel flavorWheel) {
 		return FlavorWheelBadgeDto.builder()
-			.id(flavorWheel.getId())
+			.flavorWheelId(flavorWheel.getId())
 			.code(flavorWheel.getCode())
 			.colorHex(flavorWheel.getColorHex())
 			.build();

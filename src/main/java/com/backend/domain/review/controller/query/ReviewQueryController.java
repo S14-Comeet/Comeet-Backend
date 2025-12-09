@@ -17,6 +17,7 @@ import com.backend.domain.review.dto.common.ReviewPageDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.service.facade.ReviewFacadeService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
@@ -31,11 +32,19 @@ public class ReviewQueryController {
 
 	private final ReviewFacadeService reviewFacadeService;
 
+	@Operation(
+		summary = "리뷰 상세 조회",
+		description = "리뷰 ID로 리뷰의 상세 정보를 조회합니다. 리뷰 내용, 이미지, FlavorWheel 뱃지 등을 포함합니다."
+	)
 	@GetMapping("{reviewId}")
 	public ResponseEntity<BaseResponse<ReviewedResDto>> getReviewDetails(@PathVariable Long reviewId) {
 		return ResponseUtils.ok(reviewFacadeService.getReviewDetails(reviewId));
 	}
 
+	@Operation(
+		summary = "내 리뷰 목록 조회 (페이지네이션)",
+		description = "로그인한 사용자의 리뷰 목록을 페이지네이션으로 조회합니다. 각 리뷰에 연결된 FlavorWheel 뱃지도 함께 조회됩니다. N+1 쿼리를 방지하기 위해 배치 조회를 사용합니다."
+	)
 	@GetMapping
 	public ResponseEntity<PageResponse<ReviewPageDto>> getReviews(
 		@CurrentUser AuthenticatedUser token,

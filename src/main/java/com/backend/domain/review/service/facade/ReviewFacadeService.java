@@ -114,7 +114,7 @@ public class ReviewFacadeService {
 		Map<Long, FlavorWheelBadgeDto> flavorWheelMap = flavorWheelQueryService.findAllByIds(allFlavorWheelIds)
 			.stream()
 			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
-			.collect(Collectors.toMap(FlavorWheelBadgeDto::id, badge -> badge));
+			.collect(Collectors.toMap(FlavorWheelBadgeDto::flavorWheelId, badge -> badge));
 
 		// * ReviewId별로 FlavorWheel 그룹화
 		Map<Long, List<FlavorWheelBadgeDto>> reviewBadgesMap = reviewFlavorWheels.stream()

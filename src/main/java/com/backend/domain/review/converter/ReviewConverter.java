@@ -15,8 +15,8 @@ public class ReviewConverter {
 
 	public static ReviewedResDto toReviewedResDto(final Review review, final List<FlavorWheelBadgeDto> badgeDtos) {
 		return ReviewedResDto.builder()
-			.reviewInfoDto(toReviewInfoDto(review))
-			.flavorWheelBadgeDto(badgeDtos)
+			.reviewInfo(toReviewInfoDto(review))
+			.flavorWheelBadges(badgeDtos)
 			.build();
 	}
 

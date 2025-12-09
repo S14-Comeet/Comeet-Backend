@@ -19,6 +19,7 @@ import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.service.facade.ReviewFacadeService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -32,6 +33,10 @@ public class ReviewCommandController {
 
 	private final ReviewFacadeService reviewFacadeService;
 
+	@Operation(
+		summary = "리뷰 작성",
+		description = "방문 기록과 메뉴에 대한 리뷰를 작성합니다. 리뷰 내용, 이미지, 공개 여부, FlavorWheel 뱃지를 선택할 수 있습니다."
+	)
 	@PostMapping
 	public ResponseEntity<BaseResponse<ReviewedResDto>> saveReview(
 		@CurrentUser AuthenticatedUser token,
@@ -40,6 +45,10 @@ public class ReviewCommandController {
 		return ResponseUtils.ok(reviewFacadeService.createReview(token.getUser(), reqDto));
 	}
 
+	@Operation(
+		summary = "리뷰 수정",
+		description = "작성한 리뷰를 수정합니다. 본인이 작성한 리뷰만 수정할 수 있습니다."
+	)
 	@PatchMapping("/{reviewId}")
 	public ResponseEntity<BaseResponse<ReviewedResDto>> updatedReview(
 		@PathVariable Long reviewId,
@@ -49,6 +58,10 @@ public class ReviewCommandController {
 		return ResponseUtils.ok(reviewFacadeService.updateReview(reviewId, token.getUser(), reqDto));
 	}
 
+	@Operation(
+		summary = "리뷰 삭제",
+		description = "작성한 리뷰를 삭제합니다. 본인이 작성한 리뷰만 삭제할 수 있으며, Soft Delete 방식으로 처리됩니다."
+	)
 	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<BaseResponse<Void>> deleteReview(
 		@PathVariable Long reviewId,
@@ -58,10 +71,11 @@ public class ReviewCommandController {
 		return ResponseUtils.noContent();
 	}
 
-	/**
-	 * @deprecated 이 기능은 관리자 기능이 먼저 구현되어야 합니다.
-	 */
 	@Deprecated(since = "1.0")
+	@Operation(
+		summary = "리뷰 신고 (미구현)",
+		description = "부적절한 리뷰를 신고합니다. 관리자 기능이 구현된 후 사용 가능합니다."
+	)
 	@PostMapping("/{reviewId}/report")
 	public ResponseEntity<BaseResponse<ReportResDto>> reportReview(
 		@PathVariable Long reviewId,
