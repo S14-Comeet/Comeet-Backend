@@ -44,15 +44,22 @@ public class ReviewFacadeService {
 
 	private final ReviewCommandService reviewCommandService;
 	private final ReviewQueryService reviewQueryService;
-	private final ReviewFactory reviewFactory;
 	private final ReviewValidator reviewValidator;
+	private final ReviewFactory reviewFactory;
 
 	private final TastingNoteQueryMapper tastingNoteQueryMapper;
 
 	public ReviewedResDto createReview(final User user, final ReviewReqDto reqDto) {
+		validateVisitIdNotDuplicate(reqDto.visitId());
 		Review review = processCreate(user.getId(), reqDto);
 		tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorWheelIdList());
 		return createReviewedResDto(review, reqDto.flavorWheelIdList());
+	}
+
+	private void validateVisitIdNotDuplicate(final Long visitId) {
+		if (reviewQueryService.existsByVisitId(visitId)) {
+			throw new ReviewException(ErrorCode.REVIEW_ALREADY_EXISTS_FOR_VISIT);
+		}
 	}
 
 	public ReviewedResDto updateReview(final Long reviewId, final User user, final ReviewUpdateReqDto reqDto) {

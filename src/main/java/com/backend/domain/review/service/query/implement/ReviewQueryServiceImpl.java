@@ -52,4 +52,9 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
 	public int countAllByStoreId(final Long storeId) {
 		return queryMapper.countAllByStoreId(storeId);
 	}
+
+	@Override
+	public boolean existsByVisitId(final Long visitId) {
+		return queryMapper.existsByVisitId(visitId);
+	}
 }

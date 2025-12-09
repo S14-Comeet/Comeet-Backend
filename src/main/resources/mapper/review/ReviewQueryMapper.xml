@@ -75,4 +75,13 @@
         WHERE store_id = #{storeId}
           AND deleted_at IS NULL
     </select>
+
+    <select id="existsByVisitId" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM reviews
+            WHERE visit_id = #{visitId}
+              AND deleted_at IS NULL
+        )
+    </select>
 </mapper>

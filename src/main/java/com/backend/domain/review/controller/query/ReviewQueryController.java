@@ -24,7 +24,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Review", description = "리뷰 관리 API")
+@Tag(name = "Review", description = "리뷰 관련 API")
 @RestController
 @RequestMapping("/reviews")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)

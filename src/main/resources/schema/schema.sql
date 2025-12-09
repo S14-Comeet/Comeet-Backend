@@ -64,11 +64,11 @@ CREATE TABLE IF NOT EXISTS visits
 CREATE TABLE IF NOT EXISTS reviews
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    visit_id   BIGINT    NOT NULL,
+    visit_id   BIGINT    NOT NULL UNIQUE,
     user_id    BIGINT    NOT NULL,
     store_id   BIGINT    NOT NULL,
     menu_id    BIGINT    NOT NULL,
-    text       TEXT,
+    content    TEXT,
     is_public  BOOLEAN   NOT NULL,
     image_url  TEXT,
     deleted_at TIMESTAMP,
