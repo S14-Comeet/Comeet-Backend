@@ -3,8 +3,8 @@ package com.backend.domain.review.dto.common;
 import lombok.Builder;
 
 @Builder
-public record ReviewFlavorWheelDto(
+public record ReviewFlavorDto(
 	Long reviewId,
-	Long flavorWheelId
+	Long flavorId
 ) {
 }

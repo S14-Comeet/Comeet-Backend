@@ -3,7 +3,7 @@ package com.backend.domain.review.dto.common;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.backend.domain.flavor.dto.common.FlavorWheelBadgeDto;
+import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -32,8 +32,8 @@ public record ReviewPageDto(
 	@Schema(description = "공개 여부", example = "true")
 	Boolean isPublic,
 
-	@Schema(description = "FlavorWheel 뱃지 목록")
-	List<FlavorWheelBadgeDto> flavorWheelBadges,
+	@Schema(description = "Flavor 뱃지 목록")
+	List<FlavorBadgeDto> flavorBadges,
 
 	@Schema(description = "생성일시", example = "2025-12-09T12:00:00")
 	LocalDateTime createdAt

@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS reviews
     -- FOREIGN KEY (menu_id) REFERENCES menus (id),
 );
 
-CREATE TABLE IF NOT EXISTS flavor_wheels
+CREATE TABLE IF NOT EXISTS flavors
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     code        VARCHAR(50)  NOT NULL COMMENT '고유 코드 (FRUITY, BERRY 등)',
@@ -97,11 +97,11 @@ CREATE TABLE IF NOT EXISTS flavor_wheels
 
 CREATE TABLE IF NOT EXISTS tasting_notes
 (
-    id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-    review_id        BIGINT NOT NULL,
-    flavor_wheels_id BIGINT NOT NULL,
-    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    review_id  BIGINT NOT NULL,
+    flavor_id  BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (review_id) REFERENCES reviews (id),
-    FOREIGN KEY (flavor_wheels_id) REFERENCES flavor_wheels (id)
+    FOREIGN KEY (flavor_id) REFERENCES flavors (id)
 );

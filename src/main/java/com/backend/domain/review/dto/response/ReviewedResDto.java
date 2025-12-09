@@ -2,7 +2,7 @@ package com.backend.domain.review.dto.response;
 
 import java.util.List;
 
-import com.backend.domain.flavor.dto.common.FlavorWheelBadgeDto;
+import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 import com.backend.domain.review.dto.common.ReviewInfoDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +14,7 @@ public record ReviewedResDto(
 	@Schema(description = "리뷰 상세 정보")
 	ReviewInfoDto reviewInfo,
 
-	@Schema(description = "FlavorWheel 뱃지 목록")
-	List<FlavorWheelBadgeDto> flavorWheelBadges
+	@Schema(description = "Flavor 뱃지 목록")
+	List<FlavorBadgeDto> flavorBadges
 ) {
 }

@@ -34,7 +34,7 @@ public class ReviewQueryController {
 
 	@Operation(
 		summary = "리뷰 상세 조회",
-		description = "리뷰 ID로 리뷰의 상세 정보를 조회합니다. 리뷰 내용, 이미지, FlavorWheel 뱃지 등을 포함합니다."
+		description = "리뷰 ID로 리뷰의 상세 정보를 조회합니다. 리뷰 내용, 이미지, Flavor 뱃지 등을 포함합니다."
 	)
 	@GetMapping("{reviewId}")
 	public ResponseEntity<BaseResponse<ReviewedResDto>> getReviewDetails(@PathVariable Long reviewId) {

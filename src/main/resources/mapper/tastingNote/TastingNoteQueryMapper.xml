@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.backend.domain.review.mapper.query.TastingNoteQueryMapper">
-    <select id="findFlavorWheelIdsByReviewId" resultType="java.lang.Long">
-        SELECT flavor_wheels_id
+    <select id="findFlavorIdsByReviewId" resultType="java.lang.Long">
+        SELECT flavor_id
         FROM tasting_notes
         WHERE review_id = #{reviewId}
-        ORDER BY flavor_wheels_id
+        ORDER BY flavor_id
     </select>
 
-    <select id="findFlavorWheelIdsByReviewIds" resultType="com.backend.domain.review.dto.common.ReviewFlavorWheelDto">
-        SELECT review_id AS reviewId, flavor_wheels_id AS flavorWheelId
+    <select id="findFlavorIdsByReviewIds" resultType="com.backend.domain.review.dto.common.ReviewFlavorDto">
+        SELECT review_id AS reviewId, flavors_id AS flavorId
         FROM tasting_notes
         WHERE review_id IN
         <foreach collection="list" item="reviewId" open="(" separator="," close=")">
             #{reviewId}
         </foreach>
-        ORDER BY review_id, flavor_wheels_id
+        ORDER BY review_id, flavors_id
     </select>
 </mapper>
