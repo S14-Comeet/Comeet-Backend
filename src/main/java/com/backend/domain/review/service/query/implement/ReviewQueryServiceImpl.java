@@ -1,5 +1,8 @@
 package com.backend.domain.review.service.query.implement;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,5 +27,17 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
 	public Review findById(final Long reviewId) {
 		return queryMapper.findById(reviewId)
 			.orElseThrow(() -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND));
+	}
+
+	@Override
+	public List<Review> findAllByUserId(final Long userId, final Pageable pageable) {
+		List<Review> list = queryMapper.findAllByUserId(userId, pageable);
+		log.info("[Visit] 사용자의 모든 리뷰 조회 size: {}", list.size());
+		return list;
+	}
+
+	@Override
+	public int countAllByUserId(final Long userId) {
+		return queryMapper.countAllByUserId(userId);
 	}
 }

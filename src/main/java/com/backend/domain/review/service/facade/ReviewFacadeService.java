@@ -1,21 +1,30 @@
 package com.backend.domain.review.service.facade;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
+import com.backend.common.util.PageUtils;
 import com.backend.domain.review.converter.FlavorWheelConverter;
 import com.backend.domain.review.converter.ReviewConverter;
 import com.backend.domain.review.dto.common.FlavorWheelBadgeDto;
+import com.backend.domain.review.dto.common.ReviewFlavorWheelDto;
+import com.backend.domain.review.dto.common.ReviewPageDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
 import com.backend.domain.review.dto.request.ReviewUpdateReqDto;
 import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.entity.Review;
 import com.backend.domain.review.factory.ReviewFactory;
+import com.backend.domain.review.mapper.query.TastingNoteQueryMapper;
 import com.backend.domain.review.service.command.ReviewCommandService;
 import com.backend.domain.review.service.command.TastingNoteCommandService;
 import com.backend.domain.review.service.query.FlavorWheelQueryService;
@@ -37,6 +46,8 @@ public class ReviewFacadeService {
 	private final ReviewQueryService reviewQueryService;
 	private final ReviewFactory reviewFactory;
 	private final ReviewValidator reviewValidator;
+
+	private final TastingNoteQueryMapper tastingNoteQueryMapper;
 
 	@Transactional
 	public ReviewedResDto createReview(final User user, final ReviewReqDto reqDto) {
@@ -64,7 +75,7 @@ public class ReviewFacadeService {
 
 	@Transactional
 	public ReportResDto reportReview(final Long reviewId, final User user) {
-		//TODO 관리자 기능 구현이 선행되어야 한다.
+		// ! 관리자 기능 구현이 선행되어야한다.
 		return null;
 	}
 
@@ -75,6 +86,57 @@ public class ReviewFacadeService {
 			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
 			.toList();
 		return ReviewConverter.toReviewedResDto(review, badges);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<ReviewPageDto> findAllWithPageableByUserId(final User user, final int page, final int size) {
+		Pageable pageable = PageUtils.getPageable(page, size);
+		List<Review> reviews = reviewQueryService.findAllByUserId(user.getId(), pageable);
+
+		if (reviews.isEmpty()) {
+			return PageUtils.toPage(List.of(), pageable, 0);
+		}
+
+		// * 리뷰 ID 목록 추출
+		List<Long> reviewIds = reviews.stream()
+			.map(Review::getId)
+			.toList();
+
+		List<ReviewFlavorWheelDto> reviewFlavorWheels = tastingNoteQueryMapper.findFlavorWheelIdsByReviewIds(reviewIds);
+
+		// * FlavorWheel ID를 모아서 한 번에 조회
+		List<Long> allFlavorWheelIds = reviewFlavorWheels.stream()
+			.map(ReviewFlavorWheelDto::flavorWheelId)
+			.distinct()
+			.toList();
+
+		// * FlavorWheel 정보를 한 번에 조회하고 Map으로 변환
+		Map<Long, FlavorWheelBadgeDto> flavorWheelMap = flavorWheelQueryService.findAllByIds(allFlavorWheelIds)
+			.stream()
+			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
+			.collect(Collectors.toMap(FlavorWheelBadgeDto::id, badge -> badge));
+
+		// * ReviewId별로 FlavorWheel 그룹화
+		Map<Long, List<FlavorWheelBadgeDto>> reviewBadgesMap = reviewFlavorWheels.stream()
+			.collect(Collectors.groupingBy(
+				ReviewFlavorWheelDto::reviewId,
+				Collectors.mapping(
+					dto -> flavorWheelMap.get(dto.flavorWheelId()),
+					Collectors.filtering(Objects::nonNull, Collectors.toList())
+				)
+			));
+
+		// * 리뷰별로 FlavorWheel 뱃지 매핑하여 DTO 변환
+		List<ReviewPageDto> reviewPageDtos = reviews.stream()
+			.map(review -> {
+				List<FlavorWheelBadgeDto> badges = reviewBadgesMap.getOrDefault(review.getId(), List.of());
+				return ReviewConverter.toReviewPageDto(review, badges);
+			})
+			.toList();
+
+		int total = reviewQueryService.countAllByUserId(user.getId());
+
+		return PageUtils.toPage(reviewPageDtos, pageable, total);
 	}
 
 	private Review processCreate(final Long userId, final ReviewReqDto reqDto) {

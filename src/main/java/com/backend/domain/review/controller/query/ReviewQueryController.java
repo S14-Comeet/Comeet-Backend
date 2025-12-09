@@ -1,17 +1,25 @@
 package com.backend.domain.review.controller.query;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.common.annotation.CurrentUser;
+import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
+import com.backend.common.response.PageResponse;
 import com.backend.common.util.ResponseUtils;
+import com.backend.domain.review.dto.common.ReviewPageDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.service.facade.ReviewFacadeService;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -26,5 +34,17 @@ public class ReviewQueryController {
 	@GetMapping("{reviewId}")
 	public ResponseEntity<BaseResponse<ReviewedResDto>> getReviewDetails(@PathVariable Long reviewId) {
 		return ResponseUtils.ok(reviewFacadeService.getReviewDetails(reviewId));
+	}
+
+	@GetMapping
+	public ResponseEntity<PageResponse<ReviewPageDto>> getReviews(
+		@CurrentUser AuthenticatedUser token,
+		@Parameter(description = "페이지 번호 (1부터 시작)", example = "1")
+		@RequestParam(defaultValue = "1") @Min(1) int page,
+		@Parameter(description = "페이지 크기", example = "10")
+		@RequestParam(defaultValue = "10") @Min(1) int size
+	) {
+		Page<ReviewPageDto> response = reviewFacadeService.findAllWithPageableByUserId(token.getUser(), page, size);
+		return ResponseUtils.page(response);
 	}
 }

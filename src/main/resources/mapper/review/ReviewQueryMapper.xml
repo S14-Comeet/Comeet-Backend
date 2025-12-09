@@ -1,4 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.backend.domain.review.mapper.query.ReviewQueryMapper">
+    <select id="findById" resultType="com.backend.domain.review.entity.Review">
+        SELECT *
+        FROM reviews
+        WHERE id = #{reviewId}
+    </select>
+    <select id="findAllByUserId" resultType="com.backend.domain.review.entity.Review">
+        SELECT *
+        FROM reviews
+        WHERE user_id = #{userId}
+        <choose>
+            <when test="pageable.sort != null and pageable.sort.isSorted()">
+                ORDER BY
+                <foreach collection="pageable.sort" item="order" separator=",">
+                    <choose>
+                        <when test="order.property == 'id'">id</when>
+                        <when test="order.property == 'createdAt'">created_at</when>
+                        <otherwise>id</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="order.direction.name() == 'ASC'">ASC</when>
+                        <when test="order.direction.name() == 'DESC'">DESC</when>
+                        <otherwise>DESC</otherwise>
+                    </choose>
+                </foreach>
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+
+    <select id="countAllByUserId" resultType="int">
+        SELECT COUNT(*)
+        FROM reviews
+        WHERE user_id = #{userId}
+    </select>
 </mapper>
