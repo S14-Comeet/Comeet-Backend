@@ -27,14 +27,6 @@ public class Review {
 	private LocalDateTime updatedAt;
 	private LocalDateTime deletedAt;
 
-	public void softDelete() {
-		this.deletedAt = LocalDateTime.now();
-	}
-
-	public boolean isDeleted() {
-		return this.deletedAt != null;
-	}
-
 	public void update(final ReviewUpdateReqDto reqDto) {
 		if (reqDto.content() != null) {
 			this.content = reqDto.content();
