@@ -5,7 +5,7 @@
         INSERT INTO reviews (visit_id, user_id, menu_id, store_id, content, is_public, image_url, deleted_at,
                              created_at,
                              updated_at)
-        VALUES (#{visitId}, #{userId}, #{menuId}, #{content}, #{storeId}, #{isPublic}, #{imageUrl}, NULL, NOW(), NOW())
+        VALUES (#{visitId}, #{userId}, #{menuId}, #{storeId}, #{content}, #{isPublic}, #{imageUrl}, NULL, NOW(), NOW())
     </insert>
     <update id="update">
         UPDATE reviews
