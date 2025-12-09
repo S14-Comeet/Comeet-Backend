@@ -2,7 +2,7 @@ package com.backend.domain.review.converter;
 
 import java.util.List;
 
-import com.backend.domain.review.dto.common.FlavorWheelBadgeDto;
+import com.backend.domain.flavor.dto.common.FlavorWheelBadgeDto;
 import com.backend.domain.review.dto.common.ReviewInfoDto;
 import com.backend.domain.review.dto.common.ReviewPageDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;

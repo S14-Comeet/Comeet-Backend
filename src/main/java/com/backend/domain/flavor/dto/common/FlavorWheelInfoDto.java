@@ -1,4 +1,4 @@
-package com.backend.domain.review.dto.common;
+package com.backend.domain.flavor.dto.common;
 
 public record FlavorWheelInfoDto (
     Long id,

@@ -1,4 +1,4 @@
-package com.backend.domain.review.dto.common;
+package com.backend.domain.flavor.dto.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

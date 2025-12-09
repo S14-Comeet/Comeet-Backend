@@ -1,10 +1,10 @@
-package com.backend.domain.review.mapper.query;
+package com.backend.domain.flavor.mapper.query;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.backend.domain.review.entity.FlavorWheel;
+import com.backend.domain.flavor.entity.FlavorWheel;
 
 @Mapper
 public interface FlavorWheelQueryMapper {

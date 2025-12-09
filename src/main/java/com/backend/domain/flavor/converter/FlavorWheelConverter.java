@@ -1,7 +1,7 @@
-package com.backend.domain.review.converter;
+package com.backend.domain.flavor.converter;
 
-import com.backend.domain.review.dto.common.FlavorWheelBadgeDto;
-import com.backend.domain.review.entity.FlavorWheel;
+import com.backend.domain.flavor.dto.common.FlavorWheelBadgeDto;
+import com.backend.domain.flavor.entity.FlavorWheel;
 
 import lombok.experimental.UtilityClass;
 

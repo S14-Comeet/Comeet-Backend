@@ -1,4 +1,4 @@
-package com.backend.domain.review.entity;
+package com.backend.domain.flavor.entity;
 
 import java.time.LocalDateTime;
 

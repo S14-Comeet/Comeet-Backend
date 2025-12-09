@@ -2,7 +2,7 @@ package com.backend.domain.review.dto.response;
 
 import java.util.List;
 
-import com.backend.domain.review.dto.common.FlavorWheelBadgeDto;
+import com.backend.domain.flavor.dto.common.FlavorWheelBadgeDto;
 import com.backend.domain.review.dto.common.ReviewInfoDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;

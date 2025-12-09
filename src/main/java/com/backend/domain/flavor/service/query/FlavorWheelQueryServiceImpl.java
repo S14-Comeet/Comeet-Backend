@@ -1,4 +1,4 @@
-package com.backend.domain.review.service.query.implement;
+package com.backend.domain.flavor.service.query;
 
 import java.util.List;
 
@@ -7,9 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
-import com.backend.domain.review.entity.FlavorWheel;
-import com.backend.domain.review.mapper.query.FlavorWheelQueryMapper;
-import com.backend.domain.review.service.query.FlavorWheelQueryService;
+import com.backend.domain.flavor.entity.FlavorWheel;
+import com.backend.domain.flavor.mapper.query.FlavorWheelQueryMapper;
 
 import io.jsonwebtoken.lang.Collections;
 import lombok.AccessLevel;

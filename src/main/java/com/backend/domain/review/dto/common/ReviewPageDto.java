@@ -3,6 +3,8 @@ package com.backend.domain.review.dto.common;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.backend.domain.flavor.dto.common.FlavorWheelBadgeDto;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
