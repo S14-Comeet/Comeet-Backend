@@ -5,11 +5,12 @@
         SELECT *
         FROM reviews
         WHERE id = #{reviewId}
+          AND deleted_at IS NULL
     </select>
     <select id="findAllByUserId" resultType="com.backend.domain.review.entity.Review">
         SELECT *
         FROM reviews
-        WHERE user_id = #{userId}
+        WHERE user_id = #{userId} AND deleted_at IS NULL
         <choose>
             <when test="pageable.sort != null and pageable.sort.isSorted()">
                 ORDER BY
@@ -38,5 +39,6 @@
         SELECT COUNT(*)
         FROM reviews
         WHERE user_id = #{userId}
+          AND deleted_at IS NULL
     </select>
 </mapper>

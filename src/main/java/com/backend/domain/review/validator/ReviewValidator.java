@@ -25,4 +25,10 @@ public class ReviewValidator implements Validator<Review> {
 			throw new ReviewException(ErrorCode.ACCESS_DENIED);
 		}
 	}
+
+	public void validateReviewNotDeleted(final Review review) {
+		if (review.getDeletedAt() != null) {
+			throw new ReviewException(ErrorCode.ALREADY_DELETED_REVIEW);
+		}
+	}
 }

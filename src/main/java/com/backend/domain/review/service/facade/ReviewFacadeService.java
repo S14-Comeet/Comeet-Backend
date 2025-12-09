@@ -157,6 +157,7 @@ public class ReviewFacadeService {
 	private Review getValidatedReview(final Long reviewId, final User user) {
 		Review review = reviewQueryService.findById(reviewId);
 		reviewValidator.validateReviewBelongsToUser(review, user.getId());
+		reviewValidator.validateReviewNotDeleted(review);
 		return review;
 	}
 
