@@ -64,7 +64,7 @@ public enum ErrorCode {
 	 */
 	INVALID_REVIEW_REQUEST(HttpStatus.BAD_REQUEST, "R-001", "리뷰 요청 데이터가 유효하지 않습니다."),
 	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R-002", "리뷰 기록을 찾을 수 없습니다."),
-	REVIEW_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-003", "리뷰 업데이트에 실패했습니다."),
+	REVIEW_UPDATE_FAILED(HttpStatus.CONFLICT, "R-003", "리뷰 업데이트에 실패했습니다."),
 	REVIEW_SOFT_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-004", "리뷰 SOFT DELETE에 실패했습니다."),
 	ALREADY_DELETED_REVIEW(HttpStatus.BAD_REQUEST, "R-005", "이미 삭제 처리된 리뷰입니다.");
 
