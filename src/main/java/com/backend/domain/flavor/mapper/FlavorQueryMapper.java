@@ -1,4 +1,4 @@
-package com.backend.domain.flavor.mapper.query;
+package com.backend.domain.flavor.mapper;
 
 import java.util.List;
 

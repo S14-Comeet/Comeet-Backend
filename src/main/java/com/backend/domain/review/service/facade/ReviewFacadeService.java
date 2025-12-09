@@ -15,7 +15,7 @@ import com.backend.common.error.exception.ReviewException;
 import com.backend.common.util.PageUtils;
 import com.backend.domain.flavor.converter.FlavorConverter;
 import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
-import com.backend.domain.flavor.service.query.FlavorQueryService;
+import com.backend.domain.flavor.service.FlavorQueryService;
 import com.backend.domain.review.converter.ReviewConverter;
 import com.backend.domain.review.dto.common.ReviewFlavorDto;
 import com.backend.domain.review.dto.common.ReviewPageDto;

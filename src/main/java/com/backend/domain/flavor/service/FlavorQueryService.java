@@ -1,4 +1,4 @@
-package com.backend.domain.flavor.service.query;
+package com.backend.domain.flavor.service;
 
 import java.util.List;
 

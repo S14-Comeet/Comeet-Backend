@@ -1,4 +1,4 @@
-package com.backend.domain.flavor.service.query;
+package com.backend.domain.flavor.service;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
 import com.backend.domain.flavor.entity.Flavor;
-import com.backend.domain.flavor.mapper.query.FlavorQueryMapper;
+import com.backend.domain.flavor.mapper.FlavorQueryMapper;
 
 import io.jsonwebtoken.lang.Collections;
 import lombok.AccessLevel;
