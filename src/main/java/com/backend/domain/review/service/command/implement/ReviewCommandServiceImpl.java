@@ -35,7 +35,7 @@ public class ReviewCommandServiceImpl implements ReviewCommandService {
 	@Override
 	public int softDelete(final Long reviewId) {
 		int result = commandMapper.softDelete(reviewId);
-				log.info("[Review] 리뷰 삭제 완료 - id: {}", reviewId);
+		log.info("[Review] 리뷰 삭제 완료 - id: {}", reviewId);
 		return result;
 	}
 }

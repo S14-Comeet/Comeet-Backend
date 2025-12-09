@@ -17,6 +17,6 @@
     <update id="softDelete">
         UPDATE reviews
         SET deleted_at = NOW()
-                WHERE id = #{id}
+        WHERE id = #{id}
     </update>
 </mapper>
