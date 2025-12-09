@@ -63,17 +63,17 @@ CREATE TABLE IF NOT EXISTS visits
 
 CREATE TABLE IF NOT EXISTS reviews
 (
-    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
-    visit_id     BIGINT    NOT NULL,
-    user_id      BIGINT    NOT NULL,
-    store_id     BIGINT    NOT NULL,
-    menu_id      BIGINT    NOT NULL,
-    text_content TEXT,
-    is_public    BOOLEAN   NOT NULL,
-    image_url    TEXT,
-    deleted_at   TIMESTAMP,
-    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    visit_id   BIGINT    NOT NULL,
+    user_id    BIGINT    NOT NULL,
+    store_id   BIGINT    NOT NULL,
+    menu_id    BIGINT    NOT NULL,
+    text       TEXT,
+    is_public  BOOLEAN   NOT NULL,
+    image_url  TEXT,
+    deleted_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (visit_id) REFERENCES visits (id),
     FOREIGN KEY (store_id) REFERENCES stores (id)
