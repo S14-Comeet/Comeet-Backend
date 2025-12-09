@@ -92,44 +92,22 @@ public class ReviewFacadeService {
 			return PageUtils.toPage(List.of(), pageable, 0);
 		}
 
-		// * 리뷰 ID 목록 추출
-		List<Long> reviewIds = reviews.stream()
-			.map(Review::getId)
-			.toList();
-
-		List<ReviewFlavorWheelDto> reviewFlavorWheels = tastingNoteQueryMapper.findFlavorWheelIdsByReviewIds(reviewIds);
-
-		// * FlavorWheel ID를 모아서 한 번에 조회
-		List<Long> allFlavorWheelIds = reviewFlavorWheels.stream()
-			.map(ReviewFlavorWheelDto::flavorWheelId)
-			.distinct()
-			.toList();
-
-		// * FlavorWheel 정보를 한 번에 조회하고 Map으로 변환
-		Map<Long, FlavorWheelBadgeDto> flavorWheelMap = flavorWheelQueryService.findAllByIds(allFlavorWheelIds)
-			.stream()
-			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
-			.collect(Collectors.toMap(FlavorWheelBadgeDto::flavorWheelId, badge -> badge));
-
-		// * ReviewId별로 FlavorWheel 그룹화
-		Map<Long, List<FlavorWheelBadgeDto>> reviewBadgesMap = reviewFlavorWheels.stream()
-			.collect(Collectors.groupingBy(
-				ReviewFlavorWheelDto::reviewId,
-				Collectors.mapping(
-					dto -> flavorWheelMap.get(dto.flavorWheelId()),
-					Collectors.filtering(Objects::nonNull, Collectors.toList())
-				)
-			));
-
-		// * 리뷰별로 FlavorWheel 뱃지 매핑하여 DTO 변환
-		List<ReviewPageDto> reviewPageDtos = reviews.stream()
-			.map(review -> {
-				List<FlavorWheelBadgeDto> badges = reviewBadgesMap.getOrDefault(review.getId(), List.of());
-				return ReviewConverter.toReviewPageDto(review, badges);
-			})
-			.toList();
-
 		int total = reviewQueryService.countAllByUserId(user.getId());
+		List<ReviewPageDto> reviewPageDtos = buildReviewPageDtos(reviews);
+
+		return PageUtils.toPage(reviewPageDtos, pageable, total);
+	}
+
+	public Page<ReviewPageDto> findAllWithPageableByStoreId(final Long storeId, final int page, final int size) {
+		Pageable pageable = PageUtils.getPageable(page, size);
+		List<Review> reviews = reviewQueryService.findAllByStoreId(storeId, pageable);
+
+		if (reviews.isEmpty()) {
+			return PageUtils.toPage(List.of(), pageable, 0);
+		}
+
+		int total = reviewQueryService.countAllByStoreId(storeId);
+		List<ReviewPageDto> reviewPageDtos = buildReviewPageDtos(reviews);
 
 		return PageUtils.toPage(reviewPageDtos, pageable, total);
 	}
@@ -162,5 +140,44 @@ public class ReviewFacadeService {
 		if (affectedRows == 0) {
 			throw new ReviewException(ErrorCode.REVIEW_UPDATE_FAILED);
 		}
+	}
+
+	private List<ReviewPageDto> buildReviewPageDtos(final List<Review> reviews) {
+		// * 리뷰 ID 목록 추출
+		List<Long> reviewIds = reviews.stream()
+			.map(Review::getId)
+			.toList();
+
+		List<ReviewFlavorWheelDto> reviewFlavorWheels = tastingNoteQueryMapper.findFlavorWheelIdsByReviewIds(reviewIds);
+
+		// * FlavorWheel ID를 모아서 한 번에 조회
+		List<Long> allFlavorWheelIds = reviewFlavorWheels.stream()
+			.map(ReviewFlavorWheelDto::flavorWheelId)
+			.distinct()
+			.toList();
+
+		// * FlavorWheel 정보를 한 번에 조회하고 Map으로 변환
+		Map<Long, FlavorWheelBadgeDto> flavorWheelMap = flavorWheelQueryService.findAllByIds(allFlavorWheelIds)
+			.stream()
+			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
+			.collect(Collectors.toMap(FlavorWheelBadgeDto::flavorWheelId, badge -> badge));
+
+		// * ReviewId별로 FlavorWheel 그룹화
+		Map<Long, List<FlavorWheelBadgeDto>> reviewBadgesMap = reviewFlavorWheels.stream()
+			.collect(Collectors.groupingBy(
+				ReviewFlavorWheelDto::reviewId,
+				Collectors.mapping(
+					dto -> flavorWheelMap.get(dto.flavorWheelId()),
+					Collectors.filtering(Objects::nonNull, Collectors.toList())
+				)
+			));
+
+		// * 리뷰별로 FlavorWheel 뱃지 매핑하여 DTO 변환
+		return reviews.stream()
+			.map(review -> {
+				List<FlavorWheelBadgeDto> badges = reviewBadgesMap.getOrDefault(review.getId(), List.of());
+				return ReviewConverter.toReviewPageDto(review, badges);
+			})
+			.toList();
 	}
 }

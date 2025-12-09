@@ -42,8 +42,8 @@ public class ReviewQueryController {
 	}
 
 	@Operation(
-		summary = "내 리뷰 목록 조회 (페이지네이션)",
-		description = "로그인한 사용자의 리뷰 목록을 페이지네이션으로 조회합니다. 각 리뷰에 연결된 FlavorWheel 뱃지도 함께 조회됩니다. N+1 쿼리를 방지하기 위해 배치 조회를 사용합니다."
+		summary = "내 리뷰 목록 조회 ",
+		description = "로그인한 사용자의 리뷰 목록을 Flavor Badge와 함께 페이지네이션으로 조회합니다."
 	)
 	@GetMapping
 	public ResponseEntity<PageResponse<ReviewPageDto>> getReviews(

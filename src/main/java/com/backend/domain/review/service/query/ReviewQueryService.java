@@ -12,4 +12,8 @@ public interface ReviewQueryService {
 	List<Review> findAllByUserId(Long id, Pageable pageable);
 
 	int countAllByUserId(Long id);
+
+	List<Review> findAllByStoreId(Long storeId, Pageable pageable);
+
+	int countAllByStoreId(Long storeId);
 }

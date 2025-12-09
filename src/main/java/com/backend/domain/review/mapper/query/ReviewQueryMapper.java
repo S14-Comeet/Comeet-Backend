@@ -15,4 +15,8 @@ public interface ReviewQueryMapper {
 	List<Review> findAllByUserId(Long userId, Pageable pageable);
 
 	int countAllByUserId(Long userId);
+
+	List<Review> findAllByStoreId(Long storeId, Pageable pageable);
+
+	int countAllByStoreId(Long storeId);
 }

@@ -40,4 +40,16 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
 	public int countAllByUserId(final Long userId) {
 		return queryMapper.countAllByUserId(userId);
 	}
+
+	@Override
+	public List<Review> findAllByStoreId(final Long storeId, final Pageable pageable) {
+		List<Review> list = queryMapper.findAllByStoreId(storeId, pageable);
+		log.info("[Review] 가맹점의 모든 리뷰 조회 - storeId: {}, size: {}", storeId, list.size());
+		return list;
+	}
+
+	@Override
+	public int countAllByStoreId(final Long storeId) {
+		return queryMapper.countAllByStoreId(storeId);
+	}
 }

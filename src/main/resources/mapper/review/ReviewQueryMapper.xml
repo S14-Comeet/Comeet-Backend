@@ -41,4 +41,38 @@
         WHERE user_id = #{userId}
           AND deleted_at IS NULL
     </select>
+
+    <select id="findAllByStoreId" resultType="com.backend.domain.review.entity.Review">
+        SELECT *
+        FROM reviews
+        WHERE store_id = #{storeId} AND deleted_at IS NULL
+        <choose>
+            <when test="pageable.sort != null and pageable.sort.isSorted()">
+                ORDER BY
+                <foreach collection="pageable.sort" item="order" separator=",">
+                    <choose>
+                        <when test="order.property == 'id'">id</when>
+                        <when test="order.property == 'createdAt'">created_at</when>
+                        <otherwise>id</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="order.direction.name() == 'ASC'">ASC</when>
+                        <when test="order.direction.name() == 'DESC'">DESC</when>
+                        <otherwise>DESC</otherwise>
+                    </choose>
+                </foreach>
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countAllByStoreId" resultType="int">
+        SELECT COUNT(*)
+        FROM reviews
+        WHERE store_id = #{storeId}
+          AND deleted_at IS NULL
+    </select>
 </mapper>
