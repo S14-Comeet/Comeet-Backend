@@ -18,6 +18,7 @@ public class ReviewFactory {
 		Review review = Review.builder()
 			.userId(userId)
 			.menuId(dto.menuId())
+			.storeId(dto.storeId())
 			.visitId(dto.visitId())
 			.content(dto.content())
 			.isPublic(dto.isPublic())

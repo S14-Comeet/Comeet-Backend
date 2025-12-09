@@ -15,6 +15,9 @@ public record ReviewPageDto(
 	@Schema(description = "방문 인증 ID", example = "1")
 	Long visitId,
 
+	@Schema(description = "가맹점 ID", example = "1")
+	Long storeId,
+
 	@Schema(description = "메뉴 ID", example = "1")
 	Long menuId,
 

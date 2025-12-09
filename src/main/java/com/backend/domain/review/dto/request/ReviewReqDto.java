@@ -16,6 +16,10 @@ public record ReviewReqDto(
 	@NotNull(message = "메뉴 ID는 필수 입력값입니다.")
 	Long menuId,
 
+	@Schema(description = "가맹점 ID", example = "1", requiredMode = RequiredMode.REQUIRED)
+	@NotNull(message = "가맹점 ID는 필수 입력값입니다.")
+	Long storeId,
+
 	@Schema(description = "리뷰 내용", example = "산미가 강하고 과일향이 풍부한 원두였습니다.", requiredMode = RequiredMode.NOT_REQUIRED)
 	String content,
 

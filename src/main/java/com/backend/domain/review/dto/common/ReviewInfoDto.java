@@ -14,6 +14,9 @@ public record ReviewInfoDto (
 	@Schema(description = "사용자 ID", example = "1")
 	Long userId,
 
+	@Schema(description = "가맹점 ID", example = "1")
+	Long storeId,
+
 	@Schema(description = "메뉴 ID", example = "1")
 	Long menuId,
 

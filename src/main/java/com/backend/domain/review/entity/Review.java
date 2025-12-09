@@ -18,6 +18,7 @@ public class Review {
 	private Long id;
 	private Long userId;
 	private Long menuId;
+	private Long storeId;
 	private Long visitId;
 	private String content;
 	private String imageUrl;
