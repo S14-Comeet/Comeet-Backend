@@ -25,7 +25,6 @@ public enum ErrorCode {
 	 */
 	DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "D-001", "데이터베이스 오류입니다."),
 	DUPLICATED_KEY(HttpStatus.CONFLICT, "D-002", "중복된 키입니다."),
-
 	/**
 	 * User Error
 	 */
@@ -53,12 +52,22 @@ public enum ErrorCode {
 	 * Visit Error
 	 */
 	VISIT_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "V-001", "방문 기록 저장에 실패했습니다."),
-	INVALID_VISIT_REQUEST(HttpStatus.BAD_REQUEST, "V-002", "요청 데이터가 유효하지 않습니다."),
+	INVALID_VISIT_REQUEST(HttpStatus.BAD_REQUEST, "V-002", "방문 기록 요청 데이터가 유효하지 않습니다."),
 	LOCATION_REQUIRED(HttpStatus.BAD_REQUEST, "V-003", "위치 정보가 필요합니다."),
 	COORDINATES_REQUIRED(HttpStatus.BAD_REQUEST, "V-004", "위도와 경도는 필수입니다."),
 	LOCATION_OUT_OF_KOREA(HttpStatus.BAD_REQUEST, "V-005", "위치가 한국 내부가 아닙니다."),
 	VISIT_NOT_FOUND(HttpStatus.NOT_FOUND, "V-006", "방문 기록을 찾을 수 없습니다."),
-	VISIT_NOT_BELONG_TO_USER(HttpStatus.FORBIDDEN, "V-007", "해당 방문 기록에 대한 권한이 없습니다.");
+	VISIT_NOT_BELONG_TO_USER(HttpStatus.FORBIDDEN, "V-007", "해당 방문 기록에 대한 권한이 없습니다."),
+
+	/**
+	 * Review Error
+	 */
+	INVALID_REVIEW_REQUEST(HttpStatus.BAD_REQUEST, "R-001", "리뷰 요청 데이터가 유효하지 않습니다."),
+	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R-002", "리뷰 기록을 찾을 수 없습니다."),
+	REVIEW_UPDATE_FAILED(HttpStatus.CONFLICT, "R-003", "리뷰 업데이트에 실패했습니다."),
+	REVIEW_SOFT_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-004", "리뷰 SOFT DELETE에 실패했습니다."),
+	ALREADY_DELETED_REVIEW(HttpStatus.BAD_REQUEST, "R-005", "이미 삭제 처리된 리뷰입니다."),
+	REVIEW_ALREADY_EXISTS_FOR_VISIT(HttpStatus.CONFLICT, "R-006", "해당 방문에 대한 리뷰가 이미 존재합니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;

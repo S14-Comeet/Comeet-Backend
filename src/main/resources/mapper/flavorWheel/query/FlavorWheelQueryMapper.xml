@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.backend.domain.review.mapper.query.FlavorWheelQueryMapper">
+    <select id="findAllByIds" resultType="com.backend.domain.review.entity.FlavorWheel">
+        SELECT *
+        FROM flavor_wheels
+        WHERE id IN
+        <foreach collection="flavorWheelIdList" item="flavorWheelId" open="(" separator="," close=")">
+            #{flavorWheelId}
+        </foreach>
+    </select>
+    <select id="findAllByReviewId" resultType="com.backend.domain.review.entity.FlavorWheel">
+        SELECT *
+        FROM flavor_wheels fw
+                 INNER JOIN tasting_notes tn ON fw.id = tn.flavor_wheels_id
+        WHERE tn.review_id = #{reviewId}
+    </select>
+</mapper>

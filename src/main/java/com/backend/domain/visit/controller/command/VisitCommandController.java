@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Visit", description = "메뉴 기반 방문 인증 내역을 관리하는 API")
+@Tag(name = "Visit", description = "방문 인증 관련 API")
 @RestController
 @RequestMapping("/visit")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)

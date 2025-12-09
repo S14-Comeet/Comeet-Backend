@@ -4,14 +4,13 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.VisitException;
 import com.backend.common.util.GeoUtils;
+import com.backend.common.util.PageUtils;
 import com.backend.domain.user.entity.User;
 import com.backend.domain.user.validator.UserValidator;
 import com.backend.domain.visit.converter.VisitConverter;
@@ -40,7 +39,6 @@ public class VisitFacadeService {
 
 	private final UserValidator userValidator;
 
-	@Transactional
 	public VerifiedResDto verifyVisit(final User user, final VerifyReqDto reqDto) {
 		userValidator.validate(user);
 		Boolean isVerified = checkDistance(reqDto);
@@ -64,7 +62,6 @@ public class VisitFacadeService {
 		return GeoUtils.isWithinRadius(calculatedDistance, ALLOWABLE_RANGE);
 	}
 
-	@Transactional(readOnly = true)
 	public VisitInfoDto findVisitById(final User user, final Long visitId) {
 		userValidator.validate(user);
 		Visit visit = visitQueryService.findById(visitId);
@@ -72,17 +69,12 @@ public class VisitFacadeService {
 		return VisitConverter.toVisitInfoDto(visit);
 	}
 
-	@Transactional(readOnly = true)
 	public Page<VisitPageDto> findAllWithPageableUserId(final User user, final int page, final int size) {
 		userValidator.validate(user);
-		Pageable pageable = getPageable(page, size);
+		Pageable pageable = PageUtils.getPageable(page, size);
 		List<VisitPageDto> list = visitQueryService.findAllByUserId(user.getId(), pageable).stream()
 			.map(VisitConverter::toVisitPageDto).toList();
 		int total = visitQueryService.countAllByUserId(user.getId());
 		return new PageImpl<>(list, pageable, total);
-	}
-
-	private Pageable getPageable(final int page, final int size) {
-		return PageRequest.of(page - 1, size);
 	}
 }
