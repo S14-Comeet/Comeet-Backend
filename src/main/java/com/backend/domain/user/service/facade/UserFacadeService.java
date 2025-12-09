@@ -1,7 +1,6 @@
 package com.backend.domain.user.service.facade;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.domain.user.dto.request.UserRegisterReqDto;
 import com.backend.domain.user.dto.response.NicknameDuplicateResDto;
@@ -21,19 +20,16 @@ public class UserFacadeService {
 	private final UserQueryService queryService;
 	private final UserValidator userValidator;
 
-	@Transactional
 	public UserInfoResDto registerUser(Long userId, UserRegisterReqDto reqDto) {
 		userValidator.validate(reqDto);
 		commandService.updateUserInfo(userId, reqDto);
 		return queryService.findById(userId);
 	}
 
-	@Transactional(readOnly = true)
 	public UserInfoResDto findUserInfo(Long userId) {
 		return queryService.findById(userId);
 	}
 
-	@Transactional(readOnly = true)
 	public NicknameDuplicateResDto checkNicknameDuplicate(String nickname) {
 		return queryService.checkNicknameDuplicate(nickname);
 	}

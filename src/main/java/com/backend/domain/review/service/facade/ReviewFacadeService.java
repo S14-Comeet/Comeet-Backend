@@ -49,14 +49,12 @@ public class ReviewFacadeService {
 
 	private final TastingNoteQueryMapper tastingNoteQueryMapper;
 
-	@Transactional
 	public ReviewedResDto createReview(final User user, final ReviewReqDto reqDto) {
 		Review review = processCreate(user.getId(), reqDto);
 		tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorWheelIdList());
 		return createReviewedResDto(review, reqDto.flavorWheelIdList());
 	}
 
-	@Transactional
 	public ReviewedResDto updateReview(final Long reviewId, final User user, final ReviewUpdateReqDto reqDto) {
 		Review review = getValidatedReview(reviewId, user);
 		processUpdate(reqDto, review);
@@ -73,13 +71,11 @@ public class ReviewFacadeService {
 		}
 	}
 
-	@Transactional
 	public ReportResDto reportReview(final Long reviewId, final User user) {
 		// ! 관리자 기능 구현이 선행되어야한다.
 		return null;
 	}
 
-	@Transactional(readOnly = true)
 	public ReviewedResDto getReviewDetails(final Long reviewId) {
 		Review review = reviewQueryService.findById(reviewId);
 		List<FlavorWheelBadgeDto> badges = flavorWheelQueryService.findFlavorWheelsByReviewId(reviewId).stream()
@@ -88,7 +84,6 @@ public class ReviewFacadeService {
 		return ReviewConverter.toReviewedResDto(review, badges);
 	}
 
-	@Transactional(readOnly = true)
 	public Page<ReviewPageDto> findAllWithPageableByUserId(final User user, final int page, final int size) {
 		Pageable pageable = PageUtils.getPageable(page, size);
 		List<Review> reviews = reviewQueryService.findAllByUserId(user.getId(), pageable);

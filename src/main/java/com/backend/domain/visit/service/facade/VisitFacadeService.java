@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.VisitException;
@@ -40,7 +39,6 @@ public class VisitFacadeService {
 
 	private final UserValidator userValidator;
 
-	@Transactional
 	public VerifiedResDto verifyVisit(final User user, final VerifyReqDto reqDto) {
 		userValidator.validate(user);
 		Boolean isVerified = checkDistance(reqDto);
@@ -64,7 +62,6 @@ public class VisitFacadeService {
 		return GeoUtils.isWithinRadius(calculatedDistance, ALLOWABLE_RANGE);
 	}
 
-	@Transactional(readOnly = true)
 	public VisitInfoDto findVisitById(final User user, final Long visitId) {
 		userValidator.validate(user);
 		Visit visit = visitQueryService.findById(visitId);
@@ -72,7 +69,6 @@ public class VisitFacadeService {
 		return VisitConverter.toVisitInfoDto(visit);
 	}
 
-	@Transactional(readOnly = true)
 	public Page<VisitPageDto> findAllWithPageableUserId(final User user, final int page, final int size) {
 		userValidator.validate(user);
 		Pageable pageable = PageUtils.getPageable(page, size);
