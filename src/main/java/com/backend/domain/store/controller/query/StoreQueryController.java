@@ -27,7 +27,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Store", description = "가맹점 API")
+@Tag(name = "Store", description = "가맹점 관련 API")
 @RestController
 @RequestMapping("/stores")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
