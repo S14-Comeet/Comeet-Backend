@@ -35,7 +35,7 @@ public class ReviewCommandController {
 
 	@Operation(
 		summary = "리뷰 작성",
-		description = "방문 기록과 메뉴에 대한 리뷰를 작성합니다. 리뷰 내용, 이미지, 공개 여부, FlavorWheel 뱃지를 선택할 수 있습니다."
+		description = "방문 기록과 메뉴에 대한 리뷰를 작성합니다. 리뷰 내용, 이미지, 공개 여부, Flavor 뱃지를 선택할 수 있습니다."
 	)
 	@PostMapping
 	public ResponseEntity<BaseResponse<ReviewedResDto>> saveReview(

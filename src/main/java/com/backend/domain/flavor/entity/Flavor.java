@@ -1,4 +1,4 @@
-package com.backend.domain.review.entity;
+package com.backend.domain.flavor.entity;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class FlavorWheel {
+public class Flavor {
 	private Long id;
 	private String code;
 	private Long parentId;

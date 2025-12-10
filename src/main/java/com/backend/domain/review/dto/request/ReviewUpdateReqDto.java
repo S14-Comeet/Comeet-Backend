@@ -17,7 +17,7 @@ public record ReviewUpdateReqDto(
 	@Schema(description = "리뷰 이미지 URL", example = "https://example.com/image.jpg", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	String imageUrl,
 
-	@Schema(description = "FlavorWheel 뱃지 ID 목록", example = "[1, 2, 3]", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	List<Long> flavorWheelIdList
+	@Schema(description = "Flavor 뱃지 ID 목록", example = "[1, 2, 3]", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	List<Long> flavorIdList
 ) {
 }

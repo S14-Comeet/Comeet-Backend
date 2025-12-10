@@ -21,23 +21,23 @@ public class TastingNoteCommandServiceImpl implements TastingNoteCommandService 
 	private final TastingNoteCommandMapper commandMapper;
 
 	@Override
-	public void appendTastingNotes(final Long reviewId, final List<Long> flavorWheelIdList) {
-		if (CollectionUtils.isEmpty(flavorWheelIdList)) {
-			log.warn("[TastingNote] 저장할 FlavorWheel 목록이 비어있습니다. reviewId: {}", reviewId);
+	public void appendTastingNotes(final Long reviewId, final List<Long> flavorIdList) {
+		if (CollectionUtils.isEmpty(flavorIdList)) {
+			log.warn("[TastingNote] 저장할 Flavor 목록이 비어있습니다. reviewId: {}", reviewId);
 			return;
 		}
-		log.info("[TastingNote] 테이스팅 노트 저장 - reviewId: {}, 개수: {}건", reviewId, flavorWheelIdList.size());
-		commandMapper.insertTastingNotes(reviewId, flavorWheelIdList);
+		log.info("[TastingNote] 테이스팅 노트 저장 - reviewId: {}, 개수: {}건", reviewId, flavorIdList.size());
+		commandMapper.insertTastingNotes(reviewId, flavorIdList);
 	}
 
 	@Override
-	public void overwriteTastingNotes(Long reviewId, List<Long> flavorWheelIdList) {
+	public void overwriteTastingNotes(Long reviewId, List<Long> flavorIdList) {
 		commandMapper.deleteAllByReviewId(reviewId);
-		if (CollectionUtils.isEmpty(flavorWheelIdList)) {
+		if (CollectionUtils.isEmpty(flavorIdList)) {
 			log.info("[TastingNote] 초기화 완료 - reviewId: {}", reviewId);
 			return;
 		}
-		commandMapper.insertTastingNotes(reviewId, flavorWheelIdList);
+		commandMapper.insertTastingNotes(reviewId, flavorIdList);
 	}
 
 }

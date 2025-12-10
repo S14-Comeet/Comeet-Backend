@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.backend.domain.review.dto.common.ReviewFlavorWheelDto;
+import com.backend.domain.review.dto.common.ReviewFlavorDto;
 
 @Mapper
 public interface TastingNoteQueryMapper {
-	List<Long> findFlavorWheelIdsByReviewId(Long reviewId);
+	List<Long> findFlavorIdsByReviewId(Long reviewId);
 
-	List<ReviewFlavorWheelDto> findFlavorWheelIdsByReviewIds(List<Long> reviewIds);
+	List<ReviewFlavorDto> findFlavorIdsByReviewIds(List<Long> reviewIds);
 }

@@ -13,10 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
 import com.backend.common.util.PageUtils;
-import com.backend.domain.review.converter.FlavorWheelConverter;
+import com.backend.domain.flavor.converter.FlavorConverter;
+import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
+import com.backend.domain.flavor.service.FlavorQueryService;
 import com.backend.domain.review.converter.ReviewConverter;
-import com.backend.domain.review.dto.common.FlavorWheelBadgeDto;
-import com.backend.domain.review.dto.common.ReviewFlavorWheelDto;
+import com.backend.domain.review.dto.common.ReviewFlavorDto;
 import com.backend.domain.review.dto.common.ReviewPageDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
 import com.backend.domain.review.dto.request.ReviewUpdateReqDto;
@@ -27,7 +28,6 @@ import com.backend.domain.review.factory.ReviewFactory;
 import com.backend.domain.review.mapper.query.TastingNoteQueryMapper;
 import com.backend.domain.review.service.command.ReviewCommandService;
 import com.backend.domain.review.service.command.TastingNoteCommandService;
-import com.backend.domain.review.service.query.FlavorWheelQueryService;
 import com.backend.domain.review.service.query.ReviewQueryService;
 import com.backend.domain.review.validator.ReviewValidator;
 import com.backend.domain.user.entity.User;
@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 public class ReviewFacadeService {
 
 	private final TastingNoteCommandService tastingNoteCommandService;
-	private final FlavorWheelQueryService flavorWheelQueryService;
+	private final FlavorQueryService flavorQueryService;
 
 	private final ReviewCommandService reviewCommandService;
 	private final ReviewQueryService reviewQueryService;
@@ -52,8 +52,8 @@ public class ReviewFacadeService {
 	public ReviewedResDto createReview(final User user, final ReviewReqDto reqDto) {
 		validateVisitIdNotDuplicate(reqDto.visitId());
 		Review review = processCreate(user.getId(), reqDto);
-		tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorWheelIdList());
-		return createReviewedResDto(review, reqDto.flavorWheelIdList());
+		tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorIdList());
+		return createReviewedResDto(review, reqDto.flavorIdList());
 	}
 
 	private void validateVisitIdNotDuplicate(final Long visitId) {
@@ -65,8 +65,8 @@ public class ReviewFacadeService {
 	public ReviewedResDto updateReview(final Long reviewId, final User user, final ReviewUpdateReqDto reqDto) {
 		Review review = getValidatedReview(reviewId, user);
 		processUpdate(reqDto, review);
-		tastingNoteCommandService.overwriteTastingNotes(reviewId, reqDto.flavorWheelIdList());
-		return createReviewedResDto(review, reqDto.flavorWheelIdList());
+		tastingNoteCommandService.overwriteTastingNotes(reviewId, reqDto.flavorIdList());
+		return createReviewedResDto(review, reqDto.flavorIdList());
 	}
 
 	@Transactional
@@ -85,8 +85,8 @@ public class ReviewFacadeService {
 
 	public ReviewedResDto getReviewDetails(final Long reviewId) {
 		Review review = reviewQueryService.findById(reviewId);
-		List<FlavorWheelBadgeDto> badges = flavorWheelQueryService.findFlavorWheelsByReviewId(reviewId).stream()
-			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
+		List<FlavorBadgeDto> badges = flavorQueryService.findFlavorsByReviewId(reviewId).stream()
+			.map(FlavorConverter::toFlavorBadgeDto)
 			.toList();
 		return ReviewConverter.toReviewedResDto(review, badges);
 	}
@@ -125,10 +125,10 @@ public class ReviewFacadeService {
 		return review;
 	}
 
-	private ReviewedResDto createReviewedResDto(final Review review, final List<Long> flavorWheelIds) {
-		List<FlavorWheelBadgeDto> badges = flavorWheelQueryService.findAllByIds(flavorWheelIds)
+	private ReviewedResDto createReviewedResDto(final Review review, final List<Long> flavorIds) {
+		List<FlavorBadgeDto> badges = flavorQueryService.findAllByIds(flavorIds)
 			.stream()
-			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
+			.map(FlavorConverter::toFlavorBadgeDto)
 			.toList();
 
 		return ReviewConverter.toReviewedResDto(review, badges);
@@ -155,34 +155,34 @@ public class ReviewFacadeService {
 			.map(Review::getId)
 			.toList();
 
-		List<ReviewFlavorWheelDto> reviewFlavorWheels = tastingNoteQueryMapper.findFlavorWheelIdsByReviewIds(reviewIds);
+		List<ReviewFlavorDto> reviewFlavors = tastingNoteQueryMapper.findFlavorIdsByReviewIds(reviewIds);
 
-		// * FlavorWheel ID를 모아서 한 번에 조회
-		List<Long> allFlavorWheelIds = reviewFlavorWheels.stream()
-			.map(ReviewFlavorWheelDto::flavorWheelId)
+		// * Flavor ID를 모아서 한 번에 조회
+		List<Long> allFlavorIds = reviewFlavors.stream()
+			.map(ReviewFlavorDto::flavorId)
 			.distinct()
 			.toList();
 
-		// * FlavorWheel 정보를 한 번에 조회하고 Map으로 변환
-		Map<Long, FlavorWheelBadgeDto> flavorWheelMap = flavorWheelQueryService.findAllByIds(allFlavorWheelIds)
+		// * Flavor 정보를 한 번에 조회하고 Map으로 변환
+		Map<Long, FlavorBadgeDto> flavorMap = flavorQueryService.findAllByIds(allFlavorIds)
 			.stream()
-			.map(FlavorWheelConverter::toFlavorWheelBadgeDto)
-			.collect(Collectors.toMap(FlavorWheelBadgeDto::flavorWheelId, badge -> badge));
+			.map(FlavorConverter::toFlavorBadgeDto)
+			.collect(Collectors.toMap(FlavorBadgeDto::flavorId, badge -> badge));
 
-		// * ReviewId별로 FlavorWheel 그룹화
-		Map<Long, List<FlavorWheelBadgeDto>> reviewBadgesMap = reviewFlavorWheels.stream()
+		// * ReviewId별로 Flavor 그룹화
+		Map<Long, List<FlavorBadgeDto>> reviewBadgesMap = reviewFlavors.stream()
 			.collect(Collectors.groupingBy(
-				ReviewFlavorWheelDto::reviewId,
+				ReviewFlavorDto::reviewId,
 				Collectors.mapping(
-					dto -> flavorWheelMap.get(dto.flavorWheelId()),
+					dto -> flavorMap.get(dto.flavorId()),
 					Collectors.filtering(Objects::nonNull, Collectors.toList())
 				)
 			));
 
-		// * 리뷰별로 FlavorWheel 뱃지 매핑하여 DTO 변환
+		// * 리뷰별로 Flavor 뱃지 매핑하여 DTO 변환
 		return reviews.stream()
 			.map(review -> {
-				List<FlavorWheelBadgeDto> badges = reviewBadgesMap.getOrDefault(review.getId(), List.of());
+				List<FlavorBadgeDto> badges = reviewBadgesMap.getOrDefault(review.getId(), List.of());
 				return ReviewConverter.toReviewPageDto(review, badges);
 			})
 			.toList();

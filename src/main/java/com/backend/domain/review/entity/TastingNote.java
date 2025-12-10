@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class TastingNote {
 	private Long id;
 	private Long reviewId;
-	private Long flavorWheelId;
+	private Long flavorId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }
