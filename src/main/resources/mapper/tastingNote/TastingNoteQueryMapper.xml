@@ -9,7 +9,7 @@
     </select>
 
     <select id="findFlavorIdsByReviewIds" resultType="com.backend.domain.review.dto.common.ReviewFlavorDto">
-        SELECT review_id AS reviewId, flavors_id AS flavorId
+        SELECT review_id AS reviewId, flavor_id AS flavorId
         FROM tasting_notes
         WHERE review_id IN
         <foreach collection="list" item="reviewId" open="(" separator="," close=")">

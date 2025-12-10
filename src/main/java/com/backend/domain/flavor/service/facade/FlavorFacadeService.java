@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class FlavorFacadeService {
 	private final FlavorQueryService flavorQueryService;
 
-	public List<FlavorInfoDto> getAllFavors() {
+	public List<FlavorInfoDto> getAllFlavors() {
 		return flavorQueryService.findAll().stream()
 			.map(FlavorConverter::toFlavorInfoDto)
 			.toList();

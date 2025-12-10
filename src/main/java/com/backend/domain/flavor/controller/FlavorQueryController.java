@@ -25,7 +25,7 @@ public class FlavorQueryController {
 
 	@GetMapping
 	public ResponseEntity<BaseResponse<List<FlavorInfoDto>>> getAllFlavors() {
-		List<FlavorInfoDto> response = flavorFacadeService.getAllFavors();
+		List<FlavorInfoDto> response = flavorFacadeService.getAllFlavors();
 		return ResponseUtils.ok(response);
 	}
 }

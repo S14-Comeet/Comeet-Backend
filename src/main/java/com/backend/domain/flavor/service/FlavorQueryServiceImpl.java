@@ -9,8 +9,8 @@ import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
 import com.backend.domain.flavor.entity.Flavor;
 import com.backend.domain.flavor.mapper.query.FlavorQueryMapper;
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
-import io.jsonwebtoken.lang.Collections;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class FlavorQueryServiceImpl implements FlavorQueryService {
 
 	@Override
 	public List<Flavor> findAllByIds(final List<Long> flavorIdList) {
-		if (Collections.isEmpty(flavorIdList)) {
+		if (CollectionUtils.isEmpty(flavorIdList)) {
 			return List.of();
 		}
 		List<Flavor> flavors = queryMapper.findAllByIds(flavorIdList);

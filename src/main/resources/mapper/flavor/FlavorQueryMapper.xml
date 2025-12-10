@@ -3,7 +3,7 @@
 <mapper namespace="com.backend.domain.flavor.mapper.query.FlavorQueryMapper">
     <select id="findAllByIds" resultType="com.backend.domain.flavor.entity.Flavor">
         SELECT *
-        FROM flavor_wheels
+        FROM flavors
         WHERE id IN
         <foreach collection="flavorIdList" item="flavorId" open="(" separator="," close=")">
             #{flavorId}
