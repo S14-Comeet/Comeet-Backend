@@ -31,8 +31,8 @@ jobs:
         uses: anthropics/claude-code-action@v1
         env:
           ANTHROPIC_BASE_URL: ${{ secrets.GMS_BASE_URL }}
-          ANTHROPIC_API_KEY: ${{ secrets.GMS_API_KEY }}
         with:
+          anthropic_api_key: ${{ secrets.GMS_API_KEY }}
           use_bedrock: 'false'
           track_progress: true
           trigger_phrase: '@claude'
