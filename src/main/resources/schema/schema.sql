@@ -105,3 +105,37 @@ CREATE TABLE IF NOT EXISTS tasting_notes
     FOREIGN KEY (review_id) REFERENCES reviews (id),
     FOREIGN KEY (flavor_id) REFERENCES flavors (id)
 );
+
+CREATE TABLE `cupping_notes`
+(
+    `id`                       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `review_id`                BIGINT                           NOT NULL,
+    `roast_level`              ENUM ('LIGHT', 'MEDIUM', 'DARK') NULL,
+
+    `fragrance_score`          DECIMAL(4, 2)                    NULL COMMENT '0.00-15.00',
+    `aroma_score`              DECIMAL(4, 2)                    NULL COMMENT '0.00-15.00',
+    `flavor_score`             DECIMAL(4, 2)                    NULL COMMENT '0.00-15.00',
+    `aftertaste_score`         DECIMAL(4, 2)                    NULL COMMENT '0.00-15.00',
+    `acidity_score`            DECIMAL(4, 2)                    NULL COMMENT '0.00-15.00',
+    `sweetness_score`          DECIMAL(4, 2)                    NULL COMMENT '0.00-15.00',
+    `mouthfeel_score`          DECIMAL(4, 2)                    NULL COMMENT '0.00-15.00',
+
+    `total_score`              DECIMAL(5, 2) GENERATED ALWAYS AS (
+        COALESCE(fragrance_score, 0) + COALESCE(aroma_score, 0) +
+        COALESCE(flavor_score, 0) + COALESCE(aftertaste_score, 0) +
+        COALESCE(acidity_score, 0) + COALESCE(sweetness_score, 0) +
+        COALESCE(mouthfeel_score, 0)
+        ) STORED COMMENT '총점: 0-105',
+
+    `fragrance_aroma_detail`   TEXT                             NULL,
+    `flavor_aftertaste_detail` TEXT                             NULL,
+    `acidity_notes`            TEXT                             NULL,
+    `sweetness_notes`          TEXT                             NULL,
+    `mouthfeel_notes`          TEXT                             NULL,
+    `overall_notes`            TEXT                             NULL,
+
+    `created_at`               TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`               TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (`review_id`) REFERENCES `reviews` (`id`) ON DELETE CASCADE
+)
