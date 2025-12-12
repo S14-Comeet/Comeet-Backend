@@ -42,7 +42,7 @@ public class ReviewCommandController {
 		@CurrentUser AuthenticatedUser token,
 		@RequestBody @Valid ReviewReqDto reqDto
 	) {
-		return ResponseUtils.ok(reviewFacadeService.createReview(token.getUser(), reqDto));
+		return ResponseUtils.ok(reviewFacadeService.createReview(token.getUser().getId(), reqDto));
 	}
 
 	@Operation(

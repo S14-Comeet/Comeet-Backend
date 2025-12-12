@@ -49,9 +49,9 @@ public class ReviewFacadeService {
 
 	private final TastingNoteQueryMapper tastingNoteQueryMapper;
 
-	public ReviewedResDto createReview(final User user, final ReviewReqDto reqDto) {
+	public ReviewedResDto createReview(final Long userId, final ReviewReqDto reqDto) {
 		validateVisitIdNotDuplicate(reqDto.visitId());
-		Review review = processCreate(user.getId(), reqDto);
+		Review review = processCreateReview(userId, reqDto);
 		tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorIdList());
 		return createReviewedResDto(review, reqDto.flavorIdList());
 	}
@@ -64,7 +64,7 @@ public class ReviewFacadeService {
 
 	public ReviewedResDto updateReview(final Long reviewId, final User user, final ReviewUpdateReqDto reqDto) {
 		Review review = getValidatedReview(reviewId, user);
-		processUpdate(reqDto, review);
+		processUpdateReview(reqDto, review);
 		tastingNoteCommandService.overwriteTastingNotes(reviewId, reqDto.flavorIdList());
 		return createReviewedResDto(review, reqDto.flavorIdList());
 	}
@@ -119,7 +119,7 @@ public class ReviewFacadeService {
 		return PageUtils.toPage(reviewPageDtos, pageable, total);
 	}
 
-	private Review processCreate(final Long userId, final ReviewReqDto reqDto) {
+	private Review processCreateReview(final Long userId, final ReviewReqDto reqDto) {
 		Review review = reviewFactory.create(userId, reqDto);
 		reviewCommandService.insert(review);
 		return review;
@@ -141,7 +141,7 @@ public class ReviewFacadeService {
 		return review;
 	}
 
-	private void processUpdate(final ReviewUpdateReqDto reqDto, final Review review) {
+	private void processUpdateReview(final ReviewUpdateReqDto reqDto, final Review review) {
 		review.update(reqDto);
 		int affectedRows = reviewCommandService.update(review);
 		if (affectedRows == 0) {
