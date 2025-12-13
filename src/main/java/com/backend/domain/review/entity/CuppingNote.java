@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import com.backend.domain.review.enums.RoastLevel;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,38 +22,22 @@ import lombok.NoArgsConstructor;
 public class CuppingNote {
 	@Id
 	private Long id;
-
-	private String roastLevel;
-
+	private Long reviewId;
+	private RoastLevel roastLevel;
 	private BigDecimal fragranceScore;
-
 	private BigDecimal aromaScore;
-
 	private BigDecimal flavorScore;
-
 	private BigDecimal aftertasteScore;
-
 	private BigDecimal acidityScore;
-
 	private BigDecimal sweetnessScore;
-
 	private BigDecimal mouthfeelScore;
-
 	private BigDecimal totalScore;
-
 	private String fragranceAromaDetail;
-
 	private String flavorAftertasteDetail;
-
 	private String acidityNotes;
-
 	private String sweetnessNotes;
-
 	private String mouthfeelNotes;
-
 	private String overallNotes;
-
 	private LocalDateTime createdAt;
-
 	private LocalDateTime updatedAt;
 }
