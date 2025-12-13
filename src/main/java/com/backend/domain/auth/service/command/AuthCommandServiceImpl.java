@@ -78,7 +78,7 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 		refreshTokenRepository.save(savedRefreshToken);
 
 		response.addHeader(AuthConstant.AUTHORIZATION, AuthConstant.BEARER + token.accessToken());
-		Cookie cookie = CookieUtil.generateCookie(savedRefreshToken.toString(),
+		Cookie cookie = CookieUtil.generateCookie(token.refreshToken(),
 			jwtProperties.refreshTokenExpiration());
 		response.addCookie(cookie);
 	}

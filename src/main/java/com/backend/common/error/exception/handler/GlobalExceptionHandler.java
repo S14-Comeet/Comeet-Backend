@@ -20,6 +20,7 @@ import com.backend.common.response.BaseResponse;
 import com.backend.common.response.ErrorResponse;
 import com.backend.common.util.LoggingUtil;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +43,16 @@ public class GlobalExceptionHandler {
 		LoggingUtil.logException("SQLException 발생", ex, request);
 		ErrorResponse response = ErrorResponse.of(ErrorCode.DATABASE_ERROR, request);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.fail(response));
+	}
+
+	@ExceptionHandler(JwtException.class)
+	public ResponseEntity<BaseResponse<ErrorResponse>> handleJwtException(
+		JwtException ex,
+		HttpServletRequest request
+	) {
+		LoggingUtil.logException("JwtException 발생", ex, request);
+		ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_TOKEN, request);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.fail(response));
 	}
 
 	@ExceptionHandler(BusinessException.class)

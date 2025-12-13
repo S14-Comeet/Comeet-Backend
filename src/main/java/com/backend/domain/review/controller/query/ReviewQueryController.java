@@ -14,6 +14,7 @@ import com.backend.common.response.BaseResponse;
 import com.backend.common.response.PageResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.review.dto.common.ReviewPageDto;
+import com.backend.domain.review.dto.response.CuppingResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.service.facade.ReviewFacadeService;
 
@@ -53,7 +54,16 @@ public class ReviewQueryController {
 		@Parameter(description = "페이지 크기", example = "10")
 		@RequestParam(defaultValue = "10") @Min(1) int size
 	) {
-		Page<ReviewPageDto> response = reviewFacadeService.findAllWithPageableByUserId(token.getUser(), page, size);
+		Page<ReviewPageDto> response = reviewFacadeService.findAllWithPageableByUserId(token.getUser().getId(), page, size);
 		return ResponseUtils.page(response);
+	}
+
+	@Operation(
+		summary = "커핑 노트 상세 조회",
+		description = "리뷰 ID로 해당 리뷰의 커핑 노트 상세 정보를 조회합니다."
+	)
+	@GetMapping("{reviewId}/cupping-note")
+	public ResponseEntity<BaseResponse<CuppingResDto>> getCuppingNote(@PathVariable Long reviewId) {
+		return ResponseUtils.ok(reviewFacadeService.getCuppingNote(reviewId));
 	}
 }

@@ -20,8 +20,12 @@ import com.backend.domain.user.entity.User;
 import com.backend.domain.user.mapper.query.UserQueryMapper;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -96,12 +100,24 @@ public class JwtTokenProvider {
 		return Optional.of(claims.get(TYPE, String.class));
 	}
 
-	private Claims getClaims(String token) {
-		return Jwts.parser()
-			.verifyWith(Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8)))
-			.build()
-			.parseSignedClaims(token)
-			.getPayload();
+	private Claims getClaims(final String token) {
+		try {
+			return Jwts.parser()
+				.verifyWith(Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8)))
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
+		} catch (ExpiredJwtException e) {
+			throw new AuthException(ErrorCode.TOKEN_EXPIRED_EXCEPTION);
+		} catch (MalformedJwtException | IllegalArgumentException e) {
+			throw new AuthException(ErrorCode.INVALID_TOKEN);
+		} catch (SignatureException e) {
+			throw new AuthException(ErrorCode.INVALID_TOKEN_SIGNATURE);
+		} catch (UnsupportedJwtException e) {
+			throw new AuthException(ErrorCode.INVALID_TOKEN_TYPE);
+		} catch (Exception e) {
+			throw new AuthException(ErrorCode.TOKEN_PROCESSING_ERROR);
+		}
 	}
 
 	public Optional<User> getUser(String token) {
