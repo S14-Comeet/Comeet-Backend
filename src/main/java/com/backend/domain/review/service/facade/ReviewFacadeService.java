@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
@@ -16,18 +15,24 @@ import com.backend.common.util.PageUtils;
 import com.backend.domain.flavor.converter.FlavorConverter;
 import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 import com.backend.domain.flavor.service.FlavorQueryService;
+import com.backend.domain.review.converter.CuppingNoteConverter;
 import com.backend.domain.review.converter.ReviewConverter;
 import com.backend.domain.review.dto.common.ReviewFlavorDto;
 import com.backend.domain.review.dto.common.ReviewPageDto;
+import com.backend.domain.review.dto.request.CuppingNoteReqDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
-import com.backend.domain.review.dto.request.ReviewUpdateReqDto;
+import com.backend.domain.review.dto.response.CuffingResDto;
 import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
+import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.entity.Review;
+import com.backend.domain.review.factory.CuppingNoteFactory;
 import com.backend.domain.review.factory.ReviewFactory;
 import com.backend.domain.review.mapper.query.TastingNoteQueryMapper;
+import com.backend.domain.review.service.command.CuffingNoteCommandService;
 import com.backend.domain.review.service.command.ReviewCommandService;
 import com.backend.domain.review.service.command.TastingNoteCommandService;
+import com.backend.domain.review.service.query.CuppingNoteQueryService;
 import com.backend.domain.review.service.query.ReviewQueryService;
 import com.backend.domain.review.validator.ReviewValidator;
 import com.backend.domain.user.entity.User;
@@ -39,15 +44,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewFacadeService {
 
-	private final TastingNoteCommandService tastingNoteCommandService;
+	private final TastingNoteQueryMapper tastingNoteQueryMapper;
+	private final CuppingNoteQueryService cuppingNoteQueryService;
+	private final ReviewQueryService reviewQueryService;
 	private final FlavorQueryService flavorQueryService;
 
+	private final TastingNoteCommandService tastingNoteCommandService;
+	private final CuffingNoteCommandService cuffingNoteCommandService;
 	private final ReviewCommandService reviewCommandService;
-	private final ReviewQueryService reviewQueryService;
-	private final ReviewValidator reviewValidator;
-	private final ReviewFactory reviewFactory;
 
-	private final TastingNoteQueryMapper tastingNoteQueryMapper;
+	private final ReviewValidator reviewValidator;
+
+	private final ReviewFactory reviewFactory;
+	private final CuppingNoteFactory cuppingNoteFactory;
 
 	public ReviewedResDto createReview(final Long userId, final ReviewReqDto reqDto) {
 		validateVisitIdNotDuplicate(reqDto.visitId());
@@ -62,16 +71,15 @@ public class ReviewFacadeService {
 		}
 	}
 
-	public ReviewedResDto updateReview(final Long reviewId, final User user, final ReviewUpdateReqDto reqDto) {
-		Review review = getValidatedReview(reviewId, user);
-		processUpdateReview(reqDto, review);
+	public ReviewedResDto updateReview(final Long reviewId, final Long userId, final ReviewReqDto reqDto) {
+		Review existingReview = getValidatedReview(reviewId, userId);
+		Review updatedReview = processUpdateReview(existingReview, reqDto);
 		tastingNoteCommandService.overwriteTastingNotes(reviewId, reqDto.flavorIdList());
-		return createReviewedResDto(review, reqDto.flavorIdList());
+		return createReviewedResDto(updatedReview, reqDto.flavorIdList());
 	}
 
-	@Transactional
-	public void deleteReview(final Long reviewId, final User user) {
-		Review review = getValidatedReview(reviewId, user);
+	public void deleteReview(final Long reviewId, final Long userId) {
+		Review review = getValidatedReview(reviewId, userId);
 		int affectedRows = reviewCommandService.softDelete(review.getId());
 		if (affectedRows == 0) {
 			throw new ReviewException(ErrorCode.REVIEW_SOFT_DELETE_FAILED);
@@ -91,15 +99,15 @@ public class ReviewFacadeService {
 		return ReviewConverter.toReviewedResDto(review, badges);
 	}
 
-	public Page<ReviewPageDto> findAllWithPageableByUserId(final User user, final int page, final int size) {
+	public Page<ReviewPageDto> findAllWithPageableByUserId(final Long userId, final int page, final int size) {
 		Pageable pageable = PageUtils.getPageable(page, size);
-		List<Review> reviews = reviewQueryService.findAllByUserId(user.getId(), pageable);
+		List<Review> reviews = reviewQueryService.findAllByUserId(userId, pageable);
 
 		if (reviews.isEmpty()) {
 			return PageUtils.toPage(List.of(), pageable, 0);
 		}
 
-		int total = reviewQueryService.countAllByUserId(user.getId());
+		int total = reviewQueryService.countAllByUserId(userId);
 		List<ReviewPageDto> reviewPageDtos = buildReviewPageDtos(reviews);
 
 		return PageUtils.toPage(reviewPageDtos, pageable, total);
@@ -134,19 +142,21 @@ public class ReviewFacadeService {
 		return ReviewConverter.toReviewedResDto(review, badges);
 	}
 
-	private Review getValidatedReview(final Long reviewId, final User user) {
+	private Review getValidatedReview(final Long reviewId, final Long userId) {
 		Review review = reviewQueryService.findById(reviewId);
-		reviewValidator.validateReviewBelongsToUser(review, user.getId());
+		reviewValidator.validateReviewBelongsToUser(review, userId);
 		reviewValidator.validateReviewNotDeleted(review);
 		return review;
 	}
 
-	private void processUpdateReview(final ReviewUpdateReqDto reqDto, final Review review) {
-		review.update(reqDto);
-		int affectedRows = reviewCommandService.update(review);
+	private Review processUpdateReview(final Review existingReview, final ReviewReqDto reqDto) {
+		Review updatedReview = reviewFactory.createForUpdate(existingReview, reqDto);
+
+		int affectedRows = reviewCommandService.update(updatedReview);
 		if (affectedRows == 0) {
 			throw new ReviewException(ErrorCode.REVIEW_UPDATE_FAILED);
 		}
+		return updatedReview;
 	}
 
 	private List<ReviewPageDto> buildReviewPageDtos(final List<Review> reviews) {
@@ -186,5 +196,61 @@ public class ReviewFacadeService {
 				return ReviewConverter.toReviewPageDto(review, badges);
 			})
 			.toList();
+	}
+
+	public CuffingResDto createCuffingNote(
+		final Long userId,
+		final Long reviewId,
+		final CuppingNoteReqDto reqDto
+	) {
+		getValidatedReview(reviewId, userId);
+		validateCuppingNoteNotDuplicate(reviewId);
+		CuppingNote cuppingNote = processCreateCuppingNote(reviewId, reqDto);
+		return createCuffingResDto(cuppingNote);
+	}
+
+	public CuffingResDto updateCuffingNote(
+		final Long userId,
+		final Long reviewId,
+		final CuppingNoteReqDto reqDto
+	) {
+		getValidatedReview(reviewId, userId);
+		CuppingNote cuppingNote = processUpdateCuppingNote(reviewId, reqDto);
+		return createCuffingResDto(cuppingNote);
+	}
+
+	public CuffingResDto getCuppingNote(final Long reviewId) {
+		CuppingNote cuppingNote = cuppingNoteQueryService.findByReviewId(reviewId);
+		return createCuffingResDto(cuppingNote);
+	}
+
+	private void validateCuppingNoteNotDuplicate(final Long reviewId) {
+		if (cuppingNoteQueryService.existsByReviewId(reviewId)) {
+			throw new ReviewException(ErrorCode.CUPPING_NOTE_ALREADY_EXISTS);
+		}
+	}
+
+	private CuppingNote processCreateCuppingNote(final Long reviewId, final CuppingNoteReqDto reqDto) {
+		CuppingNote cuppingNote = cuppingNoteFactory.create(reviewId, reqDto);
+		int affectedRows = cuffingNoteCommandService.insert(cuppingNote);
+		if (affectedRows == 0) {
+			throw new ReviewException(ErrorCode.CUPPING_NOTE_SAVE_FAILED);
+		}
+		return cuppingNote;
+	}
+
+	private CuppingNote processUpdateCuppingNote(final Long reviewId, final CuppingNoteReqDto reqDto) {
+		CuppingNote cuppingNote = cuppingNoteQueryService.findByReviewId(reviewId);
+		CuppingNote updatedNote = cuppingNoteFactory.createForUpdate(cuppingNote.getId(), reviewId, reqDto);
+
+		int affectedRows = cuffingNoteCommandService.update(updatedNote);
+		if (affectedRows == 0) {
+			throw new ReviewException(ErrorCode.CUPPING_NOTE_UPDATE_FAILED);
+		}
+		return updatedNote;
+	}
+
+	private CuffingResDto createCuffingResDto(final CuppingNote cuppingNote) {
+		return CuppingNoteConverter.toCuffingResDto(cuppingNote);
 	}
 }
