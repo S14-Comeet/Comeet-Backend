@@ -28,4 +28,21 @@ public class ReviewFactory {
 		reviewValidator.validate(review);
 		return review;
 	}
+
+	public Review createForUpdate(final Review existingReview, final ReviewReqDto dto) {
+		Review review = Review.builder()
+			.id(existingReview.getId())
+			.userId(existingReview.getUserId())
+			.visitId(existingReview.getVisitId())
+			.menuId(existingReview.getMenuId())
+			.storeId(existingReview.getStoreId())
+			.content(dto.content())
+			.isPublic(dto.isPublic())
+			.imageUrl(dto.imageUrl())
+			.build();
+
+		reviewValidator.validate(review);
+		return review;
+
+	}
 }
