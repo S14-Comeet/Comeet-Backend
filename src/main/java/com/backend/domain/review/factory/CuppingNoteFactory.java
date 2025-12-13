@@ -1,7 +1,5 @@
 package com.backend.domain.review.factory;
 
-import java.time.LocalDateTime;
-
 import org.springframework.stereotype.Component;
 
 import com.backend.domain.review.dto.request.CuppingNoteReqDto;
@@ -31,8 +29,6 @@ public class CuppingNoteFactory {
 			.sweetnessNotes(reqDto.sweetnessNotes())
 			.mouthfeelNotes(reqDto.mouthfeelNotes())
 			.overallNotes(reqDto.overallNotes())
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
 			.build();
 	}
 
@@ -55,7 +51,6 @@ public class CuppingNoteFactory {
 			.sweetnessNotes(reqDto.sweetnessNotes())
 			.mouthfeelNotes(reqDto.mouthfeelNotes())
 			.overallNotes(reqDto.overallNotes())
-			.updatedAt(LocalDateTime.now())
 			.build();
 	}
 }
