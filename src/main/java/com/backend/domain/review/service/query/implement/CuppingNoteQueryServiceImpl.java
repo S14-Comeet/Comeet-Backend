@@ -24,7 +24,7 @@ public class CuppingNoteQueryServiceImpl implements CuppingNoteQueryService {
 	public CuppingNote findByReviewId(final Long reviewId) {
 		CuppingNote cuppingNote = queryMapper.findByReviewId(reviewId)
 			.orElseThrow(() -> new ReviewException(ErrorCode.CUPPING_NOTE_NOT_FOUND));
-		log.info("[Review] CuffingNote 조회 완료 - ID: {}", cuppingNote.getId());
+		log.info("[Review] CuppingNote 조회 완료 - ID: {}", cuppingNote.getId());
 		return cuppingNote;
 	}
 

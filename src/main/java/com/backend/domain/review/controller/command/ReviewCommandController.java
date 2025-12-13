@@ -15,7 +15,7 @@ import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.review.dto.request.CuppingNoteReqDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
-import com.backend.domain.review.dto.response.CuffingResDto;
+import com.backend.domain.review.dto.response.CuppingResDto;
 import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.service.facade.ReviewFacadeService;
@@ -90,12 +90,12 @@ public class ReviewCommandController {
 		description = "리뷰에 대한 전문가용 커핑 노트를 작성합니다. SCA 표준에 따른 7가지 평가 항목(Fragrance, Aroma, Flavor, Aftertaste, Acidity, Sweetness, Mouthfeel)을 점수화합니다."
 	)
 	@PostMapping("/{reviewId}/cupping-note")
-	public ResponseEntity<BaseResponse<CuffingResDto>> saveCuppingNote(
+	public ResponseEntity<BaseResponse<CuppingResDto>> saveCuppingNote(
 		@CurrentUser AuthenticatedUser token,
 		@PathVariable Long reviewId,
 		@RequestBody @Valid CuppingNoteReqDto reqDto
 	) {
-		return ResponseUtils.created(reviewFacadeService.createCuffingNote(token.getUser().getId(), reviewId, reqDto));
+		return ResponseUtils.created(reviewFacadeService.createCuppingNote(token.getUser().getId(), reviewId, reqDto));
 	}
 
 	@Operation(
@@ -103,12 +103,12 @@ public class ReviewCommandController {
 		description = "작성한 커핑 노트를 수정합니다. 본인이 작성한 리뷰의 커핑 노트만 수정할 수 있습니다."
 	)
 	@PatchMapping("/{reviewId}/cupping-note")
-	public ResponseEntity<BaseResponse<CuffingResDto>> updateCuppingNote(
+	public ResponseEntity<BaseResponse<CuppingResDto>> updateCuppingNote(
 		@CurrentUser AuthenticatedUser token,
 		@PathVariable Long reviewId,
 		@RequestBody @Valid CuppingNoteReqDto reqDto
 	) {
-		return ResponseUtils.ok(reviewFacadeService.updateCuffingNote(token.getUser().getId(), reviewId, reqDto));
+		return ResponseUtils.ok(reviewFacadeService.updateCuppingNote(token.getUser().getId(), reviewId, reqDto));
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.backend.domain.review.converter;
 
-import com.backend.domain.review.dto.response.CuffingResDto;
+import com.backend.domain.review.dto.response.CuppingResDto;
 import com.backend.domain.review.entity.CuppingNote;
 
 import lombok.experimental.UtilityClass;
@@ -8,8 +8,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class CuppingNoteConverter {
 
-	public static CuffingResDto toCuffingResDto(final CuppingNote cuppingNote) {
-		return new CuffingResDto(
+	public static CuppingResDto toCuppingResDto(final CuppingNote cuppingNote) {
+		return new CuppingResDto(
 			cuppingNote.getId(),
 			cuppingNote.getRoastLevel(),
 			cuppingNote.getFragranceScore(),

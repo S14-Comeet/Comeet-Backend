@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.mapper.command.CuppingNoteCommandMapper;
-import com.backend.domain.review.service.command.CuffingNoteCommandService;
+import com.backend.domain.review.service.command.CuppingNoteCommandService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class CuppingNoteCommandServiceImpl implements CuffingNoteCommandService {
+public class CuppingNoteCommandServiceImpl implements CuppingNoteCommandService {
 	private final CuppingNoteCommandMapper commandMapper;
 
 	@Override

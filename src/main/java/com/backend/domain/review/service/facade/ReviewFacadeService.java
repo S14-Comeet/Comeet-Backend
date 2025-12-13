@@ -21,7 +21,7 @@ import com.backend.domain.review.dto.common.ReviewFlavorDto;
 import com.backend.domain.review.dto.common.ReviewPageDto;
 import com.backend.domain.review.dto.request.CuppingNoteReqDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
-import com.backend.domain.review.dto.response.CuffingResDto;
+import com.backend.domain.review.dto.response.CuppingResDto;
 import com.backend.domain.review.dto.response.ReportResDto;
 import com.backend.domain.review.dto.response.ReviewedResDto;
 import com.backend.domain.review.entity.CuppingNote;
@@ -29,7 +29,7 @@ import com.backend.domain.review.entity.Review;
 import com.backend.domain.review.factory.CuppingNoteFactory;
 import com.backend.domain.review.factory.ReviewFactory;
 import com.backend.domain.review.mapper.query.TastingNoteQueryMapper;
-import com.backend.domain.review.service.command.CuffingNoteCommandService;
+import com.backend.domain.review.service.command.CuppingNoteCommandService;
 import com.backend.domain.review.service.command.ReviewCommandService;
 import com.backend.domain.review.service.command.TastingNoteCommandService;
 import com.backend.domain.review.service.query.CuppingNoteQueryService;
@@ -50,7 +50,7 @@ public class ReviewFacadeService {
 	private final FlavorQueryService flavorQueryService;
 
 	private final TastingNoteCommandService tastingNoteCommandService;
-	private final CuffingNoteCommandService cuffingNoteCommandService;
+	private final CuppingNoteCommandService cuppingNoteCommandService;
 	private final ReviewCommandService reviewCommandService;
 
 	private final ReviewValidator reviewValidator;
@@ -198,7 +198,7 @@ public class ReviewFacadeService {
 			.toList();
 	}
 
-	public CuffingResDto createCuffingNote(
+	public CuppingResDto createCuppingNote(
 		final Long userId,
 		final Long reviewId,
 		final CuppingNoteReqDto reqDto
@@ -206,22 +206,22 @@ public class ReviewFacadeService {
 		getValidatedReview(reviewId, userId);
 		validateCuppingNoteNotDuplicate(reviewId);
 		CuppingNote cuppingNote = processCreateCuppingNote(reviewId, reqDto);
-		return createCuffingResDto(cuppingNote);
+		return createCuppingResDto(cuppingNote);
 	}
 
-	public CuffingResDto updateCuffingNote(
+	public CuppingResDto updateCuppingNote(
 		final Long userId,
 		final Long reviewId,
 		final CuppingNoteReqDto reqDto
 	) {
 		getValidatedReview(reviewId, userId);
 		CuppingNote cuppingNote = processUpdateCuppingNote(reviewId, reqDto);
-		return createCuffingResDto(cuppingNote);
+		return createCuppingResDto(cuppingNote);
 	}
 
-	public CuffingResDto getCuppingNote(final Long reviewId) {
+	public CuppingResDto getCuppingNote(final Long reviewId) {
 		CuppingNote cuppingNote = cuppingNoteQueryService.findByReviewId(reviewId);
-		return createCuffingResDto(cuppingNote);
+		return createCuppingResDto(cuppingNote);
 	}
 
 	private void validateCuppingNoteNotDuplicate(final Long reviewId) {
@@ -232,7 +232,7 @@ public class ReviewFacadeService {
 
 	private CuppingNote processCreateCuppingNote(final Long reviewId, final CuppingNoteReqDto reqDto) {
 		CuppingNote cuppingNote = cuppingNoteFactory.create(reviewId, reqDto);
-		int affectedRows = cuffingNoteCommandService.insert(cuppingNote);
+		int affectedRows = cuppingNoteCommandService.insert(cuppingNote);
 		if (affectedRows == 0) {
 			throw new ReviewException(ErrorCode.CUPPING_NOTE_SAVE_FAILED);
 		}
@@ -243,14 +243,14 @@ public class ReviewFacadeService {
 		CuppingNote cuppingNote = cuppingNoteQueryService.findByReviewId(reviewId);
 		CuppingNote updatedNote = cuppingNoteFactory.createForUpdate(cuppingNote.getId(), reviewId, reqDto);
 
-		int affectedRows = cuffingNoteCommandService.update(updatedNote);
+		int affectedRows = cuppingNoteCommandService.update(updatedNote);
 		if (affectedRows == 0) {
 			throw new ReviewException(ErrorCode.CUPPING_NOTE_UPDATE_FAILED);
 		}
 		return updatedNote;
 	}
 
-	private CuffingResDto createCuffingResDto(final CuppingNote cuppingNote) {
-		return CuppingNoteConverter.toCuffingResDto(cuppingNote);
+	private CuppingResDto createCuppingResDto(final CuppingNote cuppingNote) {
+		return CuppingNoteConverter.toCuppingResDto(cuppingNote);
 	}
 }
