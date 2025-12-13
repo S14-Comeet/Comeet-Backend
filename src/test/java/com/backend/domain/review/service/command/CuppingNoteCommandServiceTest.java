@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.backend.common.error.ErrorCode;
+import com.backend.common.error.exception.ReviewException;
 import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.enums.RoastLevel;
 import com.backend.domain.review.mapper.command.CuppingNoteCommandMapper;
@@ -52,8 +54,8 @@ class CuppingNoteCommandServiceTest {
 			.sweetnessNotes("캐러멜과 꿀의 단맛")
 			.mouthfeelNotes("크리미하고 부드러운 바디감")
 			.overallNotes("균형잡힌 스페셜티 커피")
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
+			.createdAt(LocalDateTime.of(2024, 1, 15, 10, 30, 0))
+			.updatedAt(LocalDateTime.of(2024, 1, 15, 10, 30, 0))
 			.build();
 	}
 
@@ -77,11 +79,14 @@ class CuppingNoteCommandServiceTest {
 		// given
 		when(commandMapper.insert(any(CuppingNote.class))).thenReturn(0);
 
-		// when
-		int result = cuppingNoteCommandService.insert(testCuppingNote);
+		// when & then
+		assertThatThrownBy(() -> cuppingNoteCommandService.insert(testCuppingNote))
+			.isInstanceOf(ReviewException.class)
+			.satisfies(exception -> {
+				ReviewException reviewException = (ReviewException)exception;
+				assertThat(reviewException.getErrorCode()).isEqualTo(ErrorCode.CUPPING_NOTE_SAVE_FAILED);
+			});
 
-		// then
-		assertThat(result).isEqualTo(0);
 		verify(commandMapper, times(1)).insert(testCuppingNote);
 	}
 
@@ -105,11 +110,14 @@ class CuppingNoteCommandServiceTest {
 		// given
 		when(commandMapper.update(any(CuppingNote.class))).thenReturn(0);
 
-		// when
-		int result = cuppingNoteCommandService.update(testCuppingNote);
+		// when & then
+		assertThatThrownBy(() -> cuppingNoteCommandService.update(testCuppingNote))
+			.isInstanceOf(ReviewException.class)
+			.satisfies(exception -> {
+				ReviewException reviewException = (ReviewException)exception;
+				assertThat(reviewException.getErrorCode()).isEqualTo(ErrorCode.CUPPING_NOTE_UPDATE_FAILED);
+			});
 
-		// then
-		assertThat(result).isEqualTo(0);
 		verify(commandMapper, times(1)).update(testCuppingNote);
 	}
 }

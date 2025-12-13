@@ -22,10 +22,15 @@ public class CuppingNoteQueryServiceImpl implements CuppingNoteQueryService {
 
 	@Override
 	public CuppingNote findByReviewId(final Long reviewId) {
-		CuppingNote cuppingNote = queryMapper.findByReviewId(reviewId)
-			.orElseThrow(() -> new ReviewException(ErrorCode.CUPPING_NOTE_NOT_FOUND));
-		log.info("[Review] CuppingNote 조회 완료 - ID: {}", cuppingNote.getId());
-		return cuppingNote;
+		return queryMapper.findByReviewId(reviewId)
+			.map(cuppingNote -> {
+				log.debug("[CuppingNote] 커핑 노트 조회 완료 - id: {}, reviewId: {}", cuppingNote.getId(), reviewId);
+				return cuppingNote;
+			})
+			.orElseThrow(() -> {
+				log.warn("[CuppingNote] 커핑 노트 조회 실패 - reviewId: {}", reviewId);
+				return new ReviewException(ErrorCode.CUPPING_NOTE_NOT_FOUND);
+			});
 	}
 
 	@Override

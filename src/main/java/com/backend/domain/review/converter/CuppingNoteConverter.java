@@ -26,7 +26,8 @@ public class CuppingNoteConverter {
 			cuppingNote.getSweetnessNotes(),
 			cuppingNote.getMouthfeelNotes(),
 			cuppingNote.getOverallNotes(),
-			cuppingNote.getCreatedAt()
+			cuppingNote.getCreatedAt(),
+			cuppingNote.getUpdatedAt()
 		);
 	}
 }

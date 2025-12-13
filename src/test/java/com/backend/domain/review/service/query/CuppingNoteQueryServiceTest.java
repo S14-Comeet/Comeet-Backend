@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
 import com.backend.domain.review.entity.CuppingNote;
 import com.backend.domain.review.enums.RoastLevel;
@@ -37,6 +38,7 @@ class CuppingNoteQueryServiceTest {
 	@BeforeEach
 	void setUp() {
 		testReviewId = 100L;
+		LocalDateTime fixedDateTime = LocalDateTime.of(2024, 1, 15, 10, 30, 0);
 		testCuppingNote = CuppingNote.builder()
 			.id(1L)
 			.reviewId(testReviewId)
@@ -49,8 +51,8 @@ class CuppingNoteQueryServiceTest {
 			.sweetnessScore(new BigDecimal("9.25"))
 			.mouthfeelScore(new BigDecimal("8.50"))
 			.totalScore(new BigDecimal("60.25"))
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
+			.createdAt(fixedDateTime)
+			.updatedAt(fixedDateTime)
 			.build();
 	}
 
@@ -80,7 +82,10 @@ class CuppingNoteQueryServiceTest {
 		// when & then
 		assertThatThrownBy(() -> cuppingNoteQueryService.findByReviewId(testReviewId))
 			.isInstanceOf(ReviewException.class)
-			.hasMessageContaining("커핑 노트를 찾을 수 없습니다.");
+			.satisfies(exception -> {
+				ReviewException reviewException = (ReviewException)exception;
+				assertThat(reviewException.getErrorCode()).isEqualTo(ErrorCode.CUPPING_NOTE_NOT_FOUND);
+			});
 
 		verify(queryMapper, times(1)).findByReviewId(testReviewId);
 	}
