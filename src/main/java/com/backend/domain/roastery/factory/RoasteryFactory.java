@@ -41,10 +41,6 @@ public class RoasteryFactory {
 		return roastery;
 	}
 
-	/**
-	 * null 병합 헬퍼 메서드 (DRY 원칙 적용)
-	 * 새 값이 null이면 기존 값을 반환, 아니면 새 값 반환
-	 */
 	private <T> T getOrDefault(final T newValue, final T existingValue) {
 		return newValue != null ? newValue : existingValue;
 	}

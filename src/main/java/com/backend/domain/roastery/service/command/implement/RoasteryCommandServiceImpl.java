@@ -9,7 +9,9 @@ import com.backend.domain.roastery.service.command.RoasteryCommandService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,11 +20,14 @@ public class RoasteryCommandServiceImpl implements RoasteryCommandService {
 
 	@Override
 	public int insert(final Roastery roastery) {
-		return roasteryCommandMapper.insert(roastery);
+		int affectedRows = roasteryCommandMapper.insert(roastery);
+		log.info("[Roastery] 로스터리 추가 - ID: {}", roastery.getId());
+		return affectedRows;
 	}
 
 	@Override
 	public int update(final Roastery roastery) {
+		log.info("[Roastery] 로스터리 정보 업데이트 - ID: {}", roastery.getId());
 		return roasteryCommandMapper.update(roastery);
 	}
 }
