@@ -11,7 +11,7 @@ public class CuppingNoteConverter {
 	public static CuppingResDto toCuppingResDto(final CuppingNote cuppingNote) {
 		return new CuppingResDto(
 			cuppingNote.getId(),
-			cuppingNote.getRoastLevel(),
+			cuppingNote.getRoastingLevel(),
 			cuppingNote.getFragranceScore(),
 			cuppingNote.getAromaScore(),
 			cuppingNote.getFlavorScore(),

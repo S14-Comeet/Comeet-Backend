@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.backend.domain.review.enums.RoastLevel;
+import com.backend.domain.bean.enums.RoastingLevel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -14,7 +14,7 @@ public record CuppingResDto(
 	Long id,
 
 	@Schema(description = "로스팅 레벨", example = "MEDIUM")
-	RoastLevel roastLevel,
+	RoastingLevel roastingLevel,
 
 	@Schema(description = "Fragrance 점수", example = "8.50")
 	BigDecimal fragranceScore,
