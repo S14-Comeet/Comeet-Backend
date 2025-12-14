@@ -8,8 +8,8 @@ import lombok.Builder;
 @Builder
 @Schema(description = "가맹점 정보 응답 DTO")
 public record StoreResDto(
-	@Schema(description = "매장 고유 ID", example = "store-12345")
-	String id,
+	@Schema(description = "매장 고유 ID", example = "1")
+	Long id,
 
 	@Schema(description = "매장명", example = "블루보틀 강남점")
 	String name,

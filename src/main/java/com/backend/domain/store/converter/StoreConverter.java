@@ -24,7 +24,7 @@ public class StoreConverter {
 	 */
 	public static StoreDetailResDto toStoreDetailResponse(final Store store) {
 		return StoreDetailResDto.builder()
-			.id(Long.valueOf(store.getId()))
+			.id(store.getId())
 			.roasteryId(store.getRoasteryId())
 			.name(store.getName())
 			.description(store.getDescription())
@@ -83,7 +83,7 @@ public class StoreConverter {
 	 * @return 가맹점 목록 응답 DTO
 	 */
 	public static StoreListResDto toStoreListResponse(final List<Store> stores,
-		final Map<String, Double> distanceMap) {
+		final Map<Long, Double> distanceMap) {
 		List<StoreResDto> storeList = stores.stream()
 			.map(store -> toStoreResponse(store, distanceMap.get(store.getId())))
 			.toList();

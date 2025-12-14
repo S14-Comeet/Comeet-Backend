@@ -47,7 +47,7 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 		);
 
 		// 3. Haversine 공식으로 정확한 거리 계산 및 필터링 후 거리순 정렬
-		Map<String, Double> distanceMap = new HashMap<>();
+		Map<Long, Double> distanceMap = new HashMap<>();
 		List<Store> filteredStores = candidateStores.stream()
 			.filter(store -> {
 				double storeDistance = GeoUtils.calculateHaversineDistance(
@@ -70,7 +70,7 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 	}
 
 	@Override
-	public boolean isStoreWithinDistance(final String storeId, final BigDecimal latitude,
+	public boolean isStoreWithinDistance(final Long storeId, final BigDecimal latitude,
 		final BigDecimal longitude, final double distanceInMeters) {
 		Store store = queryMapper.findById(storeId);
 		// 추후 커스텀 예외처리 고려해볼만 함.
@@ -92,7 +92,7 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 
 	@Override
 	public StoreDetailResDto getStoreDetail(final Long storeId) {
-		Store store = queryMapper.findById(String.valueOf(storeId));
+		Store store = queryMapper.findById(storeId);
 
 		if (store == null) {
 			throw new StoreException(ErrorCode.STORE_NOT_FOUND);

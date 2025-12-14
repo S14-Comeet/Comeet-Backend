@@ -27,7 +27,7 @@ public interface StoreQueryService {
 	 * @param distanceInMeters 기준 거리 (미터)
 	 * @return 거리 내에 있으면 true, 초과하면 false
 	 */
-	boolean isStoreWithinDistance(String storeId, BigDecimal latitude, BigDecimal longitude,
+	boolean isStoreWithinDistance(Long storeId, BigDecimal latitude, BigDecimal longitude,
 		double distanceInMeters);
 
 	/**
