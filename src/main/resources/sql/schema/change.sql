@@ -1,5 +1,5 @@
 # 2025-12-15 #31
 ALTER TABLE roasteries
-    ADD COLUMN ownerId BIGINT NOT NULL;
+    ADD COLUMN owner_id BIGINT NOT NULL;
 ALTER TABLE roasteries
     ADD CONSTRAINT FOREIGN KEY (ownerId) REFERENCES users (id);
