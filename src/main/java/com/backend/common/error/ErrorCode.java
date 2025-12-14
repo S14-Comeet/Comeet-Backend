@@ -49,6 +49,11 @@ public enum ErrorCode {
 	MENU_ID_REQUIRED(HttpStatus.BAD_REQUEST, "M-002", "메뉴 ID가 필요합니다."),
 
 	/**
+	 * Store Error
+	 */
+	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "S-001", "가맹점을 찾을 수 없습니다."),
+
+	/**
 	 * Visit Error
 	 */
 	VISIT_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "V-001", "방문 기록 저장에 실패했습니다."),

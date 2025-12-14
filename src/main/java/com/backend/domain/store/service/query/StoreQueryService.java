@@ -3,6 +3,7 @@ package com.backend.domain.store.service.query;
 import java.math.BigDecimal;
 
 import com.backend.domain.store.dto.request.StoreSearchReqDto;
+import com.backend.domain.store.dto.response.StoreDetailResDto;
 import com.backend.domain.store.dto.response.StoreListResDto;
 
 public interface StoreQueryService {
@@ -28,4 +29,12 @@ public interface StoreQueryService {
 	 */
 	boolean isStoreWithinDistance(String storeId, BigDecimal latitude, BigDecimal longitude,
 		double distanceInMeters);
+
+	/**
+	 * 매장 ID로 매장 상세 정보를 조회합니다.
+	 *
+	 * @param storeId 매장 ID
+	 * @return 매장 상세 정보
+	 */
+	StoreDetailResDto getStoreDetail(Long storeId);
 }

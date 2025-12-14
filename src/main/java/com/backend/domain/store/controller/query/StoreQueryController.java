@@ -15,6 +15,7 @@ import com.backend.common.util.ResponseUtils;
 import com.backend.domain.review.dto.common.ReviewPageDto;
 import com.backend.domain.review.service.facade.ReviewFacadeService;
 import com.backend.domain.store.dto.request.StoreSearchReqDto;
+import com.backend.domain.store.dto.response.StoreDetailResDto;
 import com.backend.domain.store.dto.response.StoreListResDto;
 import com.backend.domain.store.service.query.StoreQueryService;
 
@@ -55,6 +56,19 @@ class StoreQueryController {
 		@Valid @ModelAttribute final StoreSearchReqDto request
 	) {
 		final StoreListResDto response = storeQueryService.searchStores(request);
+		return ResponseUtils.ok(response);
+	}
+
+	@Operation(
+		summary = "가맹점 상세 조회",
+		description = "특정 가맹점의 상세 정보를 조회합니다."
+	)
+	@GetMapping("/{storeId}")
+	public ResponseEntity<BaseResponse<StoreDetailResDto>> getStoreDetail(
+		@Parameter(description = "가맹점 ID", example = "1")
+		@PathVariable Long storeId
+	) {
+		StoreDetailResDto response = storeQueryService.getStoreDetail(storeId);
 		return ResponseUtils.ok(response);
 	}
 
