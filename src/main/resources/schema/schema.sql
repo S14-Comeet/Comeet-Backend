@@ -138,4 +138,59 @@ CREATE TABLE IF NOT EXISTS cupping_notes
     updated_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     FOREIGN KEY (review_id) REFERENCES reviews (id) ON DELETE CASCADE
-)
+);
+
+CREATE TABLE IF NOT EXISTS beans
+(
+    id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+    roastery_id       BIGINT      NOT NULL,
+    country           VARCHAR(50) NOT NULL,
+    farm              VARCHAR(100),
+    variety           VARCHAR(100),
+    processing_method VARCHAR(50),
+    roasting_level    VARCHAR(50),
+    flavor_notes      TEXT,
+    deleted_at        TIMESTAMP,
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (roastery_id) REFERENCES roasteries (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS menus
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    store_id    BIGINT       NOT NULL,
+    name        VARCHAR(100) NOT NULL,
+    description TEXT,
+    price       INT          NOT NULL,
+    category    VARCHAR(50),
+    image_url   VARCHAR(500),
+    deleted_at  TIMESTAMP,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (store_id) REFERENCES stores (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS menu_bean_mappings
+(
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    menu_id    BIGINT  NOT NULL,
+    bean_id    BIGINT  NOT NULL,
+    is_blended BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP        DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_menu_bean (menu_id, bean_id),
+    FOREIGN KEY (menu_id) REFERENCES menus (id) ON DELETE CASCADE,
+    FOREIGN KEY (bean_id) REFERENCES beans (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS bean_flavor_notes
+(
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    bean_id    BIGINT NOT NULL,
+    flavor_id  BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_bean_flavor (bean_id, flavor_id),
+    FOREIGN KEY (bean_id) REFERENCES beans (id) ON DELETE CASCADE,
+    FOREIGN KEY (flavor_id) REFERENCES flavors (id) ON DELETE CASCADE
+);
