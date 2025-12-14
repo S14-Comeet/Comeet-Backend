@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.backend.domain.roastery.mapper.command.RoasteryCommandMapper">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO roasteries (, name, logo_url, website_url, created_at, updated_at)
+        INSERT INTO roasteries (owner_id, name, logo_url, website_url, created_at, updated_at)
         VALUES (#{ownerId}, #{name}, #{logoUrl}, #{websiteUrl}, NOW(), NOW())
     </insert>
     
