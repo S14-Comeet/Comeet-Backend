@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.backend.common.util.GeoUtils;
+import com.backend.domain.store.dto.response.StoreDetailResDto;
 import com.backend.domain.store.dto.response.StoreListResDto;
 import com.backend.domain.store.dto.response.StoreResDto;
 import com.backend.domain.store.entity.Store;
@@ -15,6 +16,32 @@ import lombok.NoArgsConstructor;
 public class StoreConverter {
 
 	// === 응답 DTO 변환 메서드 ===
+
+	/**
+	 * Store Entity를 StoreDetailResDto로 변환
+	 * @param store 매장 엔티티
+	 * @return 가맹점 상세 정보 응답 DTO
+	 */
+	public static StoreDetailResDto toStoreDetailResponse(final Store store) {
+		return StoreDetailResDto.builder()
+			.id(store.getId())
+			.roasteryId(store.getRoasteryId())
+			.name(store.getName())
+			.description(store.getDescription())
+			.address(store.getAddress())
+			.latitude(store.getLatitude())
+			.longitude(store.getLongitude())
+			.phoneNumber(store.getPhoneNumber())
+			.category(store.getCategory())
+			.thumbnailUrl(store.getThumbnailUrl())
+			.openTime(store.getOpenTime())
+			.closeTime(store.getCloseTime())
+			.averageRating(store.getAverageRating())
+			.reviewCount(store.getReviewCount())
+			.visitCount(store.getVisitCount())
+			.isClosed(store.isClosed())
+			.build();
+	}
 
 	/**
 	 * Store Entity와 거리 정보를 StoreResDto로 변환
@@ -56,7 +83,7 @@ public class StoreConverter {
 	 * @return 가맹점 목록 응답 DTO
 	 */
 	public static StoreListResDto toStoreListResponse(final List<Store> stores,
-		final Map<String, Double> distanceMap) {
+		final Map<Long, Double> distanceMap) {
 		List<StoreResDto> storeList = stores.stream()
 			.map(store -> toStoreResponse(store, distanceMap.get(store.getId())))
 			.toList();

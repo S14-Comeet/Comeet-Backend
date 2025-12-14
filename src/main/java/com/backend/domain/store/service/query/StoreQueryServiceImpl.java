@@ -8,10 +8,13 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.common.error.ErrorCode;
+import com.backend.common.error.exception.StoreException;
 import com.backend.common.util.GeoUtils;
 import com.backend.common.util.StringUtils;
 import com.backend.domain.store.converter.StoreConverter;
 import com.backend.domain.store.dto.request.StoreSearchReqDto;
+import com.backend.domain.store.dto.response.StoreDetailResDto;
 import com.backend.domain.store.dto.response.StoreListResDto;
 import com.backend.domain.store.entity.Store;
 import com.backend.domain.store.mapper.query.StoreQueryMapper;
@@ -44,7 +47,7 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 		);
 
 		// 3. Haversine 공식으로 정확한 거리 계산 및 필터링 후 거리순 정렬
-		Map<String, Double> distanceMap = new HashMap<>();
+		Map<Long, Double> distanceMap = new HashMap<>();
 		List<Store> filteredStores = candidateStores.stream()
 			.filter(store -> {
 				double storeDistance = GeoUtils.calculateHaversineDistance(
@@ -67,11 +70,11 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 	}
 
 	@Override
-	public boolean isStoreWithinDistance(final String storeId, final BigDecimal latitude,
+	public boolean isStoreWithinDistance(final Long storeId, final BigDecimal latitude,
 		final BigDecimal longitude, final double distanceInMeters) {
 		Store store = queryMapper.findById(storeId);
-        // 추후 커스텀 예외처리 고려해볼만 함.
-        if (store == null) {
+		// 추후 커스텀 예외처리 고려해볼만 함.
+		if (store == null) {
 			return false;
 		}
 
@@ -85,5 +88,16 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 		double actualDistanceMeters = GeoUtils.convertKmToMeters(distanceKm);
 
 		return actualDistanceMeters <= distanceInMeters;
+	}
+
+	@Override
+	public StoreDetailResDto getStoreDetail(final Long storeId) {
+		Store store = queryMapper.findById(storeId);
+
+		if (store == null) {
+			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
+		}
+
+		return StoreConverter.toStoreDetailResponse(store);
 	}
 }

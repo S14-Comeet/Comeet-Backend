@@ -43,7 +43,7 @@
         ORDER BY created_at DESC
     </select>
 
-    <select id="findById" resultType="Store">
+    <select id="findById" parameterType="java.lang.Long" resultType="Store">
         SELECT
             id,
             roastery_id,

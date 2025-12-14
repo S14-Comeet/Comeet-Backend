@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Store {
-	private String id;
+	private Long id;
 	private Long roasteryId;
 	private Long ownerId;
 	private String name;
@@ -36,7 +36,7 @@ public class Store {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-	public static Store of(final String id, final Long roasteryId, final String name,
+	public static Store of(final Long id, final Long roasteryId, final String name,
 		final String address, final BigDecimal latitude, final BigDecimal longitude) {
 		return Store.builder()
 			.id(id)

@@ -38,5 +38,5 @@ public interface StoreQueryMapper {
 	 * @param storeId 매장 ID
 	 * @return 매장 정보 (삭제되지 않은 매장만)
 	 */
-	Store findById(@Param("storeId") String storeId);
+	Store findById(@Param("storeId") Long storeId);
 }
