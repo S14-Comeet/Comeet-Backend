@@ -41,6 +41,9 @@ public enum ErrorCode {
 	TOKEN_BLACKLISTED_EXCEPTION(HttpStatus.UNAUTHORIZED, "A-004", "블랙리스트에 등록된 토큰입니다."),
 	TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "A-005", "요청으로부터 토큰을 찾지 못했습니다."),
 	REFRESH_TOKEN_NOT_MATCH(HttpStatus.BAD_REQUEST, "A-006", "리프레시 토큰이 일치하지 않습니다."),
+	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A-007", "유효하지 않은 토큰입니다."),
+	INVALID_TOKEN_SIGNATURE(HttpStatus.UNAUTHORIZED, "A-008", "토큰 서명이 유효하지 않습니다."),
+	TOKEN_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "A-009", "토큰 처리 중 오류가 발생했습니다."),
 
 	/**
 	 * Menu Error
@@ -67,7 +70,12 @@ public enum ErrorCode {
 	REVIEW_UPDATE_FAILED(HttpStatus.CONFLICT, "R-003", "리뷰 업데이트에 실패했습니다."),
 	REVIEW_SOFT_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-004", "리뷰 SOFT DELETE에 실패했습니다."),
 	ALREADY_DELETED_REVIEW(HttpStatus.BAD_REQUEST, "R-005", "이미 삭제 처리된 리뷰입니다."),
-	REVIEW_ALREADY_EXISTS_FOR_VISIT(HttpStatus.CONFLICT, "R-006", "해당 방문에 대한 리뷰가 이미 존재합니다.");
+	REVIEW_ALREADY_EXISTS_FOR_VISIT(HttpStatus.CONFLICT, "R-006", "해당 방문에 대한 리뷰가 이미 존재합니다."),
+	CUPPING_NOTE_NOT_FOUND(HttpStatus.NOT_FOUND, "R-007", "커핑 노트를 찾을 수 없습니다."),
+	CUPPING_NOTE_ALREADY_EXISTS(HttpStatus.CONFLICT, "R-008", "해당 리뷰에 대한 커핑 노트가 이미 존재합니다."),
+	CUPPING_NOTE_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-009", "커핑 노트 저장에 실패했습니다."),
+	CUPPING_NOTE_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-010", "커핑 노트 업데이트에 실패했습니다."),
+	;
 
 	private final HttpStatus httpStatus;
 	private final String code;

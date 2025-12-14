@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.backend.domain.review.mapper.command.CuppingNoteCommandMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cupping_notes (
+            review_id,
+            roast_level,
+            fragrance_score,
+            aroma_score,
+            flavor_score,
+            aftertaste_score,
+            acidity_score,
+            sweetness_score,
+            mouthfeel_score,
+            fragrance_aroma_detail,
+            flavor_aftertaste_detail,
+            acidity_notes,
+            sweetness_notes,
+            mouthfeel_notes,
+            overall_notes,
+            created_at,
+            updated_at
+        )
+        VALUES (
+            #{reviewId},
+            #{roastLevel},
+            #{fragranceScore},
+            #{aromaScore},
+            #{flavorScore},
+            #{aftertasteScore},
+            #{acidityScore},
+            #{sweetnessScore},
+            #{mouthfeelScore},
+            #{fragranceAromaDetail},
+            #{flavorAftertasteDetail},
+            #{acidityNotes},
+            #{sweetnessNotes},
+            #{mouthfeelNotes},
+            #{overallNotes},
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE cupping_notes
+        SET review_id = #{reviewId},
+            roast_level = #{roastLevel},
+            fragrance_score = #{fragranceScore},
+            aroma_score = #{aromaScore},
+            flavor_score = #{flavorScore},
+            aftertaste_score = #{aftertasteScore},
+            acidity_score = #{acidityScore},
+            sweetness_score = #{sweetnessScore},
+            mouthfeel_score = #{mouthfeelScore},
+            fragrance_aroma_detail = #{fragranceAromaDetail},
+            flavor_aftertaste_detail = #{flavorAftertasteDetail},
+            acidity_notes = #{acidityNotes},
+            sweetness_notes = #{sweetnessNotes},
+            mouthfeel_notes = #{mouthfeelNotes},
+            overall_notes = #{overallNotes},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+</mapper>

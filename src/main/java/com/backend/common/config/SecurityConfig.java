@@ -47,6 +47,9 @@ public class SecurityConfig {
 		// OAuth2
 		"/oauth2/**",
 		"/login/**",
+
+		// Auth
+		"/auth/reissue",
 	};
 
 	@Bean
