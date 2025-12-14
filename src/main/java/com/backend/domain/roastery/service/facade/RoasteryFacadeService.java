@@ -1,11 +1,6 @@
 package com.backend.domain.roastery.service.facade;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.IntSupplier;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
@@ -61,44 +56,29 @@ public class RoasteryFacadeService {
 	}
 
 	public Page<RoasteryResDto> getAllRoasteries(final int page, final int size) {
-		return buildPageResponse(page, size,
+		return PageUtils.buildPageResponse(
+			page, size,
 			roasteryQueryService::findAll,
-			roasteryQueryService::countAll
+			roasteryQueryService::countAll,
+			RoasteryConverter::toRoasteryResDto
 		);
 	}
 
 	public Page<RoasteryResDto> searchRoasteriesByName(final String keyword, final int page, final int size) {
-		return buildPageResponse(page, size,
+		return PageUtils.buildPageResponse(
+			page, size,
 			pageable -> roasteryQueryService.findByNameContaining(keyword, pageable),
-			() -> roasteryQueryService.countByNameContaining(keyword)
+			() -> roasteryQueryService.countByNameContaining(keyword),
+			RoasteryConverter::toRoasteryResDto
 		);
 	}
 
 	public Page<RoasteryResDto> getMyRoasteries(final Long ownerId, final int page, final int size) {
-		return buildPageResponse(page, size,
+		return PageUtils.buildPageResponse(
+			page, size,
 			pageable -> roasteryQueryService.findByOwnerId(ownerId, pageable),
-			() -> roasteryQueryService.countByOwnerId(ownerId)
+			() -> roasteryQueryService.countByOwnerId(ownerId),
+			RoasteryConverter::toRoasteryResDto
 		);
-	}
-
-	private Page<RoasteryResDto> buildPageResponse(
-		final int page,
-		final int size,
-		final Function<Pageable, List<Roastery>> finder,
-		final IntSupplier counter
-	) {
-		Pageable pageable = PageUtils.getPageable(page, size);
-		List<Roastery> roasteries = finder.apply(pageable);
-
-		if (roasteries.isEmpty()) {
-			return PageUtils.toPage(List.of(), pageable, 0);
-		}
-
-		int total = counter.getAsInt();
-		List<RoasteryResDto> dtoList = roasteries.stream()
-			.map(RoasteryConverter::toRoasteryResDto)
-			.toList();
-
-		return PageUtils.toPage(dtoList, pageable, total);
 	}
 }
