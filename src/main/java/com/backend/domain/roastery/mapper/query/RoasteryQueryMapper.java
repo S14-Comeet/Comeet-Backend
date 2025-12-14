@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.domain.roastery.entity.Roastery;
@@ -12,7 +13,7 @@ import com.backend.domain.roastery.entity.Roastery;
 public interface RoasteryQueryMapper {
 	Optional<Roastery> findById(Long roasteryId);
 
-	List<Roastery> findAll(Pageable pageable);
+	List<Roastery> findAll(@Param("pageable") Pageable pageable);
 
 	int countAll();
 
