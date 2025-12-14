@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
+import com.backend.domain.bean.enums.RoastingLevel;
 import com.backend.domain.review.entity.CuppingNote;
-import com.backend.domain.review.enums.RoastLevel;
 import com.backend.domain.review.mapper.command.CuppingNoteCommandMapper;
 import com.backend.domain.review.service.command.implement.CuppingNoteCommandServiceImpl;
 
@@ -39,7 +39,7 @@ class CuppingNoteCommandServiceTest {
 		testCuppingNote = CuppingNote.builder()
 			.id(1L)
 			.reviewId(100L)
-			.roastLevel(RoastLevel.MEDIUM)
+			.roastingLevel(RoastingLevel.MEDIUM)
 			.fragranceScore(new BigDecimal("8.50"))
 			.aromaScore(new BigDecimal("8.00"))
 			.flavorScore(new BigDecimal("9.00"))

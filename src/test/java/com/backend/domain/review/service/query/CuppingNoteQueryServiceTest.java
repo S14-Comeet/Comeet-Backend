@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.ReviewException;
+import com.backend.domain.bean.enums.RoastingLevel;
 import com.backend.domain.review.entity.CuppingNote;
-import com.backend.domain.review.enums.RoastLevel;
 import com.backend.domain.review.mapper.query.CuppingNoteQueryMapper;
 import com.backend.domain.review.service.query.implement.CuppingNoteQueryServiceImpl;
 
@@ -42,7 +42,7 @@ class CuppingNoteQueryServiceTest {
 		testCuppingNote = CuppingNote.builder()
 			.id(1L)
 			.reviewId(testReviewId)
-			.roastLevel(RoastLevel.MEDIUM)
+			.roastingLevel(RoastingLevel.MEDIUM)
 			.fragranceScore(new BigDecimal("8.50"))
 			.aromaScore(new BigDecimal("8.00"))
 			.flavorScore(new BigDecimal("9.00"))
@@ -69,7 +69,7 @@ class CuppingNoteQueryServiceTest {
 		assertThat(result).isNotNull();
 		assertThat(result.getId()).isEqualTo(1L);
 		assertThat(result.getReviewId()).isEqualTo(testReviewId);
-		assertThat(result.getRoastLevel()).isEqualTo(RoastLevel.MEDIUM);
+		assertThat(result.getRoastingLevel()).isEqualTo(RoastingLevel.MEDIUM);
 		verify(queryMapper, times(1)).findByReviewId(testReviewId);
 	}
 
