@@ -2,7 +2,7 @@ package com.backend.domain.review.dto.request;
 
 import java.math.BigDecimal;
 
-import com.backend.domain.review.enums.RoastLevel;
+import com.backend.domain.bean.enums.RoastingLevel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
@@ -16,7 +16,7 @@ import jakarta.validation.constraints.Size;
 public record CuppingNoteReqDto(
 	@Schema(description = "로스팅 레벨 (LIGHT, MEDIUM, HEAVY)", example = "MEDIUM", requiredMode = RequiredMode.REQUIRED)
 	@NotNull(message = "로스팅 레벨은 필수 입력값입니다.")
-	RoastLevel roastLevel,
+	RoastingLevel roastingLevel,
 
 	@Schema(description = "Fragrance 점수 (0.00 ~ 10.00)", example = "8.50", requiredMode = RequiredMode.REQUIRED)
 	@NotNull(message = "Fragrance 점수는 필수 입력값입니다.")
