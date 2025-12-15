@@ -1,5 +1,7 @@
 package com.backend.domain.flavor.converter;
 
+import java.util.List;
+
 import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 import com.backend.domain.flavor.dto.common.FlavorInfoDto;
 import com.backend.domain.flavor.entity.Flavor;
@@ -28,5 +30,14 @@ public class FlavorConverter {
 			.description(flavor.getDescription())
 			.colorHex(flavor.getColorHex())
 			.build();
+	}
+
+	public List<FlavorBadgeDto> toFlavorBadgeDtoList(final List<Flavor> flavors) {
+		if (flavors == null) {
+			return List.of();
+		}
+		return flavors.stream()
+			.map(FlavorConverter::toFlavorBadgeDto)
+			.toList();
 	}
 }
