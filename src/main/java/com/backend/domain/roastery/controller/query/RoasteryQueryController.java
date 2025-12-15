@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -63,7 +64,7 @@ public class RoasteryQueryController {
 	@GetMapping("/search")
 	public ResponseEntity<PageResponse<RoasteryResDto>> searchRoasteriesByName(
 		@Parameter(description = "검색 키워드", example = "블루보틀")
-		@RequestParam String keyword,
+		@RequestParam @NotBlank String keyword,
 		@Parameter(description = "페이지 번호 (1부터 시작)", example = "1")
 		@RequestParam(defaultValue = "1") @Min(1) int page,
 		@Parameter(description = "페이지 크기", example = "10")
