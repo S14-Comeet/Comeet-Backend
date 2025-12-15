@@ -151,7 +151,6 @@ CREATE TABLE IF NOT EXISTS beans
     variety           VARCHAR(100),
     processing_method VARCHAR(50),
     roasting_level    VARCHAR(50),
-    flavor_notes      TEXT,
     deleted_at        TIMESTAMP,
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
