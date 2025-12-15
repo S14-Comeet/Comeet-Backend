@@ -11,17 +11,17 @@ import com.backend.domain.roastery.entity.Roastery;
 
 @Mapper
 public interface RoasteryQueryMapper {
-	Optional<Roastery> findById(Long roasteryId);
+	Optional<Roastery> findById(@Param("roasteryId") Long roasteryId);
 
 	List<Roastery> findAll(@Param("pageable") Pageable pageable);
 
 	int countAll();
 
-	List<Roastery> findByNameContaining(String keyword, Pageable pageable);
+	List<Roastery> findByNameContaining(@Param("keyword") String keyword, @Param("pageable") Pageable pageable);
 
-	int countByNameContaining(String keyword);
+	int countByNameContaining(@Param("keyword") String keyword);
 
-	List<Roastery> findByOwnerId(Long ownerId, Pageable pageable);
+	List<Roastery> findByOwnerId(@Param("ownerId") Long ownerId, @Param("pageable") Pageable pageable);
 
-	int countByOwnerId(Long ownerId);
+	int countByOwnerId(@Param("ownerId") Long ownerId);
 }

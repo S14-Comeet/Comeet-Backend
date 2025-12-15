@@ -11,9 +11,9 @@ import com.backend.domain.flavor.entity.Flavor;
 public interface BeanFlavorMapper {
 	int insertBeanFlavors(@Param("beanId") Long beanId, @Param("flavorIds") List<Long> flavorIds);
 
-	int deleteBeanFlavors(Long beanId);
+	int deleteBeanFlavors(@Param("beanId") Long beanId);
 
-	List<Flavor> findFlavorsByBeanId(Long beanId);
+	List<Flavor> findFlavorsByBeanId(@Param("beanId") Long beanId);
 
 	List<Flavor> findFlavorsByBeanIds(@Param("beanIds") List<Long> beanIds);
 }

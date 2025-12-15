@@ -21,11 +21,11 @@ public interface BeanQueryMapper {
 
 	int countAll();
 
-	List<Bean> findByRoasteryId(Long roasteryId, Pageable pageable);
+	List<Bean> findByRoasteryId(@Param("roasteryId") Long roasteryId, @Param("pageable") Pageable pageable);
 
-	int countByRoasteryId(Long roasteryId);
+	int countByRoasteryId(@Param("roasteryId") Long roasteryId);
 
-	List<Bean> findByCountryContaining(String keyword, Pageable pageable);
+	List<Bean> findByCountryContaining(@Param("keyword") String keyword, @Param("pageable") Pageable pageable);
 
-	int countByCountryContaining(String keyword);
+	int countByCountryContaining(@Param("keyword") String keyword);
 }
