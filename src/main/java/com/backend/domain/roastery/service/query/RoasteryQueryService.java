@@ -1,19 +1,15 @@
-package com.backend.domain.roastery.mapper.query;
+package com.backend.domain.roastery.service.query;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.domain.roastery.entity.Roastery;
 
-@Mapper
-public interface RoasteryQueryMapper {
-	Optional<Roastery> findById(Long roasteryId);
+public interface RoasteryQueryService {
+	Roastery findById(Long roasteryId);
 
-	List<Roastery> findAll(@Param("pageable") Pageable pageable);
+	List<Roastery> findAll(Pageable pageable);
 
 	int countAll();
 

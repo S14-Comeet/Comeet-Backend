@@ -80,6 +80,17 @@ public enum ErrorCode {
 	CUPPING_NOTE_ALREADY_EXISTS(HttpStatus.CONFLICT, "R-008", "해당 리뷰에 대한 커핑 노트가 이미 존재합니다."),
 	CUPPING_NOTE_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-009", "커핑 노트 저장에 실패했습니다."),
 	CUPPING_NOTE_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "R-010", "커핑 노트 업데이트에 실패했습니다."),
+
+	/**
+	 * Roastery Error
+	 */
+	ROASTERY_NOT_FOUND(HttpStatus.NOT_FOUND, "RO-001", "로스터리를 찾을 수 없습니다."),
+	ROASTERY_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "RO-002", "로스터리 이름은 필수 입력값입니다."),
+	INVALID_ROASTERY_REQUEST(HttpStatus.BAD_REQUEST, "RO-003", "로스터리 요청 데이터가 유효하지 않습니다."),
+	ROASTERY_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RO-004", "로스터리 저장에 실패했습니다."),
+	ROASTERY_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RO-005", "로스터리 업데이트에 실패했습니다."),
+	ROASTERY_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RO-006", "로스터리 삭제에 실패했습니다."),
+	ROASTERY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "RO-007", "로스터리에 대한 접근 권한이 없습니다."),
 	;
 
 	private final HttpStatus httpStatus;

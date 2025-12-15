@@ -1,10 +1,6 @@
 package com.backend.domain.visit.service.facade;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.common.error.ErrorCode;
@@ -71,10 +67,11 @@ public class VisitFacadeService {
 
 	public Page<VisitPageDto> findAllWithPageableUserId(final User user, final int page, final int size) {
 		userValidator.validate(user);
-		Pageable pageable = PageUtils.getPageable(page, size);
-		List<VisitPageDto> list = visitQueryService.findAllByUserId(user.getId(), pageable).stream()
-			.map(VisitConverter::toVisitPageDto).toList();
-		int total = visitQueryService.countAllByUserId(user.getId());
-		return new PageImpl<>(list, pageable, total);
+		return PageUtils.buildPageResponse(
+			page, size,
+			pageable -> visitQueryService.findAllByUserId(user.getId(), pageable),
+			() -> visitQueryService.countAllByUserId(user.getId()),
+			VisitConverter::toVisitPageDto
+		);
 	}
 }
