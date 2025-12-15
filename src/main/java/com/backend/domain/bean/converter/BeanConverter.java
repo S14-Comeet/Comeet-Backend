@@ -4,15 +4,14 @@ import java.util.List;
 
 import com.backend.domain.bean.dto.response.BeanResDto;
 import com.backend.domain.bean.entity.Bean;
-import com.backend.domain.flavor.converter.FlavorConverter;
-import com.backend.domain.flavor.entity.Flavor;
+import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class BeanConverter {
 
-	public BeanResDto toBeanResDto(final Bean bean, final List<Flavor> flavors) {
+	public BeanResDto toBeanResDto(final Bean bean, final List<FlavorBadgeDto> flavors) {
 		return BeanResDto.builder()
 			.id(bean.getId())
 			.roasteryId(bean.getRoasteryId())
@@ -21,7 +20,7 @@ public class BeanConverter {
 			.variety(bean.getVariety())
 			.processingMethod(bean.getProcessingMethod())
 			.roastingLevel(bean.getRoastingLevel())
-			.flavors(FlavorConverter.toFlavorBadgeDtoList(flavors))
+			.flavors(flavors)
 			.createdAt(bean.getCreatedAt())
 			.updatedAt(bean.getUpdatedAt())
 			.build();

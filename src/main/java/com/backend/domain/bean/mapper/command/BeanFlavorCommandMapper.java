@@ -1,19 +1,14 @@
-package com.backend.domain.bean.mapper;
+package com.backend.domain.bean.mapper.command;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.backend.domain.flavor.entity.Flavor;
-
 @Mapper
-public interface BeanFlavorMapper {
+public interface BeanFlavorCommandMapper {
 	int insertBeanFlavors(@Param("beanId") Long beanId, @Param("flavorIds") List<Long> flavorIds);
 
 	int deleteBeanFlavors(@Param("beanId") Long beanId);
 
-	List<Flavor> findFlavorsByBeanId(@Param("beanId") Long beanId);
-
-	List<Flavor> findFlavorsByBeanIds(@Param("beanIds") List<Long> beanIds);
 }
