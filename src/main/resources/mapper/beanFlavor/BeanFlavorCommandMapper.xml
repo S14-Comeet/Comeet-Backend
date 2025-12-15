@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.backend.domain.bean.mapper.command.BeanFlavorCommandMapper">
+    <insert id="insertBeanFlavors">
+        INSERT INTO bean_flavor_notes (bean_id, flavor_id, created_at, updated_at)
+        VALUES
+        <foreach collection="flavorIds" item="flavorId" separator=",">
+            (#{beanId}, #{flavorId}, NOW(), NOW())
+        </foreach>
+    </insert>
+
+    <delete id="deleteBeanFlavors">
+        DELETE
+        FROM bean_flavor_notes
+        WHERE bean_id = #{beanId}
+    </delete>
+</mapper>

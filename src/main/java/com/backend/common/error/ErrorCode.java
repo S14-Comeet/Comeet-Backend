@@ -91,6 +91,17 @@ public enum ErrorCode {
 	ROASTERY_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RO-005", "로스터리 업데이트에 실패했습니다."),
 	ROASTERY_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RO-006", "로스터리 삭제에 실패했습니다."),
 	ROASTERY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "RO-007", "로스터리에 대한 접근 권한이 없습니다."),
+
+	/**
+	 * Bean Error
+	 */
+	BEAN_NOT_FOUND(HttpStatus.NOT_FOUND, "B-001", "원두를 찾을 수 없습니다."),
+	BEAN_COUNTRY_REQUIRED(HttpStatus.BAD_REQUEST, "B-002", "원두 생산 국가는 필수 입력값입니다."),
+	INVALID_BEAN_REQUEST(HttpStatus.BAD_REQUEST, "B-003", "원두 요청 데이터가 유효하지 않습니다."),
+	BEAN_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-004", "원두 저장에 실패했습니다."),
+	BEAN_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-005", "원두 업데이트에 실패했습니다."),
+	BEAN_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-006", "원두 삭제에 실패했습니다."),
+	BEAN_ACCESS_DENIED(HttpStatus.FORBIDDEN, "B-007", "원두에 대한 접근 권한이 없습니다."),
 	;
 
 	private final HttpStatus httpStatus;

@@ -9,7 +9,7 @@ import com.backend.domain.user.entity.User;
 
 @Mapper
 public interface UserCommandMapper extends CommandMapper<User> {
-	int save(User user);
+	int save(@Param("user") User user);
 
 	int register(@Param("userId") Long userId, @Param("reqDto") UserRegisterReqDto reqDto);
 }
