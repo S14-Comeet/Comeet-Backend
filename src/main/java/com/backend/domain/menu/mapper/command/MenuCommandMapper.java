@@ -11,5 +11,21 @@ public interface MenuCommandMapper {
 
 	int update(@Param("menu") Menu menu);
 
-	int softDelete(@Param("id") Long id);
+	int softDelete(@Param("menuId") Long menuId);
+
+	int insertMenuBeanMapping(
+		@Param("menuId") Long menuId,
+		@Param("beanId") Long beanId,
+		@Param("isBlended") Boolean isBlended
+	);
+
+	int deleteMenuBeanMapping(
+		@Param("menuId") Long menuId,
+		@Param("beanId") Long beanId
+	);
+
+	int countMenuBeanMapping(
+		@Param("menuId") Long menuId,
+		@Param("beanId") Long beanId
+	);
 }

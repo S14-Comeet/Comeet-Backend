@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.backend.domain.menu.mapper.query.MenuQueryMapper">
+
+    <select id="findById" resultType="com.backend.domain.menu.entity.Menu">
+        SELECT *
+        FROM menus
+        WHERE id = #{menuId}
+          AND deleted_at IS NULL
+    </select>
+
+    <select id="findByStoreId" resultType="com.backend.domain.menu.entity.Menu">
+        SELECT *
+        FROM menus
+        WHERE store_id = #{storeId}
+          AND deleted_at IS NULL
+        <choose>
+            <when test="pageable.sort != null and pageable.sort.isSorted()">
+                ORDER BY
+                <foreach collection="pageable.sort" item="order" separator=",">
+                    <choose>
+                        <when test="order.property == 'id'">id</when>
+                        <when test="order.property == 'name'">name</when>
+                        <when test="order.property == 'price'">price</when>
+                        <when test="order.property == 'createdAt'">created_at</when>
+                        <otherwise>id</otherwise>
+                    </choose>
+                    <choose>
+                        <when test="order.direction.name() == 'ASC'">ASC</when>
+                        <when test="order.direction.name() == 'DESC'">DESC</when>
+                        <otherwise>DESC</otherwise>
+                    </choose>
+                </foreach>
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countByStoreId" resultType="int">
+        SELECT COUNT(*)
+        FROM menus
+        WHERE store_id = #{storeId}
+          AND deleted_at IS NULL
+    </select>
+
+</mapper>

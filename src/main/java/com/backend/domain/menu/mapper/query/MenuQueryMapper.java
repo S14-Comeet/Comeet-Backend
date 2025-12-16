@@ -13,11 +13,10 @@ import com.backend.domain.menu.entity.Menu;
 public interface MenuQueryMapper {
 	Optional<Menu> findById(@Param("menuId") Long menuId);
 
-	List<Menu> findAllByStoreId(@Param("storeId") Long storeId, @Param("pageable") Pageable pageable);
+	List<Menu> findByStoreId(
+		@Param("storeId") Long storeId,
+		@Param("pageable") Pageable pageable
+	);
 
-	int countAllByStoreId(@Param("storeId") Long storeId);
-
-	List<Menu> findAllByCategory(@Param("category") String category, @Param("pageable") Pageable pageable);
-
-	int countAllByCategory(@Param("category") String category);
+	int countByStoreId(@Param("storeId") Long storeId);
 }
