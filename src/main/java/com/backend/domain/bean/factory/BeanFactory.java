@@ -17,6 +17,7 @@ public class BeanFactory {
 
 	public Bean create(final BeanCreateReqDto dto) {
 		Bean bean = Bean.builder()
+			.name(dto.name())
 			.roasteryId(dto.roasteryId())
 			.country(dto.country())
 			.farm(dto.farm())
@@ -32,6 +33,7 @@ public class BeanFactory {
 	public Bean createForUpdate(final Bean existingBean, final BeanUpdateReqDto dto) {
 		Bean bean = Bean.builder()
 			.id(existingBean.getId())
+			.name(getOrDefault(dto.name(), existingBean.getName()))
 			.roasteryId(existingBean.getRoasteryId())
 			.country(getOrDefault(dto.country(), existingBean.getCountry()))
 			.farm(getOrDefault(dto.farm(), existingBean.getFarm()))

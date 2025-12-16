@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 @Schema(description = "원두 수정 요청 DTO")
 public record BeanUpdateReqDto(
+	@Schema(description = "이름", example = "로우키 블렌드", requiredMode = RequiredMode.NOT_REQUIRED)
+	String name,
+
 	@Schema(description = "생산 국가", example = "에티오피아", requiredMode = RequiredMode.NOT_REQUIRED)
 	String country,
 

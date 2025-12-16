@@ -13,6 +13,10 @@ public record BeanCreateReqDto(
 	@NotNull(message = "로스터리 ID는 필수 입력값입니다.")
 	Long roasteryId,
 
+	@Schema(description = "이름", example = "워터멜론", requiredMode = RequiredMode.REQUIRED)
+	@NotBlank(message = "이름 필수 입력값입니다.")
+	String name,
+
 	@Schema(description = "생산 국가", example = "에티오피아", requiredMode = RequiredMode.REQUIRED)
 	@NotBlank(message = "생산 국가는 필수 입력값입니다.")
 	String country,
