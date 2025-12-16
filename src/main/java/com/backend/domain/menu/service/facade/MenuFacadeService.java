@@ -34,6 +34,8 @@ public class MenuFacadeService {
 
 	private final MenuCommandService menuCommandService;
 	private final MenuQueryService menuQueryService;
+	private final MenuFactory menuFactory;
+
 	private final StoreQueryService storeQueryService;
 	private final BeanQueryService beanQueryService;
 
@@ -41,7 +43,7 @@ public class MenuFacadeService {
 		Store store = storeQueryService.findById(storeId);
 		MenuValidator.validateStoreOwnership(store, userId);
 
-		Menu menu = MenuFactory.create(storeId, reqDto);
+		Menu menu = menuFactory.create(storeId, reqDto);
 
 		int affectedRows = menuCommandService.insert(menu);
 		if (affectedRows == 0) {
@@ -78,7 +80,7 @@ public class MenuFacadeService {
 		Store store = storeQueryService.findById(existingMenu.getStoreId());
 		MenuValidator.validateStoreOwnership(store, userId);
 
-		Menu updatedMenu = MenuFactory.createForUpdate(existingMenu, reqDto);
+		Menu updatedMenu = menuFactory.createForUpdate(existingMenu, reqDto);
 		int affectedRows = menuCommandService.update(updatedMenu);
 		if (affectedRows == 0) {
 			throw new MenuException(ErrorCode.MENU_UPDATE_FAILED);
@@ -112,13 +114,12 @@ public class MenuFacadeService {
 			throw new MenuException(ErrorCode.MENU_BEAN_ALREADY_MAPPED);
 		}
 
-		boolean isBlended = reqDto.isBlended() != null;
-		int affectedRows = menuCommandService.insertMenuBeanMapping(menuId, reqDto.beanId(), isBlended);
+		int affectedRows = menuCommandService.insertMenuBeanMapping(menuId, reqDto.beanId(), reqDto.isBlended());
 		if (affectedRows == 0) {
 			throw new MenuException(ErrorCode.MENU_BEAN_MAPPING_FAILED);
 		}
 
-		MenuBeanMappingReqDto normalizedReqDto = new MenuBeanMappingReqDto(reqDto.beanId(), isBlended);
+		MenuBeanMappingReqDto normalizedReqDto = new MenuBeanMappingReqDto(reqDto.beanId(), reqDto.isBlended());
 		return MenuConverter.toMenuBeanMappingResDto(menuId, normalizedReqDto, affectedRows == 1);
 	}
 
