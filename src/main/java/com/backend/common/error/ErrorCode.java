@@ -50,6 +50,16 @@ public enum ErrorCode {
 	 */
 	MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "M-001", "메뉴를 찾을 수 없습니다."),
 	MENU_ID_REQUIRED(HttpStatus.BAD_REQUEST, "M-002", "메뉴 ID가 필요합니다."),
+	MENU_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "M-003", "메뉴 이름은 필수 입력값입니다."),
+	MENU_PRICE_REQUIRED(HttpStatus.BAD_REQUEST, "M-004", "메뉴 가격은 필수 입력값입니다."),
+	MENU_CATEGORY_REQUIRED(HttpStatus.BAD_REQUEST, "M-005", "메뉴 카테고리는 필수 입력값입니다."),
+	MENU_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-006", "메뉴 저장에 실패했습니다."),
+	MENU_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-007", "메뉴 업데이트에 실패했습니다."),
+	MENU_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-008", "메뉴 삭제에 실패했습니다."),
+	MENU_BEAN_MAPPING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-009", "메뉴-원두 연결에 실패했습니다."),
+	MENU_BEAN_UNMAPPING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-010", "메뉴-원두 연결 해제에 실패했습니다."),
+	MENU_BEAN_ALREADY_MAPPED(HttpStatus.CONFLICT, "M-011", "해당 원두는 이미 메뉴에 연결되어 있습니다."),
+	MENU_ACCESS_DENIED(HttpStatus.FORBIDDEN, "M-012", "메뉴에 대한 접근 권한이 없습니다."),
 
 	/**
 	 * Store Error
