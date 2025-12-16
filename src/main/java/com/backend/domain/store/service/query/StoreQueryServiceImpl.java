@@ -1,103 +1,42 @@
 package com.backend.domain.store.service.query;
 
-import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.StoreException;
-import com.backend.common.util.GeoUtils;
-import com.backend.common.util.StringUtils;
-import com.backend.domain.store.converter.StoreConverter;
-import com.backend.domain.store.dto.request.StoreSearchReqDto;
-import com.backend.domain.store.dto.response.StoreDetailResDto;
-import com.backend.domain.store.dto.response.StoreListResDto;
 import com.backend.domain.store.entity.Store;
 import com.backend.domain.store.mapper.query.StoreQueryMapper;
+import com.backend.domain.store.vo.StoreSearchBoundsVo;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class StoreQueryServiceImpl implements StoreQueryService {
 
 	private final StoreQueryMapper queryMapper;
 
 	@Override
-	public StoreListResDto searchStores(final StoreSearchReqDto request) {
-		double distanceKm = GeoUtils.getRadiusInKm(request.radius());
-
-		// 1. Bounding Box 경계 계산
-		GeoUtils.BoundingBox boundingBox = GeoUtils.calculateBoundingBox(
-			request.latitude(), request.longitude(), distanceKm);
-
-		// 2. Bounding Box 내의 매장 조회 (1차 필터링 + 카테고리/키워드 필터링)
-		List<Store> candidateStores = queryMapper.findStoresWithinBounds(
-			boundingBox.minLatitude(),
-			boundingBox.maxLatitude(),
-			boundingBox.minLongitude(),
-			boundingBox.maxLongitude(),
-			StringUtils.parseCategoryList(request.categories()),
-			request.keyword()
-		);
-
-		// 3. Haversine 공식으로 정확한 거리 계산 및 필터링 후 거리순 정렬
-		Map<Long, Double> distanceMap = new HashMap<>();
-		List<Store> filteredStores = candidateStores.stream()
-			.filter(store -> {
-				double storeDistance = GeoUtils.calculateHaversineDistance(
-					request.latitude().doubleValue(),
-					request.longitude().doubleValue(),
-					store.getLatitude().doubleValue(),
-					store.getLongitude().doubleValue()
-				);
-				if (storeDistance <= distanceKm) {
-					distanceMap.put(store.getId(), storeDistance);
-					return true;
-				}
-				return false;
-			})
-			.sorted(Comparator.comparingDouble(store -> distanceMap.get(store.getId())))
-			.toList();
-
-		// 4. 응답 DTO 변환 (항상 마커 정보 포함)
-		return StoreConverter.toStoreListResponse(filteredStores, distanceMap);
+	public Store findById(final Long storeId) {
+		log.debug("[Store] 가맹점 조회 - id: {}", storeId);
+		return queryMapper.findById(storeId)
+			.orElseThrow(() -> new StoreException(ErrorCode.STORE_NOT_FOUND));
 	}
 
 	@Override
-	public boolean isStoreWithinDistance(final Long storeId, final BigDecimal latitude,
-		final BigDecimal longitude, final double distanceInMeters) {
-		Store store = queryMapper.findById(storeId);
-		// 추후 커스텀 예외처리 고려해볼만 함.
-		if (store == null) {
-			return false;
-		}
-
-		double distanceKm = GeoUtils.calculateHaversineDistance(
-			latitude.doubleValue(),
-			longitude.doubleValue(),
-			store.getLatitude().doubleValue(),
-			store.getLongitude().doubleValue()
-		);
-
-		double actualDistanceMeters = GeoUtils.convertKmToMeters(distanceKm);
-
-		return actualDistanceMeters <= distanceInMeters;
-	}
-
-	@Override
-	public StoreDetailResDto getStoreDetail(final Long storeId) {
-		Store store = queryMapper.findById(storeId);
-
-		if (store == null) {
-			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
-		}
-
-		return StoreConverter.toStoreDetailResponse(store);
+	public List<Store> findStoresWithinBounds(final StoreSearchBoundsVo boundsVo) {
+		log.debug("[Store] Bounding Box 내 가맹점 조회 - lat: [{}, {}], lng: [{}, {}], categories: {}, keyword: {}",
+			boundsVo.minLatitude(), boundsVo.maxLatitude(), boundsVo.minLongitude(), boundsVo.maxLongitude(), 
+			boundsVo.categories(), boundsVo.keyword());
+		List<Store> stores = queryMapper.findStoresWithinBounds(boundsVo);
+		log.debug("[Store] 조회된 가맹점 수: {}", stores.size());
+		return stores;
 	}
 }

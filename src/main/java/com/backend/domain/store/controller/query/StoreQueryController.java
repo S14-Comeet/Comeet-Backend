@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.response.PageResponse;
 import com.backend.common.util.ResponseUtils;
+import com.backend.domain.menu.dto.response.MenuResDto;
 import com.backend.domain.review.dto.common.ReviewPageDto;
-import com.backend.domain.review.service.facade.ReviewFacadeService;
 import com.backend.domain.store.dto.request.StoreSearchReqDto;
 import com.backend.domain.store.dto.response.StoreDetailResDto;
 import com.backend.domain.store.dto.response.StoreListResDto;
-import com.backend.domain.store.service.query.StoreQueryService;
+import com.backend.domain.store.service.facade.StoreFacadeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,8 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 class StoreQueryController {
 
-	private final StoreQueryService storeQueryService;
-	private final ReviewFacadeService reviewFacadeService;
+	private final StoreFacadeService storeFacadeService;
 
 	@Operation(
 		summary = "가맹점 목록 조회",
@@ -55,7 +54,7 @@ class StoreQueryController {
 		)
 		@Valid @ModelAttribute final StoreSearchReqDto request
 	) {
-		final StoreListResDto response = storeQueryService.searchStores(request);
+		final StoreListResDto response = storeFacadeService.searchStores(request);
 		return ResponseUtils.ok(response);
 	}
 
@@ -68,7 +67,7 @@ class StoreQueryController {
 		@Parameter(description = "가맹점 ID", example = "1")
 		@PathVariable Long storeId
 	) {
-		StoreDetailResDto response = storeQueryService.getStoreDetail(storeId);
+		StoreDetailResDto response = storeFacadeService.getStoreDetail(storeId);
 		return ResponseUtils.ok(response);
 	}
 
@@ -84,8 +83,21 @@ class StoreQueryController {
 		@Parameter(description = "페이지 크기", example = "10")
 		@RequestParam(defaultValue = "10") @Min(1) int size
 	) {
-		Page<ReviewPageDto> response = reviewFacadeService.findAllWithPageableByStoreId(storeId, page, size);
+		Page<ReviewPageDto> response = storeFacadeService.getReviewsByStore(storeId, page, size);
 		return ResponseUtils.page(response);
+	}
+
+	@Operation(
+		summary = "가맹점별 메뉴 목록 조회",
+		description = "특정 가맹점의 모든 메뉴를 페이징하여 조회합니다."
+	)
+	@GetMapping("/{storeId}/menus")
+	public ResponseEntity<PageResponse<MenuResDto>> getMenusByStore(
+		@PathVariable Long storeId,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		return ResponseUtils.page(storeFacadeService.getMenusByStore(storeId, page, size));
 	}
 
 }
