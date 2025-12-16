@@ -20,4 +20,6 @@ public interface BeanQueryService {
 	List<Bean> findByCountryContaining(String keyword, Pageable pageable);
 
 	int countByCountryContaining(String keyword);
+
+	List<Bean> findByMenuId(Long menuId);
 }

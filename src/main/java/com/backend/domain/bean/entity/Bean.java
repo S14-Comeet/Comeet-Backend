@@ -22,6 +22,7 @@ public class Bean {
 	@Id
 	private Long id;
 	private Long roasteryId;
+	private String name;
 	private String country;
 	private String farm;
 	private String variety;

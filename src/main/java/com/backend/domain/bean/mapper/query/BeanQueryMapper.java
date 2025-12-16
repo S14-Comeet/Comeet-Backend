@@ -28,4 +28,6 @@ public interface BeanQueryMapper {
 	List<Bean> findByCountryContaining(@Param("keyword") String keyword, @Param("pageable") Pageable pageable);
 
 	int countByCountryContaining(@Param("keyword") String keyword);
+
+	List<Bean> findByMenuId(@Param("menuId") Long menuId);
 }

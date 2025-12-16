@@ -66,4 +66,12 @@ public class BeanQueryServiceImpl implements BeanQueryService {
 	public int countByCountryContaining(final String keyword) {
 		return queryMapper.countByCountryContaining(keyword);
 	}
+
+	@Override
+	public List<Bean> findByMenuId(final Long menuId) {
+		log.info("[Bean] 메뉴별 원두 조회 - menuId: {}", menuId);
+		List<Bean> list = queryMapper.findByMenuId(menuId);
+		log.info("[Bean] 메뉴별 원두 조회 완료 - size: {}", list.size());
+		return list;
+	}
 }

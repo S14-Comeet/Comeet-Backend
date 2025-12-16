@@ -132,4 +132,12 @@
         WHERE country LIKE CONCAT('%', #{keyword}, '%')
           AND deleted_at IS NULL
     </select>
+
+    <select id="findByMenuId" resultType="com.backend.domain.bean.entity.Bean">
+        SELECT b.*
+        FROM beans b
+                 INNER JOIN menu_bean_mappings mbm ON b.id = mbm.bean_id
+        WHERE mbm.menu_id = #{menuId}
+          AND b.deleted_at IS NULL
+    </select>
 </mapper>
