@@ -11,5 +11,5 @@ public interface BeanCommandMapper {
 
 	int update(@Param("bean") Bean bean);
 
-	int softDelete(@Param("id") Long id);
+	int softDelete(@Param("beanId") Long beanId);
 }
