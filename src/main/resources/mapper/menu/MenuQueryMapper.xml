@@ -46,4 +46,12 @@
         <include refid="common.CommonSql.notDeleted"/>
     </select>
 
+    <select id="countMenuBeanMapping" resultType="int">
+        SELECT COUNT(*)
+        FROM menu_bean_mappings
+        WHERE menu_id = #{menuId}
+          AND bean_id = #{beanId}
+    </select>
+
+
 </mapper>

@@ -23,9 +23,4 @@ public interface MenuCommandMapper {
 		@Param("menuId") Long menuId,
 		@Param("beanId") Long beanId
 	);
-
-	int countMenuBeanMapping(
-		@Param("menuId") Long menuId,
-		@Param("beanId") Long beanId
-	);
 }

@@ -87,7 +87,7 @@ public class MenuFacadeService {
 		Menu menu = menuQueryService.findById(menuId);
 		validateStoreOwnership(menu.getStoreId(), userId);
 
-		int existingMappingCount = menuCommandService.countMenuBeanMapping(menuId, reqDto.beanId());
+		int existingMappingCount = menuQueryService.countMenuBeanMapping(menuId, reqDto.beanId());
 		if (existingMappingCount > 0) {
 			throw new MenuException(ErrorCode.MENU_BEAN_ALREADY_MAPPED);
 		}

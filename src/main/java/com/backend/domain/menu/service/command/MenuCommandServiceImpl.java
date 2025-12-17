@@ -64,9 +64,4 @@ public class MenuCommandServiceImpl implements MenuCommandService {
 			throw new MenuException(ErrorCode.MENU_BEAN_UNMAPPING_FAILED);
 		}
 	}
-
-	@Override
-	public int countMenuBeanMapping(Long menuId, Long beanId) {
-		return menuCommandMapper.countMenuBeanMapping(menuId, beanId);
-	}
 }

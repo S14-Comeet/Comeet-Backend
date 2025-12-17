@@ -40,4 +40,9 @@ public class MenuQueryServiceImpl implements MenuQueryService {
 	public int countByStoreId(Long storeId) {
 		return menuQueryMapper.countByStoreId(storeId);
 	}
+
+	@Override
+	public int countMenuBeanMapping(final Long menuId, final Long beanId) {
+		return menuQueryMapper.countMenuBeanMapping(menuId, beanId);
+	}
 }

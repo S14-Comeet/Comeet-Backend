@@ -12,6 +12,4 @@ public interface MenuCommandService {
 	void insertMenuBeanMapping(Long menuId, Long beanId, Boolean isBlended);
 
 	void deleteMenuBeanMapping(Long menuId, Long beanId);
-
-	int countMenuBeanMapping(Long menuId, Long beanId);
 }

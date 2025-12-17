@@ -12,4 +12,6 @@ public interface MenuQueryService {
 	List<Menu> findByStoreId(Long storeId, Pageable pageable);
 
 	int countByStoreId(Long storeId);
+
+	int countMenuBeanMapping(Long menuId, Long beanId);
 }

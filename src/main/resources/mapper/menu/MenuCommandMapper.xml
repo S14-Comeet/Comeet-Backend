@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.backend.domain.menu.mapper.command.MenuCommandMapper">
-    
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="menu.id">
         INSERT INTO menus (store_id, name, description, price, category, image_url, created_at, updated_at)
-        VALUES (#{menu.storeId}, #{menu.name}, #{menu.description}, #{menu.price}, 
+        VALUES (#{menu.storeId}, #{menu.name}, #{menu.description}, #{menu.price},
                 #{menu.category}, #{menu.imageUrl}, #{menu.createdAt}, #{menu.updatedAt})
     </insert>
 
@@ -33,16 +33,9 @@
     </insert>
 
     <delete id="deleteMenuBeanMapping">
-        DELETE FROM menu_bean_mappings
-        WHERE menu_id = #{menuId}
-          AND bean_id = #{beanId}
-    </delete>
-
-    <select id="countMenuBeanMapping" resultType="int">
-        SELECT COUNT(*)
+        DELETE
         FROM menu_bean_mappings
         WHERE menu_id = #{menuId}
           AND bean_id = #{beanId}
-    </select>
-
+    </delete>
 </mapper>
