@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="common.CommonSql">
+
+    <!-- Soft Delete 공통 조건: 삭제되지 않은 레코드만 조회 -->
+    <sql id="notDeleted">
+        AND deleted_at IS NULL
+    </sql>
+
+</mapper>
