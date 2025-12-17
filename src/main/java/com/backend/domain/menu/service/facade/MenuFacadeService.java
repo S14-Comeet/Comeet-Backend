@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.MenuException;
@@ -83,6 +84,7 @@ public class MenuFacadeService {
 		menuCommandService.softDelete(menuId);
 	}
 
+	@Transactional
 	public MenuBeanMappingResDto addBeanToMenu(Long menuId, Long userId, MenuBeanMappingReqDto reqDto) {
 		Menu menu = menuQueryService.findById(menuId);
 		validateStoreOwnership(menu.getStoreId(), userId);
@@ -94,8 +96,8 @@ public class MenuFacadeService {
 
 		menuCommandService.insertMenuBeanMapping(menuId, reqDto.beanId(), reqDto.isBlended());
 
-		MenuBeanMappingReqDto normalizedReqDto = new MenuBeanMappingReqDto(reqDto.beanId(), reqDto.isBlended());
-		return MenuConverter.toMenuBeanMappingResDto(menuId, normalizedReqDto, true);
+		//* 예외 발생 없이 코드 진행 되었을 경우 연결되었다고 판단
+		return MenuConverter.toMenuBeanMappingResDto(menuId, reqDto, true);
 	}
 
 	public void removeBeanFromMenu(Long menuId, Long beanId, Long userId) {
