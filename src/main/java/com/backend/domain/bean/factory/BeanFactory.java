@@ -2,6 +2,7 @@ package com.backend.domain.bean.factory;
 
 import org.springframework.stereotype.Component;
 
+import com.backend.common.util.ObjectUtils;
 import com.backend.domain.bean.dto.request.BeanCreateReqDto;
 import com.backend.domain.bean.dto.request.BeanUpdateReqDto;
 import com.backend.domain.bean.entity.Bean;
@@ -33,13 +34,13 @@ public class BeanFactory {
 	public Bean createForUpdate(final Bean existingBean, final BeanUpdateReqDto dto) {
 		Bean bean = Bean.builder()
 			.id(existingBean.getId())
-			.name(getOrDefault(dto.name(), existingBean.getName()))
+						.name(ObjectUtils.getOrDefault(dto.name(), existingBean.getName()))
 			.roasteryId(existingBean.getRoasteryId())
-			.country(getOrDefault(dto.country(), existingBean.getCountry()))
-			.farm(getOrDefault(dto.farm(), existingBean.getFarm()))
-			.variety(getOrDefault(dto.variety(), existingBean.getVariety()))
-			.processingMethod(getOrDefault(dto.processingMethod(), existingBean.getProcessingMethod()))
-			.roastingLevel(getOrDefault(dto.roastingLevel(), existingBean.getRoastingLevel()))
+			.country(ObjectUtils.getOrDefault(dto.country(), existingBean.getCountry()))
+			.farm(ObjectUtils.getOrDefault(dto.farm(), existingBean.getFarm()))
+			.variety(ObjectUtils.getOrDefault(dto.variety(), existingBean.getVariety()))
+			.processingMethod(ObjectUtils.getOrDefault(dto.processingMethod(), existingBean.getProcessingMethod()))
+			.roastingLevel(ObjectUtils.getOrDefault(dto.roastingLevel(), existingBean.getRoastingLevel()))
 			.createdAt(existingBean.getCreatedAt())
 			.build();
 
@@ -47,7 +48,4 @@ public class BeanFactory {
 		return bean;
 	}
 
-	private <T> T getOrDefault(final T newValue, final T existingValue) {
-		return newValue != null ? newValue : existingValue;
 	}
-}
