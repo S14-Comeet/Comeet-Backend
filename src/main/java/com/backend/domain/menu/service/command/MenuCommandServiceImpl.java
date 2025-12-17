@@ -3,6 +3,8 @@ package com.backend.domain.menu.service.command;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.common.error.ErrorCode;
+import com.backend.common.error.exception.MenuException;
 import com.backend.domain.menu.entity.Menu;
 import com.backend.domain.menu.mapper.command.MenuCommandMapper;
 
@@ -19,33 +21,48 @@ public class MenuCommandServiceImpl implements MenuCommandService {
 	private final MenuCommandMapper menuCommandMapper;
 
 	@Override
-	public int insert(Menu menu) {
+	public void insert(Menu menu) {
 		log.info("[Menu] 메뉴 저장 - storeId: {}, name: {}", menu.getStoreId(), menu.getName());
-		return menuCommandMapper.insert(menu);
+		int affectedRows = menuCommandMapper.insert(menu);
+		if (affectedRows == 0) {
+			throw new MenuException(ErrorCode.MENU_SAVE_FAILED);
+		}
 	}
 
 	@Override
-	public int update(Menu menu) {
+	public void update(Menu menu) {
 		log.info("[Menu] 메뉴 업데이트 - id: {}, name: {}", menu.getId(), menu.getName());
-		return menuCommandMapper.update(menu);
+		int affectedRows = menuCommandMapper.update(menu);
+		if (affectedRows == 0) {
+			throw new MenuException(ErrorCode.MENU_UPDATE_FAILED);
+		}
 	}
 
 	@Override
-	public int softDelete(Long menuId) {
+	public void softDelete(Long menuId) {
 		log.info("[Menu] 메뉴 소프트 삭제 - id: {}", menuId);
-		return menuCommandMapper.softDelete(menuId);
+		int affectedRows = menuCommandMapper.softDelete(menuId);
+		if (affectedRows == 0) {
+			throw new MenuException(ErrorCode.MENU_DELETE_FAILED);
+		}
 	}
 
 	@Override
-	public int insertMenuBeanMapping(Long menuId, Long beanId, Boolean isBlended) {
+	public void insertMenuBeanMapping(Long menuId, Long beanId, Boolean isBlended) {
 		log.info("[Menu] 메뉴-원두 매핑 생성 - menuId: {}, beanId: {}", menuId, beanId);
-		return menuCommandMapper.insertMenuBeanMapping(menuId, beanId, isBlended);
+		int affectedRows = menuCommandMapper.insertMenuBeanMapping(menuId, beanId, isBlended);
+		if (affectedRows == 0) {
+			throw new MenuException(ErrorCode.MENU_BEAN_MAPPING_FAILED);
+		}
 	}
 
 	@Override
-	public int deleteMenuBeanMapping(Long menuId, Long beanId) {
+	public void deleteMenuBeanMapping(Long menuId, Long beanId) {
 		log.info("[Menu] 메뉴-원두 매핑 삭제 - menuId: {}, beanId: {}", menuId, beanId);
-		return menuCommandMapper.deleteMenuBeanMapping(menuId, beanId);
+		int affectedRows = menuCommandMapper.deleteMenuBeanMapping(menuId, beanId);
+		if (affectedRows == 0) {
+			throw new MenuException(ErrorCode.MENU_BEAN_UNMAPPING_FAILED);
+		}
 	}
 
 	@Override

@@ -6,14 +6,14 @@
         SELECT *
         FROM menus
         WHERE id = #{menuId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
     <select id="findByStoreId" resultType="com.backend.domain.menu.entity.Menu">
         SELECT *
         FROM menus
         WHERE store_id = #{storeId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
         <choose>
             <when test="pageable.sort != null and pageable.sort.isSorted()">
                 ORDER BY
@@ -43,7 +43,7 @@
         SELECT COUNT(*)
         FROM menus
         WHERE store_id = #{storeId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
 </mapper>

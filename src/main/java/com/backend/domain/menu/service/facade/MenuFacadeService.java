@@ -76,6 +76,8 @@ public class MenuFacadeService {
 
 	public void deleteMenu(Long menuId, Long userId) {
 		Menu menu = menuQueryService.findById(menuId);
+		MenuValidator.validateNotDeleted(menu);
+
 		validateStoreOwnership(menu.getStoreId(), userId);
 
 		menuCommandService.softDelete(menuId);

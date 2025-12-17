@@ -60,6 +60,7 @@ public enum ErrorCode {
 	MENU_BEAN_UNMAPPING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "M-010", "메뉴-원두 연결 해제에 실패했습니다."),
 	MENU_BEAN_ALREADY_MAPPED(HttpStatus.CONFLICT, "M-011", "해당 원두는 이미 메뉴에 연결되어 있습니다."),
 	MENU_ACCESS_DENIED(HttpStatus.FORBIDDEN, "M-012", "메뉴에 대한 접근 권한이 없습니다."),
+	MENU_ALREADY_DELETED(HttpStatus.CONFLICT, "M-013", "이미 삭제된 메뉴입니다."),
 
 	/**
 	 * Store Error

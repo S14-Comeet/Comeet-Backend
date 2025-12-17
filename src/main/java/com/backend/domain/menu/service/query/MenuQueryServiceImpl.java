@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
+import com.backend.common.error.exception.MenuException;
 import com.backend.domain.menu.entity.Menu;
-import com.backend.domain.menu.exception.MenuException;
 import com.backend.domain.menu.mapper.query.MenuQueryMapper;
 
 import lombok.AccessLevel;
