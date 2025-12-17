@@ -1,0 +1,130 @@
+name: CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Make .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+        shell: bash
+
+      - name: Debug - check .env exists
+        run: |
+          echo "[Build job] Checking .env existence"
+          if [ -f .env ]; then
+          echo ".env file exists (size: $(stat -f%z .env 2>/dev/null || stat -c%s .env) bytes)"
+          else
+            echo "No .env found"
+          fi
+
+      - name: Archive .env and docker-compose.yml
+        run: |
+          mkdir deploy
+          mv .env deploy/
+          cp docker-compose.yml deploy/
+          cp redis.conf deploy/       # Redis 설정 파일 포함
+          tar -czvf deploy.tar.gz -C deploy .
+        shell: bash
+
+      - name: Upload deployment artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: deployment-files
+          path: deploy.tar.gz
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download deployment files
+        uses: actions/download-artifact@v7
+        with:
+          name: deployment-files
+          path: .
+
+      - name: Debug - list files
+        run: ls -al
+
+      - name: Extract deployment files
+        run: |
+          echo "=== Extracting tar.gz ==="
+          tar -xzvf deploy.tar.gz
+          echo "=== After extraction ==="
+          ls -al
+
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: "docker-compose.yml"
+          target: "/home/ubuntu/comeet/"
+
+      - name: Copy .env to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: ".env"
+          target: "/home/ubuntu/comeet/"
+
+      - name: Copy redis.conf to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: "redis.conf"
+          target: "/home/ubuntu/comeet/"
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          command_timeout: 30m
+          script: |
+            cd /home/ubuntu/comeet
+
+            # Docker 로그인
+            echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+            # 기존 컨테이너 종료
+            sudo docker-compose down || true
+
+            # 새 이미지 받기
+            sudo docker-compose pull
+
+            sudo docker-compose up -d
+
+            # 안 쓰는 이미지 정리
+            sudo docker image prune -f
+
+            # 컨테이너 상태 확인
+            sudo docker-compose ps

@@ -1,7 +1,9 @@
 package com.backend.common.config;
 
-
+import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -10,10 +12,10 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 public class CorsConfig {
-	private static final List<String> ALLOWED_ORIGINS = List.of(
-		"http://localhost:5173",
-		"http://localhost:8080"
-	);
+
+	private static final String REGEX = ",";
+	@Value("${cors.allowed-origins}")
+	private String allowedOrigins;
 
 	private static final List<String> ALLOWED_HEADERS = List.of(
 		"Authorization",
@@ -46,7 +48,12 @@ public class CorsConfig {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.setAllowedOrigins(ALLOWED_ORIGINS);
+
+		List<String> origins = Arrays.stream(allowedOrigins.split(REGEX))
+			.map(String::trim)
+			.toList();
+		config.setAllowedOrigins(origins);
+
 		config.setAllowedHeaders(ALLOWED_HEADERS);
 		config.setAllowedMethods(ALLOWED_METHODS);
 		config.setExposedHeaders(EXPOSED_HEADERS);
