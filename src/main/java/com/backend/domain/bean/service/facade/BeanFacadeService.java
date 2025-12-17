@@ -51,9 +51,8 @@ public class BeanFacadeService {
 	private final FlavorQueryService flavorQueryService;
 
 	@Transactional
-	public BeanResDto createBean(final Long userId, final BeanCreateReqDto reqDto) {
+	public BeanResDto createBean(final BeanCreateReqDto reqDto) {
 		Roastery roastery = roasteryQueryService.findById(reqDto.roasteryId());
-		roasteryValidator.validateOwnership(roastery, userId);
 
 		Bean bean = beanFactory.create(reqDto);
 		int affectedRows = beanCommandService.insert(bean);
@@ -69,10 +68,9 @@ public class BeanFacadeService {
 	}
 
 	@Transactional
-	public BeanResDto updateBean(final Long beanId, final Long userId, final BeanUpdateReqDto reqDto) {
+	public BeanResDto updateBean(final Long beanId, final BeanUpdateReqDto reqDto) {
 		Bean existingBean = beanQueryService.findById(beanId);
 		Roastery roastery = roasteryQueryService.findById(existingBean.getRoasteryId());
-		roasteryValidator.validateOwnership(roastery, userId);
 
 		Bean updatedBean = beanFactory.createForUpdate(existingBean, reqDto);
 		int affectedRows = beanCommandService.update(updatedBean);
@@ -92,10 +90,9 @@ public class BeanFacadeService {
 	}
 
 	@Transactional
-	public void deleteBean(final Long beanId, final Long userId) {
+	public void deleteBean(final Long beanId) {
 		Bean existingBean = beanQueryService.findById(beanId);
 		Roastery roastery = roasteryQueryService.findById(existingBean.getRoasteryId());
-		roasteryValidator.validateOwnership(roastery, userId);
 
 		int affectedRows = beanCommandService.softDelete(beanId);
 		if (affectedRows == 0) {

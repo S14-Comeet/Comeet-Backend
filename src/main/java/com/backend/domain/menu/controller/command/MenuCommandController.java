@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Menu", description = "메뉴 관리 API")
 @RestController
 @RequestMapping("/menus")
-@PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
+@PreAuthorize("hasRole('ROLE_MANAGER')")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuCommandController {
 
