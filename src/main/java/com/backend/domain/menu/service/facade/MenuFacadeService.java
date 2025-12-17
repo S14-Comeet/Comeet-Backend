@@ -67,6 +67,8 @@ public class MenuFacadeService {
 
 	public MenuResDto updateMenu(Long menuId, Long userId, MenuUpdateReqDto reqDto) {
 		Menu existingMenu = menuQueryService.findById(menuId);
+		MenuValidator.validateNotDeleted(existingMenu);
+
 		validateStoreOwnership(existingMenu.getStoreId(), userId);
 
 		Menu updatedMenu = menuFactory.createForUpdate(existingMenu, reqDto);

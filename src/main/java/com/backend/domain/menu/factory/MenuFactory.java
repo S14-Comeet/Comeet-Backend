@@ -6,12 +6,19 @@ import com.backend.common.util.ObjectUtils;
 import com.backend.domain.menu.dto.request.MenuCreateReqDto;
 import com.backend.domain.menu.dto.request.MenuUpdateReqDto;
 import com.backend.domain.menu.entity.Menu;
+import com.backend.domain.menu.validator.MenuValidator;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuFactory {
 
+	private final MenuValidator menuValidator;
+
 	public Menu create(Long storeId, MenuCreateReqDto reqDto) {
-		return Menu.builder()
+		Menu menu = Menu.builder()
 			.storeId(storeId)
 			.name(reqDto.name())
 			.description(reqDto.description())
@@ -19,10 +26,13 @@ public class MenuFactory {
 			.category(reqDto.category())
 			.imageUrl(reqDto.imageUrl())
 			.build();
+
+		menuValidator.validate(menu);
+		return menu;
 	}
 
 	public Menu createForUpdate(Menu existingMenu, MenuUpdateReqDto reqDto) {
-		return Menu.builder()
+		Menu menu = Menu.builder()
 			.id(existingMenu.getId())
 			.storeId(existingMenu.getStoreId())
 			.name(ObjectUtils.getOrDefault(reqDto.name(), existingMenu.getName()))
@@ -33,6 +43,9 @@ public class MenuFactory {
 			.createdAt(existingMenu.getCreatedAt())
 			.deletedAt(existingMenu.getDeletedAt())
 			.build();
+
+		menuValidator.validate(menu);
+		return menu;
 	}
 
 }
