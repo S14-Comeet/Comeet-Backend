@@ -16,12 +16,6 @@ public class MenuValidator {
 		}
 	}
 
-	public void validateMenuBelongsToStore(final Menu menu, final Long storeId) {
-		if (!menu.getStoreId().equals(storeId)) {
-			throw new MenuException(ErrorCode.MENU_ACCESS_DENIED);
-		}
-	}
-
 	public void validateNotDeleted(final Menu menu) {
 		if (menu.getDeletedAt() != null) {
 			throw new MenuException(ErrorCode.MENU_ALREADY_DELETED);

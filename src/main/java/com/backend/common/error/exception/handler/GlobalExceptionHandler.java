@@ -1,7 +1,6 @@
 package com.backend.common.error.exception.handler;
 
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -93,16 +92,6 @@ public class GlobalExceptionHandler {
 		HttpServletRequest request
 	) {
 		LoggingUtil.logException("DuplicateKeyException 예외 발생", ex, request);
-		ErrorResponse response = ErrorResponse.of(ErrorCode.DUPLICATED_KEY, request);
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponse.fail(response));
-	}
-
-	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-	public ResponseEntity<BaseResponse<ErrorResponse>> handleSQLIntegrityConstraintViolationException(
-		SQLIntegrityConstraintViolationException ex,
-		HttpServletRequest request
-	) {
-		LoggingUtil.logException("SQLIntegrityConstraintViolationException 예외 발생", ex, request);
 		ErrorResponse response = ErrorResponse.of(ErrorCode.DUPLICATED_KEY, request);
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponse.fail(response));
 	}
