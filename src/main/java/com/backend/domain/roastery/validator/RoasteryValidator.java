@@ -26,10 +26,4 @@ public class RoasteryValidator implements Validator<Roastery> {
 			throw new RoasteryException(ErrorCode.ROASTERY_NAME_REQUIRED);
 		}
 	}
-
-	public void validateOwnership(final Roastery roastery, final Long userId) {
-		if (!roastery.getOwnerId().equals(userId)) {
-			throw new RoasteryException(ErrorCode.ROASTERY_ACCESS_DENIED);
-		}
-	}
 }

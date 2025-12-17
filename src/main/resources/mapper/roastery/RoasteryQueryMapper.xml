@@ -72,38 +72,4 @@
         FROM roasteries
         WHERE name LIKE CONCAT('%', #{keyword}, '%')
     </select>
-
-    <select id="findByOwnerId" resultType="com.backend.domain.roastery.entity.Roastery">
-        SELECT *
-        FROM roasteries
-        WHERE owner_id = #{ownerId}
-        <choose>
-            <when test="pageable.sort != null and pageable.sort.isSorted()">
-                ORDER BY
-                <foreach collection="pageable.sort" item="order" separator=",">
-                    <choose>
-                        <when test="order.property == 'id'">id</when>
-                        <when test="order.property == 'name'">name</when>
-                        <when test="order.property == 'createdAt'">created_at</when>
-                        <otherwise>id</otherwise>
-                    </choose>
-                    <choose>
-                        <when test="order.direction.name() == 'ASC'">ASC</when>
-                        <when test="order.direction.name() == 'DESC'">DESC</when>
-                        <otherwise>DESC</otherwise>
-                    </choose>
-                </foreach>
-            </when>
-            <otherwise>
-                ORDER BY id DESC
-            </otherwise>
-        </choose>
-        LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
-    </select>
-
-    <select id="countByOwnerId" resultType="int">
-        SELECT COUNT(*)
-        FROM roasteries
-        WHERE owner_id = #{ownerId}
-    </select>
 </mapper>

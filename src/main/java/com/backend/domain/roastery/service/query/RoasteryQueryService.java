@@ -16,8 +16,4 @@ public interface RoasteryQueryService {
 	List<Roastery> findByNameContaining(String keyword, Pageable pageable);
 
 	int countByNameContaining(String keyword);
-
-	List<Roastery> findByOwnerId(Long ownerId, Pageable pageable);
-
-	int countByOwnerId(Long ownerId);
 }

@@ -11,7 +11,6 @@ public class RoasteryConverter {
 	public static RoasteryResDto toRoasteryResDto(final Roastery roastery) {
 		return RoasteryResDto.builder()
 			.id(roastery.getId())
-			.ownerId(roastery.getOwnerId())
 			.name(roastery.getName())
 			.logoUrl(roastery.getLogoUrl())
 			.websiteUrl(roastery.getWebsiteUrl())

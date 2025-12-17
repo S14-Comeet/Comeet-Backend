@@ -14,7 +14,6 @@ import com.backend.domain.roastery.entity.Roastery;
 import com.backend.domain.roastery.factory.RoasteryFactory;
 import com.backend.domain.roastery.service.command.RoasteryCommandService;
 import com.backend.domain.roastery.service.query.RoasteryQueryService;
-import com.backend.domain.roastery.validator.RoasteryValidator;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +24,10 @@ public class RoasteryFacadeService {
 
 	private final RoasteryQueryService roasteryQueryService;
 	private final RoasteryCommandService roasteryCommandService;
-
-	private final RoasteryValidator roasteryValidator;
 	private final RoasteryFactory roasteryFactory;
 
-	public RoasteryResDto createRoastery(final Long ownerId, final RoasteryCreateReqDto reqDto) {
-		Roastery roastery = roasteryFactory.create(ownerId, reqDto);
+	public RoasteryResDto createRoastery(final RoasteryCreateReqDto reqDto) {
+		Roastery roastery = roasteryFactory.create(reqDto);
 		int affectedRows = roasteryCommandService.insert(roastery);
 		if (affectedRows == 0) {
 			throw new RoasteryException(ErrorCode.ROASTERY_SAVE_FAILED);
@@ -38,9 +35,8 @@ public class RoasteryFacadeService {
 		return RoasteryConverter.toRoasteryResDto(roastery);
 	}
 
-	public RoasteryResDto updateRoastery(final Long roasteryId, final Long userId, final RoasteryUpdateReqDto reqDto) {
+	public RoasteryResDto updateRoastery(final Long roasteryId, final RoasteryUpdateReqDto reqDto) {
 		Roastery existingRoastery = roasteryQueryService.findById(roasteryId);
-		roasteryValidator.validateOwnership(existingRoastery, userId);
 
 		Roastery updatedRoastery = roasteryFactory.createForUpdate(existingRoastery, reqDto);
 		int affectedRows = roasteryCommandService.update(updatedRoastery);
@@ -73,12 +69,4 @@ public class RoasteryFacadeService {
 		);
 	}
 
-	public Page<RoasteryResDto> getMyRoasteries(final Long ownerId, final int page, final int size) {
-		return PageUtils.buildPageResponse(
-			page, size,
-			pageable -> roasteryQueryService.findByOwnerId(ownerId, pageable),
-			() -> roasteryQueryService.countByOwnerId(ownerId),
-			RoasteryConverter::toRoasteryResDto
-		);
-	}
 }
