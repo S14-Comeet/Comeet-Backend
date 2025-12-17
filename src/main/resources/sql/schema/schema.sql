@@ -145,8 +145,9 @@ CREATE TABLE IF NOT EXISTS cupping_notes
 CREATE TABLE IF NOT EXISTS beans
 (
     id                BIGINT AUTO_INCREMENT PRIMARY KEY,
-    roastery_id       BIGINT      NOT NULL,
-    country           VARCHAR(50) NOT NULL,
+    roastery_id       BIGINT       NOT NULL,
+    name              VARCHAR(100) NOT NULL,
+    country           VARCHAR(50)  NOT NULL,
     farm              VARCHAR(100),
     variety           VARCHAR(100),
     processing_method VARCHAR(50),
