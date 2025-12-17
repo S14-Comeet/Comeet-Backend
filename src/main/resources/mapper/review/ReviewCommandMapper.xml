@@ -5,15 +5,15 @@
         INSERT INTO reviews (visit_id, user_id, menu_id, store_id, content, is_public, image_url, deleted_at,
                              created_at,
                              updated_at)
-        VALUES (#{visitId}, #{userId}, #{menuId}, #{storeId}, #{content}, #{isPublic}, #{imageUrl}, NULL, NOW(), NOW())
+        VALUES (#{review.visitId}, #{review.userId}, #{review.menuId}, #{review.storeId}, #{review.content}, #{review.isPublic}, #{review.imageUrl}, NULL, NOW(), NOW())
     </insert>
     <update id="update">
         UPDATE reviews
-        SET content    = #{content},
-            is_public  = #{isPublic},
-            image_url  = #{imageUrl},
+        SET content    = #{review.content},
+            is_public  = #{review.isPublic},
+            image_url  = #{review.imageUrl},
             updated_at = now()
-        WHERE id = #{id}
+        WHERE id = #{review.id}
     </update>
     <update id="softDelete">
         UPDATE reviews

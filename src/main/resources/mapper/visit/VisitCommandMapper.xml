@@ -4,6 +4,6 @@
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO visits
             (user_id, menu_id, latitude, longitude, is_verified, created_at)
-        VALUES (#{userId}, #{menuId}, #{latitude}, #{longitude}, #{isVerified}, NOW())
+        VALUES (#{visit.userId}, #{visit.menuId}, #{visit.latitude}, #{visit.longitude}, #{visit.isVerified}, NOW())
     </insert>
 </mapper>
