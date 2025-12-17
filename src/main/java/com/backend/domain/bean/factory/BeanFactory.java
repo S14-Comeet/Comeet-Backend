@@ -34,7 +34,7 @@ public class BeanFactory {
 	public Bean createForUpdate(final Bean existingBean, final BeanUpdateReqDto dto) {
 		Bean bean = Bean.builder()
 			.id(existingBean.getId())
-						.name(ObjectUtils.getOrDefault(dto.name(), existingBean.getName()))
+			.name(ObjectUtils.getOrDefault(dto.name(), existingBean.getName()))
 			.roasteryId(existingBean.getRoasteryId())
 			.country(ObjectUtils.getOrDefault(dto.country(), existingBean.getCountry()))
 			.farm(ObjectUtils.getOrDefault(dto.farm(), existingBean.getFarm()))
@@ -48,4 +48,4 @@ public class BeanFactory {
 		return bean;
 	}
 
-	}
+}

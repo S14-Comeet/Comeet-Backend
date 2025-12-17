@@ -1,5 +1,7 @@
 package com.backend.domain.bean.dto.request;
 
+import java.util.List;
+
 import com.backend.domain.bean.enums.RoastingLevel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,6 +28,6 @@ public record BeanUpdateReqDto(
 	RoastingLevel roastingLevel,
 
 	@Schema(description = "Flavor ID 리스트", example = "[1, 5, 10]", requiredMode = RequiredMode.NOT_REQUIRED)
-	java.util.List<Long> flavorIds
+	List<Long> flavorIds
 ) {
 }
