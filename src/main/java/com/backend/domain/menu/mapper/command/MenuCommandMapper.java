@@ -16,7 +16,7 @@ public interface MenuCommandMapper {
 	int insertMenuBeanMapping(
 		@Param("menuId") Long menuId,
 		@Param("beanId") Long beanId,
-		@Param("isBlended") Boolean isBlended
+		@Param("isBlended") boolean isBlended
 	);
 
 	int deleteMenuBeanMapping(
