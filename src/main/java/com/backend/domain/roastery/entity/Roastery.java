@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 public class Roastery {
 	@Id
 	private Long id;
-	private Long ownerId;  // 로스터리 관리자 ID 추가
 	private String name;
 	private String logoUrl;
 	private String websiteUrl;
