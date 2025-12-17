@@ -10,21 +10,15 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class MenuValidator {
 
-	public static void validateStoreOwnership(Store store, Long userId) {
+	public void validateStoreOwnership(final Store store, final Long userId) {
 		if (!store.getOwnerId().equals(userId)) {
 			throw new MenuException(ErrorCode.MENU_ACCESS_DENIED);
 		}
 	}
 
-	public static void validateMenuBelongsToStore(Menu menu, Long storeId) {
+	public void validateMenuBelongsToStore(final Menu menu, final Long storeId) {
 		if (!menu.getStoreId().equals(storeId)) {
 			throw new MenuException(ErrorCode.MENU_ACCESS_DENIED);
-		}
-	}
-
-	public static void validateNotDeleted(Menu menu) {
-		if (menu.getDeletedAt() != null) {
-			throw new MenuException(ErrorCode.MENU_NOT_FOUND);
 		}
 	}
 }

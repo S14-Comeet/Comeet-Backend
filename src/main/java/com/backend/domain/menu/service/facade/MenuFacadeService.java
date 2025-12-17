@@ -40,22 +40,15 @@ public class MenuFacadeService {
 	private final BeanQueryService beanQueryService;
 
 	public MenuResDto createMenu(Long storeId, Long userId, MenuCreateReqDto reqDto) {
-		Store store = storeQueryService.findById(storeId);
-		MenuValidator.validateStoreOwnership(store, userId);
+		validateStoreOwnership(storeId, userId);
 
 		Menu menu = menuFactory.create(storeId, reqDto);
-
-		int affectedRows = menuCommandService.insert(menu);
-		if (affectedRows == 0) {
-			throw new MenuException(ErrorCode.MENU_SAVE_FAILED);
-		}
+		menuCommandService.insert(menu);
 
 		return MenuConverter.toMenuResDto(menu);
 	}
 
 	public Page<MenuResDto> getMenusByStore(Long storeId, int page, int size) {
-		storeQueryService.findById(storeId);
-
 		return PageUtils.buildPageResponse(
 			page, size,
 			pageable -> menuQueryService.findByStoreId(storeId, pageable),
@@ -66,8 +59,6 @@ public class MenuFacadeService {
 
 	public MenuDetailResDto getMenuDetail(Long menuId) {
 		Menu menu = menuQueryService.findById(menuId);
-		MenuValidator.validateNotDeleted(menu);
-
 		List<Bean> beans = beanQueryService.findByMenuId(menuId);
 
 		return MenuConverter.toMenuDetailResDto(menu, beans);
@@ -75,64 +66,45 @@ public class MenuFacadeService {
 
 	public MenuResDto updateMenu(Long menuId, Long userId, MenuUpdateReqDto reqDto) {
 		Menu existingMenu = menuQueryService.findById(menuId);
-		MenuValidator.validateNotDeleted(existingMenu);
-
-		Store store = storeQueryService.findById(existingMenu.getStoreId());
-		MenuValidator.validateStoreOwnership(store, userId);
+		validateStoreOwnership(existingMenu.getStoreId(), userId);
 
 		Menu updatedMenu = menuFactory.createForUpdate(existingMenu, reqDto);
-		int affectedRows = menuCommandService.update(updatedMenu);
-		if (affectedRows == 0) {
-			throw new MenuException(ErrorCode.MENU_UPDATE_FAILED);
-		}
+		menuCommandService.update(updatedMenu);
 
 		return MenuConverter.toMenuResDto(updatedMenu);
 	}
 
 	public void deleteMenu(Long menuId, Long userId) {
 		Menu menu = menuQueryService.findById(menuId);
-		MenuValidator.validateNotDeleted(menu);
+		validateStoreOwnership(menu.getStoreId(), userId);
 
-		Store store = storeQueryService.findById(menu.getStoreId());
-		MenuValidator.validateStoreOwnership(store, userId);
-
-		int affectedRows = menuCommandService.softDelete(menuId);
-		if (affectedRows == 0) {
-			throw new MenuException(ErrorCode.MENU_DELETE_FAILED);
-		}
+		menuCommandService.softDelete(menuId);
 	}
 
 	public MenuBeanMappingResDto addBeanToMenu(Long menuId, Long userId, MenuBeanMappingReqDto reqDto) {
 		Menu menu = menuQueryService.findById(menuId);
-		MenuValidator.validateNotDeleted(menu);
-
-		Store store = storeQueryService.findById(menu.getStoreId());
-		MenuValidator.validateStoreOwnership(store, userId);
+		validateStoreOwnership(menu.getStoreId(), userId);
 
 		int existingMappingCount = menuCommandService.countMenuBeanMapping(menuId, reqDto.beanId());
 		if (existingMappingCount > 0) {
 			throw new MenuException(ErrorCode.MENU_BEAN_ALREADY_MAPPED);
 		}
 
-		int affectedRows = menuCommandService.insertMenuBeanMapping(menuId, reqDto.beanId(), reqDto.isBlended());
-		if (affectedRows == 0) {
-			throw new MenuException(ErrorCode.MENU_BEAN_MAPPING_FAILED);
-		}
+		menuCommandService.insertMenuBeanMapping(menuId, reqDto.beanId(), reqDto.isBlended());
 
 		MenuBeanMappingReqDto normalizedReqDto = new MenuBeanMappingReqDto(reqDto.beanId(), reqDto.isBlended());
-		return MenuConverter.toMenuBeanMappingResDto(menuId, normalizedReqDto, affectedRows == 1);
+		return MenuConverter.toMenuBeanMappingResDto(menuId, normalizedReqDto, true);
 	}
 
 	public void removeBeanFromMenu(Long menuId, Long beanId, Long userId) {
 		Menu menu = menuQueryService.findById(menuId);
-		MenuValidator.validateNotDeleted(menu);
+		validateStoreOwnership(menu.getStoreId(), userId);
 
-		Store store = storeQueryService.findById(menu.getStoreId());
+		menuCommandService.deleteMenuBeanMapping(menuId, beanId);
+	}
+
+	private void validateStoreOwnership(Long storeId, Long userId) {
+		Store store = storeQueryService.findById(storeId);
 		MenuValidator.validateStoreOwnership(store, userId);
-
-		int affectedRows = menuCommandService.deleteMenuBeanMapping(menuId, beanId);
-		if (affectedRows == 0) {
-			throw new MenuException(ErrorCode.MENU_BEAN_UNMAPPING_FAILED);
-		}
 	}
 }
