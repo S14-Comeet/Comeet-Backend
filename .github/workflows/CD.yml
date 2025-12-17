@@ -110,9 +110,6 @@ jobs:
           script: |
             cd /home/ubuntu/comeet
 
-            # logs 디렉토리 생성 (없는 경우)
-            mkdir -p logs
-
             # Docker 로그인
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
@@ -122,7 +119,6 @@ jobs:
             # 새 이미지 받기
             sudo docker-compose pull
 
-            # 모니터링 포함하여 전체 스택 재실행
             sudo docker-compose up -d
 
             # 안 쓰는 이미지 정리
