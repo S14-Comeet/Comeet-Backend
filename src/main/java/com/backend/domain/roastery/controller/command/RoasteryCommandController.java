@@ -42,6 +42,7 @@ public class RoasteryCommandController {
 		return ResponseUtils.created(roasteryFacadeService.createRoastery(reqDto));
 	}
 
+	@Deprecated(forRemoval = true)
 	@Operation(
 		summary = "로스터리 수정",
 		description = "로스터리 정보를 수정합니다. MANAGER 권한이 필요합니다."
