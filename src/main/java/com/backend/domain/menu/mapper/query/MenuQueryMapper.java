@@ -20,5 +20,5 @@ public interface MenuQueryMapper {
 
 	int countByStoreId(@Param("storeId") Long storeId);
 
-	int countMenuBeanMapping(Long menuId, Long beanId);
+	int countMenuBeanMapping(@Param("menuId") Long menuId, @Param("beanId") Long beanId);
 }
