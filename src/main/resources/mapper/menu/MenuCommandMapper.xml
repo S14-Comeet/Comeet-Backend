@@ -17,14 +17,14 @@
             image_url   = #{menu.imageUrl},
             updated_at  = now()
         WHERE id = #{menu.id}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </update>
 
     <update id="softDelete">
         UPDATE menus
         SET deleted_at = NOW()
         WHERE id = #{menuId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </update>
 
     <insert id="insertMenuBeanMapping">

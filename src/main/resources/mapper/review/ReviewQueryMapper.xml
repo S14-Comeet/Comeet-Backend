@@ -5,12 +5,13 @@
         SELECT *
         FROM reviews
         WHERE id = #{reviewId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
     <select id="findAllByUserId" resultType="com.backend.domain.review.entity.Review">
         SELECT *
         FROM reviews
-        WHERE user_id = #{userId} AND deleted_at IS NULL
+        WHERE user_id = #{userId}
+        <include refid="common.CommonSql.notDeleted"/>
         <choose>
             <when test="pageable.sort != null and pageable.sort.isSorted()">
                 ORDER BY
@@ -39,13 +40,14 @@
         SELECT COUNT(*)
         FROM reviews
         WHERE user_id = #{userId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
     <select id="findAllByStoreId" resultType="com.backend.domain.review.entity.Review">
         SELECT *
         FROM reviews
-        WHERE store_id = #{storeId} AND deleted_at IS NULL
+        WHERE store_id = #{storeId}
+        <include refid="common.CommonSql.notDeleted"/>
         <choose>
             <when test="pageable.sort != null and pageable.sort.isSorted()">
                 ORDER BY
@@ -73,7 +75,7 @@
         SELECT COUNT(*)
         FROM reviews
         WHERE store_id = #{storeId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
     <select id="existsByVisitId" resultType="boolean">
@@ -81,7 +83,7 @@
             SELECT 1
             FROM reviews
             WHERE visit_id = #{visitId}
-              AND deleted_at IS NULL
+            <include refid="common.CommonSql.notDeleted"/>
         )
     </select>
 </mapper>

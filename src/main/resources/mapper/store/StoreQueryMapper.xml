@@ -29,7 +29,7 @@
         FROM stores
         WHERE latitude BETWEEN #{boundsVo.minLatitude} AND #{boundsVo.maxLatitude}
           AND longitude BETWEEN #{boundsVo.minLongitude} AND #{boundsVo.maxLongitude}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
           <if test="boundsVo.categories != null and boundsVo.categories.size() > 0">
           AND (
           <foreach collection="boundsVo.categories" item="category" separator=" OR ">
@@ -67,7 +67,7 @@
             updated_at
         FROM stores
         WHERE id = #{storeId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
 </mapper>

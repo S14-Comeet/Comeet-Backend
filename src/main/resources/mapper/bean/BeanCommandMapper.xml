@@ -15,13 +15,13 @@
             roasting_level    = #{roastingLevel},
             updated_at        = NOW()
         WHERE id = #{id}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </update>
 
     <update id="softDelete">
         UPDATE beans
         SET deleted_at = NOW()
         WHERE id = #{id}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </update>
 </mapper>
