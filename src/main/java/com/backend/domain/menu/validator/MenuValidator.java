@@ -1,0 +1,60 @@
+package com.backend.domain.menu.validator;
+
+import org.springframework.stereotype.Component;
+
+import com.backend.common.error.ErrorCode;
+import com.backend.common.error.exception.MenuException;
+import com.backend.common.validator.Validator;
+import com.backend.domain.menu.entity.Menu;
+import com.backend.domain.store.entity.Store;
+
+@Component
+public class MenuValidator implements Validator<Menu> {
+
+	@Override
+	public void validate(final Menu menu) {
+		validateNotNull(menu);
+		validateName(menu.getName());
+		validatePrice(menu.getPrice());
+		validateCategory(menu.getCategory());
+	}
+
+	private void validateNotNull(final Menu menu) {
+		if (menu == null) {
+			throw new MenuException(ErrorCode.MENU_ID_REQUIRED);
+		}
+	}
+
+	private void validateName(final String name) {
+		if (name == null || name.isBlank()) {
+			throw new MenuException(ErrorCode.MENU_NAME_REQUIRED);
+		}
+	}
+
+	private void validatePrice(final Integer price) {
+		if (price == null) {
+			throw new MenuException(ErrorCode.MENU_PRICE_REQUIRED);
+		}
+		if (price <= 0) {
+			throw new MenuException(ErrorCode.MENU_PRICE_REQUIRED);
+		}
+	}
+
+	private void validateCategory(final Object category) {
+		if (category == null) {
+			throw new MenuException(ErrorCode.MENU_CATEGORY_REQUIRED);
+		}
+	}
+
+	public static void validateStoreOwnership(final Store store, final Long userId) {
+		if (!store.getOwnerId().equals(userId)) {
+			throw new MenuException(ErrorCode.MENU_ACCESS_DENIED);
+		}
+	}
+
+	public static void validateNotDeleted(final Menu menu) {
+		if (menu.getDeletedAt() != null) {
+			throw new MenuException(ErrorCode.MENU_ALREADY_DELETED);
+		}
+	}
+}

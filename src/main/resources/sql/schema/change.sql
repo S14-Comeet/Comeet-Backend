@@ -3,3 +3,7 @@ ALTER TABLE roasteries
     ADD COLUMN owner_id BIGINT NOT NULL;
 ALTER TABLE roasteries
     ADD CONSTRAINT FOREIGN KEY (owner_id) REFERENCES users (id);
+
+# 2025-12-17 #35
+ALTER TABLE beans
+    ADD COLUMN name VARCHAR(100) NOT NULL COMMENT '원두 이름' AFTER roastery_id

@@ -1,0 +1,91 @@
+package com.backend.domain.store.service.facade;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import com.backend.common.util.GeoUtils;
+import com.backend.common.util.StringUtils;
+import com.backend.domain.menu.dto.request.MenuCreateReqDto;
+import com.backend.domain.menu.dto.response.MenuResDto;
+import com.backend.domain.menu.service.facade.MenuFacadeService;
+import com.backend.domain.review.dto.common.ReviewPageDto;
+import com.backend.domain.review.service.facade.ReviewFacadeService;
+import com.backend.domain.store.converter.StoreConverter;
+import com.backend.domain.store.dto.request.StoreSearchReqDto;
+import com.backend.domain.store.dto.response.StoreDetailResDto;
+import com.backend.domain.store.dto.response.StoreListResDto;
+import com.backend.domain.store.entity.Store;
+import com.backend.domain.store.service.query.StoreQueryService;
+import com.backend.domain.store.vo.StoreSearchBoundsVo;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+public class StoreFacadeService {
+
+	private final StoreQueryService storeQueryService;
+	private final MenuFacadeService menuFacadeService;
+	private final ReviewFacadeService reviewFacadeService;
+
+	public StoreListResDto searchStores(StoreSearchReqDto request) {
+		double distanceKm = GeoUtils.getRadiusInKm(request.radius());
+
+		GeoUtils.BoundingBox boundingBox = GeoUtils.calculateBoundingBox(
+			request.latitude(), request.longitude(), distanceKm);
+
+		StoreSearchBoundsVo boundsVo = StoreSearchBoundsVo.builder()
+			.minLatitude(boundingBox.minLatitude())
+			.maxLatitude(boundingBox.maxLatitude())
+			.minLongitude(boundingBox.minLongitude())
+			.maxLongitude(boundingBox.maxLongitude())
+			.categories(StringUtils.parseCategoryList(request.categories()))
+			.keyword(request.keyword())
+			.build();
+
+		List<Store> candidateStores = storeQueryService.findStoresWithinBounds(boundsVo);
+
+		Map<Long, Double> distanceMap = new HashMap<>();
+		List<Store> filteredStores = candidateStores.stream()
+			.filter(store -> {
+				double storeDistance = GeoUtils.calculateHaversineDistance(
+					request.latitude().doubleValue(),
+					request.longitude().doubleValue(),
+					store.getLatitude().doubleValue(),
+					store.getLongitude().doubleValue()
+				);
+				if (storeDistance <= distanceKm) {
+					distanceMap.put(store.getId(), storeDistance);
+					return true;
+				}
+				return false;
+			})
+			.sorted(Comparator.comparingDouble(store -> distanceMap.get(store.getId())))
+			.toList();
+
+		return StoreConverter.toStoreListResponse(filteredStores, distanceMap);
+	}
+
+	public StoreDetailResDto getStoreDetail(Long storeId) {
+		Store store = storeQueryService.findById(storeId);
+		return StoreConverter.toStoreDetailResponse(store);
+	}
+
+	public MenuResDto createMenuForStore(Long storeId, Long userId, MenuCreateReqDto reqDto) {
+		return menuFacadeService.createMenu(storeId, userId, reqDto);
+	}
+
+	public Page<MenuResDto> getMenusByStore(Long storeId, int page, int size) {
+		return menuFacadeService.getMenusByStore(storeId, page, size);
+	}
+
+	public Page<ReviewPageDto> getReviewsByStore(Long storeId, int page, int size) {
+		return reviewFacadeService.findAllWithPageableByStoreId(storeId, page, size);
+	}
+}

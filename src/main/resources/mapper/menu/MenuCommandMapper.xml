@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.backend.domain.menu.mapper.command.MenuCommandMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="menu.id">
+        INSERT INTO menus (store_id, name, description, price, category, image_url, created_at, updated_at)
+        VALUES (#{menu.storeId}, #{menu.name}, #{menu.description}, #{menu.price},
+                #{menu.category}, #{menu.imageUrl}, now(), now())
+    </insert>
+
+    <update id="update">
+        UPDATE menus
+        SET name        = #{menu.name},
+            description = #{menu.description},
+            price       = #{menu.price},
+            category    = #{menu.category},
+            image_url   = #{menu.imageUrl},
+            updated_at  = now()
+        WHERE id = #{menu.id}
+        <include refid="common.CommonSql.notDeleted"/>
+    </update>
+
+    <update id="softDelete">
+        UPDATE menus
+        SET deleted_at = NOW()
+        WHERE id = #{menuId}
+        <include refid="common.CommonSql.notDeleted"/>
+    </update>
+
+    <insert id="insertMenuBeanMapping">
+        INSERT INTO menu_bean_mappings (menu_id, bean_id, is_blended, created_at)
+        VALUES (#{menuId}, #{beanId}, #{isBlended}, NOW())
+    </insert>
+
+    <delete id="deleteMenuBeanMapping">
+        DELETE
+        FROM menu_bean_mappings
+        WHERE menu_id = #{menuId}
+          AND bean_id = #{beanId}
+    </delete>
+</mapper>

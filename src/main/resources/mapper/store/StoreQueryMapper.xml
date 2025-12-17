@@ -27,18 +27,18 @@
             created_at,
             updated_at
         FROM stores
-        WHERE latitude BETWEEN #{minLatitude} AND #{maxLatitude}
-          AND longitude BETWEEN #{minLongitude} AND #{maxLongitude}
-          AND deleted_at IS NULL
-          <if test="categories != null and categories.size() > 0">
+        WHERE latitude BETWEEN #{boundsVo.minLatitude} AND #{boundsVo.maxLatitude}
+          AND longitude BETWEEN #{boundsVo.minLongitude} AND #{boundsVo.maxLongitude}
+        <include refid="common.CommonSql.notDeleted"/>
+          <if test="boundsVo.categories != null and boundsVo.categories.size() > 0">
           AND (
-          <foreach collection="categories" item="category" separator=" OR ">
+          <foreach collection="boundsVo.categories" item="category" separator=" OR ">
               category LIKE CONCAT('%', #{category}, '%')
           </foreach>
           )
           </if>
-          <if test="keyword != null and keyword != ''">
-          AND (name LIKE CONCAT('%', #{keyword}, '%') OR address LIKE CONCAT('%', #{keyword}, '%'))
+          <if test="boundsVo.keyword != null and boundsVo.keyword != ''">
+          AND (name LIKE CONCAT('%', #{boundsVo.keyword}, '%') OR address LIKE CONCAT('%', #{boundsVo.keyword}, '%'))
           </if>
         ORDER BY created_at DESC
     </select>
@@ -67,7 +67,7 @@
             updated_at
         FROM stores
         WHERE id = #{storeId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
 </mapper>

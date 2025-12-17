@@ -1,5 +1,7 @@
 package com.backend.domain.bean.dto.request;
 
+import java.util.List;
+
 import com.backend.domain.bean.enums.RoastingLevel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,6 +9,9 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 @Schema(description = "원두 수정 요청 DTO")
 public record BeanUpdateReqDto(
+	@Schema(description = "이름", example = "로우키 블렌드", requiredMode = RequiredMode.NOT_REQUIRED)
+	String name,
+
 	@Schema(description = "생산 국가", example = "에티오피아", requiredMode = RequiredMode.NOT_REQUIRED)
 	String country,
 
@@ -23,6 +28,6 @@ public record BeanUpdateReqDto(
 	RoastingLevel roastingLevel,
 
 	@Schema(description = "Flavor ID 리스트", example = "[1, 5, 10]", requiredMode = RequiredMode.NOT_REQUIRED)
-	java.util.List<Long> flavorIds
+	List<Long> flavorIds
 ) {
 }

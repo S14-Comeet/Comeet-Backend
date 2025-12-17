@@ -1,5 +1,7 @@
 package com.backend.domain.bean.dto.request;
 
+import java.util.List;
+
 import com.backend.domain.bean.enums.RoastingLevel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,6 +14,10 @@ public record BeanCreateReqDto(
 	@Schema(description = "로스터리 ID", example = "1", requiredMode = RequiredMode.REQUIRED)
 	@NotNull(message = "로스터리 ID는 필수 입력값입니다.")
 	Long roasteryId,
+
+	@Schema(description = "이름", example = "워터멜론", requiredMode = RequiredMode.REQUIRED)
+	@NotBlank(message = "이름은 필수 입력값입니다.")
+	String name,
 
 	@Schema(description = "생산 국가", example = "에티오피아", requiredMode = RequiredMode.REQUIRED)
 	@NotBlank(message = "생산 국가는 필수 입력값입니다.")
@@ -30,6 +36,6 @@ public record BeanCreateReqDto(
 	RoastingLevel roastingLevel,
 
 	@Schema(description = "Flavor ID 리스트", example = "[1, 5, 10]", requiredMode = RequiredMode.NOT_REQUIRED)
-	java.util.List<Long> flavorIds
+	List<Long> flavorIds
 ) {
 }

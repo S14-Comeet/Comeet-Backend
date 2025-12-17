@@ -2,6 +2,7 @@ package com.backend.domain.bean.converter;
 
 import java.util.List;
 
+import com.backend.domain.bean.dto.common.BeanBadgeDto;
 import com.backend.domain.bean.dto.response.BeanResDto;
 import com.backend.domain.bean.entity.Bean;
 import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
@@ -25,4 +26,18 @@ public class BeanConverter {
 			.updatedAt(bean.getUpdatedAt())
 			.build();
 	}
+
+	public BeanBadgeDto toBeanBadgeDto(final Bean bean) {
+		return BeanBadgeDto.builder()
+			.id(bean.getId())
+			.name(bean.getName())
+			.build();
+	}
+
+	public List<BeanBadgeDto> toBeanBadgeDtos(final List<Bean> beans) {
+		return beans.stream()
+			.map(BeanConverter::toBeanBadgeDto)
+			.toList();
+	}
+
 }

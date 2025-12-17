@@ -5,14 +5,14 @@
         SELECT *
         FROM beans
         WHERE id = #{beanId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
     <select id="findAllByRoasteryId" resultType="com.backend.domain.bean.entity.Bean">
         SELECT *
         FROM beans
         WHERE roastery_id = #{roasteryId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
         ORDER BY id DESC
     </select>
 
@@ -23,14 +23,15 @@
         <foreach collection="beanIds" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
-        AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
         ORDER BY id DESC
     </select>
 
     <select id="findAll" resultType="com.backend.domain.bean.entity.Bean">
         SELECT *
         FROM beans
-        WHERE deleted_at IS NULL
+        WHERE 1=1
+        <include refid="common.CommonSql.notDeleted"/>
         <choose>
             <when test="pageable.sort != null and pageable.sort.isSorted()">
                 ORDER BY
@@ -58,14 +59,15 @@
     <select id="countAll" resultType="int">
         SELECT COUNT(*)
         FROM beans
-        WHERE deleted_at IS NULL
+        WHERE 1=1
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
     <select id="findByRoasteryId" resultType="com.backend.domain.bean.entity.Bean">
         SELECT *
         FROM beans
         WHERE roastery_id = #{roasteryId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
         <choose>
             <when test="pageable.sort != null and pageable.sort.isSorted()">
                 ORDER BY
@@ -94,14 +96,14 @@
         SELECT COUNT(*)
         FROM beans
         WHERE roastery_id = #{roasteryId}
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
     </select>
 
     <select id="findByCountryContaining" resultType="com.backend.domain.bean.entity.Bean">
         SELECT *
         FROM beans
         WHERE country LIKE CONCAT('%', #{keyword}, '%')
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
         <choose>
             <when test="pageable.sort != null and pageable.sort.isSorted()">
                 ORDER BY
@@ -130,6 +132,14 @@
         SELECT COUNT(*)
         FROM beans
         WHERE country LIKE CONCAT('%', #{keyword}, '%')
-          AND deleted_at IS NULL
+        <include refid="common.CommonSql.notDeleted"/>
+    </select>
+
+    <select id="findByMenuId" resultType="com.backend.domain.bean.entity.Bean">
+        SELECT b.*
+        FROM beans b
+                 INNER JOIN menu_bean_mappings mbm ON b.id = mbm.bean_id
+        WHERE mbm.menu_id = #{menuId}
+          AND b.deleted_at IS NULL  <!-- 테이블 별칭 사용으로 인해 공통 프래그먼트 미사용 -->
     </select>
 </mapper>
