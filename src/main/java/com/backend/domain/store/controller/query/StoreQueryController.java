@@ -94,8 +94,8 @@ class StoreQueryController {
 	@GetMapping("/{storeId}/menus")
 	public ResponseEntity<PageResponse<MenuResDto>> getMenusByStore(
 		@PathVariable Long storeId,
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int size
+		@RequestParam(defaultValue = "1") @Min(1) int page,
+		@RequestParam(defaultValue = "10") @Min(1) int size
 	) {
 		return ResponseUtils.page(storeFacadeService.getMenusByStore(storeId, page, size));
 	}
