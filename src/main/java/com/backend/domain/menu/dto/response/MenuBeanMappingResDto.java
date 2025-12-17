@@ -13,7 +13,7 @@ public record MenuBeanMappingResDto(
 	Long beanId,
 
 	@Schema(description = "블렌드 여부", example = "false")
-	Boolean isBlended,
+	boolean isBlended,
 
 	@Schema(description = "매핑 여부", example = "true")
 	boolean isConnected

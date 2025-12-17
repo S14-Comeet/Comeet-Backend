@@ -7,6 +7,6 @@ public record MenuBeanMappingReqDto(
 	Long beanId,
 
 	@NotNull(message = "블렌드 판별 값은 필수 입력값입니다.")
-	Boolean isBlended
+	boolean isBlended
 ) {
 }

@@ -48,7 +48,7 @@ public class MenuCommandServiceImpl implements MenuCommandService {
 	}
 
 	@Override
-	public void insertMenuBeanMapping(Long menuId, Long beanId, Boolean isBlended) {
+	public void insertMenuBeanMapping(Long menuId, Long beanId, boolean isBlended) {
 		log.info("[Menu] 메뉴-원두 매핑 생성 - menuId: {}, beanId: {}", menuId, beanId);
 		int affectedRows = menuCommandMapper.insertMenuBeanMapping(menuId, beanId, isBlended);
 		if (affectedRows == 0) {
