@@ -20,8 +20,4 @@ public interface RoasteryQueryMapper {
 	List<Roastery> findByNameContaining(@Param("keyword") String keyword, @Param("pageable") Pageable pageable);
 
 	int countByNameContaining(@Param("keyword") String keyword);
-
-	List<Roastery> findByOwnerId(@Param("ownerId") Long ownerId, @Param("pageable") Pageable pageable);
-
-	int countByOwnerId(@Param("ownerId") Long ownerId);
 }

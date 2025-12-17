@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Store", description = "가맹점 관리 API")
 @RestController
 @RequestMapping("/stores")
-@PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
+@PreAuthorize("hasRole('ROLE_MANAGER')")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 class StoreCommandController {
 

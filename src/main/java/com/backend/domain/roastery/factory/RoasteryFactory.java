@@ -15,9 +15,8 @@ import lombok.RequiredArgsConstructor;
 public class RoasteryFactory {
 	private final RoasteryValidator roasteryValidator;
 
-	public Roastery create(final Long ownerId, final RoasteryCreateReqDto dto) {
+	public Roastery create(final RoasteryCreateReqDto dto) {
 		Roastery roastery = Roastery.builder()
-			.ownerId(ownerId)
 			.name(dto.name())
 			.logoUrl(dto.logoUrl())
 			.websiteUrl(dto.websiteUrl())
@@ -30,7 +29,6 @@ public class RoasteryFactory {
 	public Roastery createForUpdate(final Roastery existingRoastery, final RoasteryUpdateReqDto dto) {
 		Roastery roastery = Roastery.builder()
 			.id(existingRoastery.getId())
-			.ownerId(existingRoastery.getOwnerId())
 			.name(getOrDefault(dto.name(), existingRoastery.getName()))
 			.logoUrl(getOrDefault(dto.logoUrl(), existingRoastery.getLogoUrl()))
 			.websiteUrl(getOrDefault(dto.websiteUrl(), existingRoastery.getWebsiteUrl()))

@@ -22,21 +22,21 @@
             updated_at
         )
         VALUES (
-            #{reviewId},
-            #{roastLevel},
-            #{fragranceScore},
-            #{aromaScore},
-            #{flavorScore},
-            #{aftertasteScore},
-            #{acidityScore},
-            #{sweetnessScore},
-            #{mouthfeelScore},
-            #{fragranceAromaDetail},
-            #{flavorAftertasteDetail},
-            #{acidityNotes},
-            #{sweetnessNotes},
-            #{mouthfeelNotes},
-            #{overallNotes},
+            #{cuppingNote.reviewId},
+            #{cuppingNote.roastLevel},
+            #{cuppingNote.fragranceScore},
+            #{cuppingNote.aromaScore},
+            #{cuppingNote.flavorScore},
+            #{cuppingNote.aftertasteScore},
+            #{cuppingNote.acidityScore},
+            #{cuppingNote.sweetnessScore},
+            #{cuppingNote.mouthfeelScore},
+            #{cuppingNote.fragranceAromaDetail},
+            #{cuppingNote.flavorAftertasteDetail},
+            #{cuppingNote.acidityNotes},
+            #{cuppingNote.sweetnessNotes},
+            #{cuppingNote.mouthfeelNotes},
+            #{cuppingNote.overallNotes},
             NOW(),
             NOW()
         )
@@ -44,22 +44,22 @@
 
     <update id="update">
         UPDATE cupping_notes
-        SET review_id = #{reviewId},
-            roast_level = #{roastLevel},
-            fragrance_score = #{fragranceScore},
-            aroma_score = #{aromaScore},
-            flavor_score = #{flavorScore},
-            aftertaste_score = #{aftertasteScore},
-            acidity_score = #{acidityScore},
-            sweetness_score = #{sweetnessScore},
-            mouthfeel_score = #{mouthfeelScore},
-            fragrance_aroma_detail = #{fragranceAromaDetail},
-            flavor_aftertaste_detail = #{flavorAftertasteDetail},
-            acidity_notes = #{acidityNotes},
-            sweetness_notes = #{sweetnessNotes},
-            mouthfeel_notes = #{mouthfeelNotes},
-            overall_notes = #{overallNotes},
+        SET review_id = #{cuppingNote.reviewId},
+            roast_level = #{cuppingNote.roastLevel},
+            fragrance_score = #{cuppingNote.fragranceScore},
+            aroma_score = #{cuppingNote.aromaScore},
+            flavor_score = #{cuppingNote.flavorScore},
+            aftertaste_score = #{cuppingNote.aftertasteScore},
+            acidity_score = #{cuppingNote.acidityScore},
+            sweetness_score = #{cuppingNote.sweetnessScore},
+            mouthfeel_score = #{cuppingNote.mouthfeelScore},
+            fragrance_aroma_detail = #{cuppingNote.fragranceAromaDetail},
+            flavor_aftertaste_detail = #{cuppingNote.flavorAftertasteDetail},
+            acidity_notes = #{cuppingNote.acidityNotes},
+            sweetness_notes = #{cuppingNote.sweetnessNotes},
+            mouthfeel_notes = #{cuppingNote.mouthfeelNotes},
+            overall_notes = #{cuppingNote.overallNotes},
             updated_at = NOW()
-        WHERE id = #{id}
+        WHERE id = #{cuppingNote.id}
     </update>
 </mapper>

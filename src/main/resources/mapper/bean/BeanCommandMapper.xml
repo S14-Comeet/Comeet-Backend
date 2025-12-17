@@ -3,16 +3,16 @@
 <mapper namespace="com.backend.domain.bean.mapper.command.BeanCommandMapper">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO beans (roastery_id, country, farm, variety, processing_method, roasting_level, created_at, updated_at)
-        VALUES (#{roasteryId}, #{country}, #{farm}, #{variety}, #{processingMethod}, #{roastingLevel}, NOW(), NOW())
+        VALUES (#{bean.roasteryId}, #{bean.country}, #{bean.farm}, #{bean.variety}, #{bean.processingMethod}, #{bean.roastingLevel}, NOW(), NOW())
     </insert>
 
     <update id="update">
         UPDATE beans
-        SET country           = #{country},
-            farm              = #{farm},
-            variety           = #{variety},
-            processing_method = #{processingMethod},
-            roasting_level    = #{roastingLevel},
+        SET country           = #{bean.country},
+            farm              = #{bean.farm},
+            variety           = #{bean.variety},
+            processing_method = #{bean.processingMethod},
+            roasting_level    = #{bean.roastingLevel},
             updated_at        = NOW()
         WHERE id = #{id}
         <include refid="common.CommonSql.notDeleted"/>
@@ -21,7 +21,7 @@
     <update id="softDelete">
         UPDATE beans
         SET deleted_at = NOW()
-        WHERE id = #{id}
+        WHERE id = #{beanId}
         <include refid="common.CommonSql.notDeleted"/>
     </update>
 </mapper>

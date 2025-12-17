@@ -54,16 +54,4 @@ public class RoasteryQueryServiceImpl implements RoasteryQueryService {
 	public int countByNameContaining(final String keyword) {
 		return queryMapper.countByNameContaining(keyword);
 	}
-
-	@Override
-	public List<Roastery> findByOwnerId(final Long ownerId, final Pageable pageable) {
-		List<Roastery> list = queryMapper.findByOwnerId(ownerId, pageable);
-		log.info("[Roastery] 관리자의 로스터리 조회 - ownerId: {}, size: {}", ownerId, list.size());
-		return list;
-	}
-
-	@Override
-	public int countByOwnerId(final Long ownerId) {
-		return queryMapper.countByOwnerId(ownerId);
-	}
 }

@@ -2,15 +2,12 @@ package com.backend.domain.roastery.controller.query;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.common.annotation.CurrentUser;
-import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.response.PageResponse;
 import com.backend.common.util.ResponseUtils;
@@ -74,20 +71,4 @@ public class RoasteryQueryController {
 		return ResponseUtils.page(response);
 	}
 
-	@Operation(
-		summary = "내가 관리하는 로스터리 목록 조회",
-		description = "로그인한 ROASTERY_MANAGER가 소유한 로스터리 목록을 페이지네이션으로 조회합니다."
-	)
-	@PreAuthorize("hasRole('ROLE_ROASTERY_MANAGER')")
-	@GetMapping("/my")
-	public ResponseEntity<PageResponse<RoasteryResDto>> getMyRoasteries(
-		@CurrentUser AuthenticatedUser token,
-		@Parameter(description = "페이지 번호 (1부터 시작)", example = "1")
-		@RequestParam(defaultValue = "1") @Min(1) int page,
-		@Parameter(description = "페이지 크기", example = "10")
-		@RequestParam(defaultValue = "10") @Min(1) int size
-	) {
-		Page<RoasteryResDto> response = roasteryFacadeService.getMyRoasteries(token.getUser().getId(), page, size);
-		return ResponseUtils.page(response);
-	}
 }

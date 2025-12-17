@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.common.annotation.CurrentUser;
-import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.util.ResponseUtils;
 import com.backend.domain.bean.dto.request.BeanCreateReqDto;
@@ -35,42 +33,39 @@ public class BeanCommandController {
 
 	@Operation(
 		summary = "원두 생성",
-		description = "새로운 원두를 등록합니다. ROASTERY_MANAGER 권한이 필요하며, 해당 로스터리의 소유자만 등록할 수 있습니다."
+		description = "새로운 원두를 등록합니다. MANAGER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_ROASTERY_MANAGER')")
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@PostMapping
 	public ResponseEntity<BaseResponse<BeanResDto>> createBean(
-		@CurrentUser AuthenticatedUser token,
 		@RequestBody @Valid BeanCreateReqDto reqDto
 	) {
-		return ResponseUtils.created(beanFacadeService.createBean(token.getUser().getId(), reqDto));
+		return ResponseUtils.created(beanFacadeService.createBean(reqDto));
 	}
 
 	@Operation(
 		summary = "원두 수정",
-		description = "원두 정보를 수정합니다. 해당 로스터리의 소유자만 수정할 수 있습니다."
+		description = "원두 정보를 수정합니다. MANAGER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_ROASTERY_MANAGER')")
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@PatchMapping("/{beanId}")
 	public ResponseEntity<BaseResponse<BeanResDto>> updateBean(
 		@PathVariable Long beanId,
-		@CurrentUser AuthenticatedUser token,
 		@RequestBody @Valid BeanUpdateReqDto reqDto
 	) {
-		return ResponseUtils.ok(beanFacadeService.updateBean(beanId, token.getUser().getId(), reqDto));
+		return ResponseUtils.ok(beanFacadeService.updateBean(beanId, reqDto));
 	}
 
 	@Operation(
 		summary = "원두 삭제",
-		description = "원두를 삭제(Soft Delete)합니다. 해당 로스터리의 소유자만 삭제할 수 있습니다."
+		description = "원두를 삭제(Soft Delete)합니다. MANAGER 권한이 필요합니다."
 	)
-	@PreAuthorize("hasRole('ROLE_ROASTERY_MANAGER')")
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@DeleteMapping("/{beanId}")
 	public ResponseEntity<BaseResponse<Void>> deleteBean(
-		@PathVariable Long beanId,
-		@CurrentUser AuthenticatedUser token
+		@PathVariable Long beanId
 	) {
-		beanFacadeService.deleteBean(beanId, token.getUser().getId());
+		beanFacadeService.deleteBean(beanId);
 		return ResponseUtils.noContent();
 	}
 }

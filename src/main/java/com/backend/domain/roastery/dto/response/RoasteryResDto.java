@@ -11,9 +11,6 @@ public record RoasteryResDto(
 	@Schema(description = "로스터리 ID", example = "1")
 	Long id,
 
-	@Schema(description = "로스터리 관리자 ID", example = "123")
-	Long ownerId,
-
 	@Schema(description = "로스터리 이름", example = "블루보틀 코리아")
 	String name,
 
