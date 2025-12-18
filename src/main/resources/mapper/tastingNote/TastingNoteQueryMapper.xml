@@ -12,9 +12,9 @@
         SELECT review_id AS reviewId, flavor_id AS flavorId
         FROM tasting_notes
         WHERE review_id IN
-        <foreach collection="list" item="reviewId" open="(" separator="," close=")">
+        <foreach collection="reviewIds" item="reviewId" open="(" separator="," close=")">
             #{reviewId}
         </foreach>
-        ORDER BY review_id, flavors_id
+        ORDER BY review_id
     </select>
 </mapper>
