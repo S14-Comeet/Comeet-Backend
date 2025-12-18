@@ -2,6 +2,7 @@ package com.backend.domain.roastery.factory;
 
 import org.springframework.stereotype.Component;
 
+import com.backend.common.util.ObjectUtils;
 import com.backend.domain.roastery.dto.request.RoasteryCreateReqDto;
 import com.backend.domain.roastery.dto.request.RoasteryUpdateReqDto;
 import com.backend.domain.roastery.entity.Roastery;
@@ -29,17 +30,13 @@ public class RoasteryFactory {
 	public Roastery createForUpdate(final Roastery existingRoastery, final RoasteryUpdateReqDto dto) {
 		Roastery roastery = Roastery.builder()
 			.id(existingRoastery.getId())
-			.name(getOrDefault(dto.name(), existingRoastery.getName()))
-			.logoUrl(getOrDefault(dto.logoUrl(), existingRoastery.getLogoUrl()))
-			.websiteUrl(getOrDefault(dto.websiteUrl(), existingRoastery.getWebsiteUrl()))
+			.name(ObjectUtils.getOrDefault(dto.name(), existingRoastery.getName()))
+			.logoUrl(ObjectUtils.getOrDefault(dto.logoUrl(), existingRoastery.getLogoUrl()))
+			.websiteUrl(ObjectUtils.getOrDefault(dto.websiteUrl(), existingRoastery.getWebsiteUrl()))
 			.createdAt(existingRoastery.getCreatedAt())
 			.build();
 
 		roasteryValidator.validate(roastery);
 		return roastery;
-	}
-
-	private <T> T getOrDefault(final T newValue, final T existingValue) {
-		return newValue != null ? newValue : existingValue;
 	}
 }
