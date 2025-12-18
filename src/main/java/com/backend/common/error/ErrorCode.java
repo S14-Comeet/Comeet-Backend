@@ -66,6 +66,10 @@ public enum ErrorCode {
 	 * Store Error
 	 */
 	STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "S-001", "가맹점을 찾을 수 없습니다."),
+	STORE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "S-002", "가맹점 접근 권한이 없습니다."),
+	INVALID_LOCATION(HttpStatus.BAD_REQUEST, "S-003", "유효하지 않은 위치 정보입니다."),
+	STORE_ALREADY_EXISTS(HttpStatus.CONFLICT, "S-004", "이미 등록된 가맹점입니다."),
+	STORE_OWNER_ONLY(HttpStatus.FORBIDDEN, "S-005", "본인 소유의 가맹점만 수정할 수 있습니다."),
 
 	/**
 	 * Visit Error
