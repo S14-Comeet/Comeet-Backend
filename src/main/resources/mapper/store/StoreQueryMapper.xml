@@ -5,69 +5,37 @@
 <mapper namespace="com.backend.domain.store.mapper.query.StoreQueryMapper">
 
     <select id="findStoresWithinBounds" resultType="Store">
-        SELECT
-            id,
-            roastery_id,
-            owner_id,
-            name,
-            description,
-            address,
-            latitude,
-            longitude,
-            phone_number,
-            category,
-            thumbnail_url,
-            open_time,
-            close_time,
-            average_rating,
-            review_count,
-            visit_count,
-            is_closed,
-            deleted_at,
-            created_at,
-            updated_at
+        SELECT *
         FROM stores
         WHERE latitude BETWEEN #{boundsVo.minLatitude} AND #{boundsVo.maxLatitude}
-          AND longitude BETWEEN #{boundsVo.minLongitude} AND #{boundsVo.maxLongitude}
+        AND longitude BETWEEN #{boundsVo.minLongitude} AND #{boundsVo.maxLongitude}
         <include refid="common.CommonSql.notDeleted"/>
-          <if test="boundsVo.categories != null and boundsVo.categories.size() > 0">
-          AND (
-          <foreach collection="boundsVo.categories" item="category" separator=" OR ">
-              category LIKE CONCAT('%', #{category}, '%')
-          </foreach>
-          )
-          </if>
-          <if test="boundsVo.keyword != null and boundsVo.keyword != ''">
-          AND (name LIKE CONCAT('%', #{boundsVo.keyword}, '%') OR address LIKE CONCAT('%', #{boundsVo.keyword}, '%'))
-          </if>
+        <if test="boundsVo.categories != null and boundsVo.categories.size() > 0">
+            AND (
+            <foreach collection="boundsVo.categories" item="category" separator=" OR ">
+                category LIKE CONCAT('%', #{category}, '%')
+            </foreach>
+            )
+        </if>
+        <if test="boundsVo.keyword != null and boundsVo.keyword != ''">
+            AND (name LIKE CONCAT('%', #{boundsVo.keyword}, '%') OR address LIKE CONCAT('%', #{boundsVo.keyword}, '%'))
+        </if>
         ORDER BY created_at DESC
     </select>
 
     <select id="findById" parameterType="java.lang.Long" resultType="Store">
-        SELECT
-            id,
-            roastery_id,
-            owner_id,
-            name,
-            description,
-            address,
-            latitude,
-            longitude,
-            phone_number,
-            category,
-            thumbnail_url,
-            open_time,
-            close_time,
-            average_rating,
-            review_count,
-            visit_count,
-            is_closed,
-            deleted_at,
-            created_at,
-            updated_at
+        SELECT *
         FROM stores
         WHERE id = #{storeId}
         <include refid="common.CommonSql.notDeleted"/>
+    </select>
+
+    <select id="findByOwnerId" resultType="Store">
+        SELECT *
+        from stores
+        WHERE owner_id = #{ownerId}
+        <include refid="common.CommonSql.notDeleted"/>
+        ORDER BY created_at DESC
     </select>
 
 </mapper>
