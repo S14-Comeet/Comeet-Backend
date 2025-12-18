@@ -32,10 +32,14 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 
 	@Override
 	public List<Store> findStoresWithinBounds(final StoreSearchBoundsVo boundsVo) {
-		log.debug("[Store] Bounding Box 내 가맹점 조회 - lat: [{}, {}], lng: [{}, {}], categories: {}, keyword: {}",
-			boundsVo.minLatitude(), boundsVo.maxLatitude(), boundsVo.minLongitude(), boundsVo.maxLongitude(), 
-			boundsVo.categories(), boundsVo.keyword());
 		List<Store> stores = queryMapper.findStoresWithinBounds(boundsVo);
+		log.debug("[Store] 조회된 가맹점 수: {}", stores.size());
+		return stores;
+	}
+
+	@Override
+	public List<Store> findByOwnerId(final Long ownerId) {
+		List<Store> stores = queryMapper.findByOwnerId(ownerId);
 		log.debug("[Store] 조회된 가맹점 수: {}", stores.size());
 		return stores;
 	}

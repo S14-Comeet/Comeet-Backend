@@ -10,4 +10,6 @@ public interface StoreQueryService {
 	Store findById(Long storeId);
 
 	List<Store> findStoresWithinBounds(StoreSearchBoundsVo boundsVo);
+
+	List<Store> findByOwnerId(Long ownerId);
 }
