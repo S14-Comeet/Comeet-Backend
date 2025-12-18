@@ -17,7 +17,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class StoreConverter {
 
-	private static final double SEARCH_BOUND_MARGIN = 0.001;
+	private static final double SEARCH_BOUND_MARGIN_DEGREES = 0.001;
 
 	public static StoreDetailResDto toStoreDetailResponse(final Store store) {
 		return StoreDetailResDto.builder()
@@ -72,10 +72,10 @@ public class StoreConverter {
 
 	public static StoreSearchBoundsVo toStoreSearchBoundsVo(final Store store) {
 		return StoreSearchBoundsVo.builder()
-			.minLatitude(store.getLatitude().subtract(BigDecimal.valueOf(SEARCH_BOUND_MARGIN)))
-			.maxLatitude(store.getLatitude().add(BigDecimal.valueOf(SEARCH_BOUND_MARGIN)))
-			.minLongitude(store.getLongitude().subtract(BigDecimal.valueOf(SEARCH_BOUND_MARGIN)))
-			.maxLongitude(store.getLongitude().add(BigDecimal.valueOf(SEARCH_BOUND_MARGIN)))
+			.minLatitude(store.getLatitude().subtract(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))
+			.maxLatitude(store.getLatitude().add(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))
+			.minLongitude(store.getLongitude().subtract(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))
+			.maxLongitude(store.getLongitude().add(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))
 			.build();
 	}
 

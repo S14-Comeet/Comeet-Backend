@@ -7,11 +7,6 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class TimeUtils {
-
-	public static final String HYPHEN = "-";
-	public static final int OPEN_TIME = 0;
-	public static final int CLOSE_TIME = 1;
-
 	/**
 	 * "HH:mm-HH:mm" 형식의 문자열을 파싱하여 LocalTime 배열로 반환합니다.
 	 * 형식이 맞지 않거나 null인 경우 null을 반환합니다.
@@ -21,14 +16,14 @@ public class TimeUtils {
 			return null;
 		}
 
-		String[] parts = openingHours.split(HYPHEN);
+		String[] parts = openingHours.split("-");
 		if (parts.length != 2) {
 			return null;
 		}
 
 		try {
-			LocalTime openTime = LocalTime.parse(parts[OPEN_TIME].trim());
-			LocalTime closeTime = LocalTime.parse(parts[CLOSE_TIME].trim());
+			LocalTime openTime = LocalTime.parse(parts[0].trim());
+			LocalTime closeTime = LocalTime.parse(parts[1].trim());
 			return new LocalTime[] {openTime, closeTime};
 		} catch (DateTimeParseException e) {
 			return null;
@@ -39,14 +34,14 @@ public class TimeUtils {
 	 * LocalTime 배열에서 오픈 시간을 추출합니다.
 	 */
 	public LocalTime getOpenTime(final LocalTime[] times) {
-		return (times != null && times.length == 2) ? times[OPEN_TIME] : null;
+		return (times != null && times.length == 2) ? times[0] : null;
 	}
 
 	/**
 	 * LocalTime 배열에서 마감 시간을 추출합니다.
 	 */
 	public LocalTime getCloseTime(final LocalTime[] times) {
-		return (times != null && times.length == 2) ? times[CLOSE_TIME] : null;
+		return (times != null && times.length == 2) ? times[1] : null;
 	}
 
 	/**
@@ -56,6 +51,6 @@ public class TimeUtils {
 		if (openTime == null || closeTime == null) {
 			return null;
 		}
-		return openTime + HYPHEN + closeTime;
+		return openTime + "-" + closeTime;
 	}
 }
