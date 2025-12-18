@@ -23,7 +23,7 @@ public class StoreValidator implements Validator<Store> {
 		validateLocation(store.getLatitude(), store.getLongitude());
 	}
 
-	public void validateExitingStore(final Store store, final Long userId) {
+	public void validateExistingStore(final Store store, final Long userId) {
 		validateStoreExists(store, ErrorCode.STORE_NOT_FOUND);
 		validateNotDeleted(store);
 		validateStoreOwnership(store, userId, ErrorCode.STORE_OWNER_ONLY);

@@ -118,7 +118,7 @@ public class StoreFacadeService {
 
 	public StoreDetailResDto updateStore(Long storeId, StoreUpdateReqDto reqDto, Long userId) {
 		Store store = storeQueryService.findById(storeId);
-		storeValidator.validateExitingStore(store, userId);
+		storeValidator.validateExistingStore(store, userId);
 
 		Store updatedStore = storeFactory.update(store, reqDto);
 		Store savedStore = storeCommandService.updateStore(updatedStore);
@@ -128,7 +128,7 @@ public class StoreFacadeService {
 
 	public void deleteStore(Long storeId, Long userId) {
 		Store store = storeQueryService.findById(storeId);
-		storeValidator.validateExitingStore(store, userId);
+		storeValidator.validateExistingStore(store, userId);
 		storeCommandService.deleteStore(storeId);
 	}
 
