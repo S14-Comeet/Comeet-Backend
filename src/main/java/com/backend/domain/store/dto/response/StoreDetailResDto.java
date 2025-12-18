@@ -45,6 +45,9 @@ public record StoreDetailResDto(
 	@Schema(description = "마감 시간", example = "22:00:00", nullable = true)
 	LocalTime closeTime,
 
+	@Schema(description = "영업시간 (HH:mm-HH:mm 형식)", example = "08:00-22:00", nullable = true)
+	String openingHours,
+
 	@Schema(description = "평균 평점 (0.0 ~ 5.0)", example = "4.8")
 	BigDecimal averageRating,
 
