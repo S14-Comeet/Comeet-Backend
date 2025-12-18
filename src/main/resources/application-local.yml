@@ -1,0 +1,40 @@
+# Local 개발 환경 설정
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL:jdbc:mysql://localhost:3306/comeet?serverTimezone=Asia/Seoul}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: true
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:/sql/schema/schema.sql
+      continue-on-error: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 60000
+
+logging:
+  level:
+    root: INFO
+    com.backend: DEBUG
+    com.backend.mapper: DEBUG
+    org.springframework: INFO
+    org.springframework.web: DEBUG
+    org.mybatis: DEBUG
+
+# CORS 설정 (로컬)
+cors:
+  allowed-origins: http://localhost:5173,http://localhost:8080

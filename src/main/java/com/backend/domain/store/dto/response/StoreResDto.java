@@ -11,6 +11,9 @@ public record StoreResDto(
 	@Schema(description = "매장 고유 ID", example = "1")
 	Long id,
 
+	@Schema(description = "로스터리 ID", example = "1")
+	Long roasteryId,
+
 	@Schema(description = "매장명", example = "블루보틀 강남점")
 	String name,
 
@@ -39,16 +42,6 @@ public record StoreResDto(
 	String thumbnailUrl,
 
 	@Schema(description = "사용자 위치로부터의 직선 거리 (미터 단위)", example = "250.5")
-	Double distance,
-
-	@Schema(description = "영업 중지 여부 (true: 영업 안함, false: 영업 중)", example = "false")
-	boolean isClosed,
-
-	@Schema(
-		description = "지도 마커 색상 (영업 중: BLUE, 영업 안함: RED)",
-		example = "BLUE",
-		allowableValues = {"BLUE", "RED"}
-	)
-	String markerColor
+	Double distance
 ) {
 }

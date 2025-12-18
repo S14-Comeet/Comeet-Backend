@@ -1,27 +1,24 @@
 package com.backend.domain.store.converter;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import com.backend.common.util.GeoUtils;
+import com.backend.common.util.TimeUtils;
 import com.backend.domain.store.dto.response.StoreDetailResDto;
 import com.backend.domain.store.dto.response.StoreListResDto;
 import com.backend.domain.store.dto.response.StoreResDto;
 import com.backend.domain.store.entity.Store;
+import com.backend.domain.store.vo.StoreSearchBoundsVo;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class StoreConverter {
 
-	// === 응답 DTO 변환 메서드 ===
+	private static final double SEARCH_BOUND_MARGIN_DEGREES = 0.001;
 
-	/**
-	 * Store Entity를 StoreDetailResDto로 변환
-	 * @param store 매장 엔티티
-	 * @return 가맹점 상세 정보 응답 DTO
-	 */
 	public static StoreDetailResDto toStoreDetailResponse(final Store store) {
 		return StoreDetailResDto.builder()
 			.id(store.getId())
@@ -36,6 +33,7 @@ public class StoreConverter {
 			.thumbnailUrl(store.getThumbnailUrl())
 			.openTime(store.getOpenTime())
 			.closeTime(store.getCloseTime())
+			.openingHours(TimeUtils.formatOpeningHours(store.getOpenTime(), store.getCloseTime()))
 			.averageRating(store.getAverageRating())
 			.reviewCount(store.getReviewCount())
 			.visitCount(store.getVisitCount())
@@ -43,15 +41,10 @@ public class StoreConverter {
 			.build();
 	}
 
-	/**
-	 * Store Entity와 거리 정보를 StoreResDto로 변환
-	 * @param store 매장 엔티티
-	 * @param distanceKm 사용자로부터의 거리 (km)
-	 * @return 가맹점 정보 응답 DTO
-	 */
 	public static StoreResDto toStoreResponse(final Store store, final Double distanceKm) {
 		return StoreResDto.builder()
 			.id(store.getId())
+			.roasteryId(store.getRoasteryId())
 			.name(store.getName())
 			.description(store.getDescription())
 			.address(store.getAddress())
@@ -62,28 +55,10 @@ public class StoreConverter {
 			.reviewCount(store.getReviewCount())
 			.thumbnailUrl(store.getThumbnailUrl())
 			.distance(GeoUtils.convertKmToMeters(distanceKm))
-			.isClosed(store.isClosed())
-			.markerColor(determineMarkerColor(store.isClosed()))
 			.build();
 	}
 
-	/**
-	 * 매장의 영업 상태에 따라 마커 색상 결정
-	 * @param isClosed 영업 중지 여부
-	 * @return 마커 색상 (영업 중: BLUE, 영업 안함: RED)
-	 */
-	private static String determineMarkerColor(final boolean isClosed) {
-		return isClosed ? "RED" : "BLUE";
-	}
-
-	/**
-	 * Store 리스트와 거리 맵을 StoreListResDto로 변환
-	 * @param stores 매장 엔티티 리스트
-	 * @param distanceMap 매장별 거리 정보 (id -> distance in km)
-	 * @return 가맹점 목록 응답 DTO
-	 */
-	public static StoreListResDto toStoreListResponse(final List<Store> stores,
-		final Map<Long, Double> distanceMap) {
+	public static StoreListResDto toStoreListResponse(final List<Store> stores, final Map<Long, Double> distanceMap) {
 		List<StoreResDto> storeList = stores.stream()
 			.map(store -> toStoreResponse(store, distanceMap.get(store.getId())))
 			.toList();
@@ -92,5 +67,21 @@ public class StoreConverter {
 			.totalCount(storeList.size())
 			.stores(storeList)
 			.build();
+	}
+
+
+	public static StoreSearchBoundsVo toStoreSearchBoundsVo(final Store store) {
+		return StoreSearchBoundsVo.builder()
+			.minLatitude(store.getLatitude().subtract(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))
+			.maxLatitude(store.getLatitude().add(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))
+			.minLongitude(store.getLongitude().subtract(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))
+			.maxLongitude(store.getLongitude().add(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))
+			.build();
+	}
+
+	public static List<StoreDetailResDto> toStoreDetailResponseList(final List<Store> stores) {
+		return stores.stream()
+			.map(StoreConverter::toStoreDetailResponse)
+			.toList();
 	}
 }

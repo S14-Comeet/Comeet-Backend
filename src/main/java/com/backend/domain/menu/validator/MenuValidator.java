@@ -1,5 +1,7 @@
 package com.backend.domain.menu.validator;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Component;
 
 import com.backend.common.error.ErrorCode;
@@ -47,7 +49,7 @@ public class MenuValidator implements Validator<Menu> {
 	}
 
 	public static void validateStoreOwnership(final Store store, final Long userId) {
-		if (!store.getOwnerId().equals(userId)) {
+		if (!Objects.equals(store.getOwnerId(), userId)) {
 			throw new MenuException(ErrorCode.MENU_ACCESS_DENIED);
 		}
 	}

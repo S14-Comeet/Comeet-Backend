@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.store.mapper.command.StoreCommandMapper">
+
+    <insert id="save" parameterType="Store" useGeneratedKeys="true" keyProperty="store.id">
+        INSERT INTO stores (roastery_id,
+                            owner_id,
+                            name,
+                            description,
+                            address,
+                            latitude,
+                            longitude,
+                            phone_number,
+                            category,
+                            thumbnail_url,
+                            open_time,
+                            close_time,
+                            average_rating,
+                            review_count,
+                            visit_count,
+                            is_closed,
+                            created_at,
+                            updated_at)
+        VALUES (#{store.roasteryId},
+                #{store.ownerId},
+                #{store.name},
+                #{store.description},
+                #{store.address},
+                #{store.latitude},
+                #{store.longitude},
+                #{store.phoneNumber},
+                #{store.category},
+                #{store.thumbnailUrl},
+                #{store.openTime},
+                #{store.closeTime},
+                #{store.averageRating},
+                #{store.reviewCount},
+                #{store.visitCount},
+                #{store.isClosed},
+                NOW(),
+                NOW())
+    </insert>
+
+    <update id="update" parameterType="Store">
+        UPDATE stores
+        SET
+        name = #{store.name},
+        description = #{store.description},
+        address = #{store.address},
+        latitude = #{store.latitude},
+        longitude = #{store.longitude},
+        phone_number = #{store.phoneNumber},
+        category = #{store.category},
+        thumbnail_url = #{store.thumbnailUrl},
+        open_time = #{store.openTime},
+        close_time = #{store.closeTime},
+        is_closed = #{store.isClosed},
+        updated_at = NOW()
+        WHERE id = #{store.id}
+        <include refid="common.CommonSql.notDeleted"/>
+    </update>
+
+    <update id="softDelete">
+        UPDATE stores
+        SET deleted_at = NOW(),
+        updated_at = NOW()
+        WHERE id = #{storeId}
+        <include refid="common.CommonSql.notDeleted"/>
+    </update>
+
+</mapper>

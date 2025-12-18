@@ -15,4 +15,6 @@ public interface StoreQueryMapper {
 	List<Store> findStoresWithinBounds(@Param("boundsVo") StoreSearchBoundsVo boundsVo);
 
 	Optional<Store> findById(@Param("storeId") Long storeId);
+
+	List<Store> findByOwnerId(@Param("ownerId") Long ownerId);
 }
