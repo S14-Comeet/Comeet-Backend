@@ -5,7 +5,6 @@ import java.time.LocalTime;
 
 import org.springframework.stereotype.Component;
 
-import com.backend.common.util.ObjectUtils;
 import com.backend.common.util.TimeUtils;
 import com.backend.domain.store.dto.request.StoreCreateReqDto;
 import com.backend.domain.store.dto.request.StoreUpdateReqDto;
@@ -50,32 +49,55 @@ public class StoreFactory {
 	}
 
 	public Store update(final Store store, final StoreUpdateReqDto reqDto) {
-		LocalTime[] newTimes = TimeUtils.parseOpeningHours(reqDto.openingHours());
+		Store.StoreBuilder builder = store.toBuilder();
 
-		Store updatedStore = Store.builder()
-			.id(store.getId())
-			.ownerId(store.getOwnerId())
-			.roasteryId(store.getRoasteryId())
-			.name(ObjectUtils.getOrDefault(reqDto.name(), store.getName()))
-			.description(ObjectUtils.getOrDefault(reqDto.description(), store.getDescription()))
-			.address(ObjectUtils.getOrDefault(reqDto.address(), store.getAddress()))
-			.latitude(ObjectUtils.getOrDefault(reqDto.latitude(), store.getLatitude()))
-			.longitude(ObjectUtils.getOrDefault(reqDto.longitude(), store.getLongitude()))
-			.phoneNumber(ObjectUtils.getOrDefault(reqDto.phoneNumber(), store.getPhoneNumber()))
-			.category(ObjectUtils.getOrDefault(reqDto.category(), store.getCategory()))
-			.thumbnailUrl(ObjectUtils.getOrDefault(reqDto.thumbnailUrl(), store.getThumbnailUrl()))
-			.openTime(ObjectUtils.getOrDefault(TimeUtils.getOpenTime(newTimes), store.getOpenTime()))
-			.closeTime(ObjectUtils.getOrDefault(TimeUtils.getCloseTime(newTimes), store.getCloseTime()))
-			.averageRating(store.getAverageRating())
-			.reviewCount(store.getReviewCount())
-			.visitCount(store.getVisitCount())
-			.isClosed(ObjectUtils.getOrDefault(reqDto.isClosed(), store.isClosed()))
-			.deletedAt(store.getDeletedAt())
-			.createdAt(store.getCreatedAt())
-			.updatedAt(store.getUpdatedAt())
-			.build();
+		applyUpdateIfPresent(builder, reqDto);
+		applyOpeningHoursIfPresent(builder, reqDto.openingHours());
 
+		Store updatedStore = builder.build();
 		storeValidator.validate(updatedStore);
 		return updatedStore;
+	}
+
+	private void applyUpdateIfPresent(final Store.StoreBuilder builder, final StoreUpdateReqDto reqDto) {
+		if (reqDto.name() != null) {
+			builder.name(reqDto.name());
+		}
+		if (reqDto.description() != null) {
+			builder.description(reqDto.description());
+		}
+		if (reqDto.address() != null) {
+			builder.address(reqDto.address());
+		}
+		if (reqDto.latitude() != null) {
+			builder.latitude(reqDto.latitude());
+		}
+		if (reqDto.longitude() != null) {
+			builder.longitude(reqDto.longitude());
+		}
+		if (reqDto.phoneNumber() != null) {
+			builder.phoneNumber(reqDto.phoneNumber());
+		}
+		if (reqDto.category() != null) {
+			builder.category(reqDto.category());
+		}
+		if (reqDto.thumbnailUrl() != null) {
+			builder.thumbnailUrl(reqDto.thumbnailUrl());
+		}
+		if (reqDto.isClosed() != null) {
+			builder.isClosed(reqDto.isClosed());
+		}
+	}
+
+	private void applyOpeningHoursIfPresent(final Store.StoreBuilder builder, final String openingHours) {
+		if (openingHours == null) {
+			return;
+		}
+
+		LocalTime[] times = TimeUtils.parseOpeningHours(openingHours);
+		if (times != null) {
+			builder.openTime(TimeUtils.getOpenTime(times))
+				.closeTime(TimeUtils.getCloseTime(times));
+		}
 	}
 }

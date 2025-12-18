@@ -101,7 +101,6 @@ public class StoreFacadeService {
 
 	public StoreDetailResDto createStore(StoreCreateReqDto reqDto, Long ownerId) {
 		Store store = storeFactory.create(reqDto, ownerId);
-		storeValidator.validate(store);
 		StoreSearchBoundsVo vo = StoreConverter.toStoreSearchBoundsVo(store);
 
 		boolean exists = storeQueryService.findStoresWithinBounds(vo)
@@ -122,8 +121,6 @@ public class StoreFacadeService {
 		storeValidator.validateExitingStore(store, userId);
 
 		Store updatedStore = storeFactory.update(store, reqDto);
-		storeValidator.validate(updatedStore);
-
 		Store savedStore = storeCommandService.updateStore(updatedStore);
 
 		return StoreConverter.toStoreDetailResponse(savedStore);

@@ -17,20 +17,20 @@ public class StoreValidator implements Validator<Store> {
 
 	@Override
 	public void validate(final Store store) {
-		validateNotNull(store);
+		validateStoreExists(store, ErrorCode.BAD_REQUEST);
 		validateName(store.getName());
 		validateAddress(store.getAddress());
 		validateLocation(store.getLatitude(), store.getLongitude());
 	}
 
 	public void validateExitingStore(final Store store, final Long userId) {
+		validateStoreExists(store, ErrorCode.STORE_NOT_FOUND);
 		validateNotDeleted(store);
-		validateOwnership(store, userId);
+		validateStoreOwnership(store, userId, ErrorCode.STORE_OWNER_ONLY);
 	}
-
-	private void validateNotNull(final Store store) {
+	private void validateStoreExists(final Store store, final ErrorCode errorCode) {
 		if (store == null) {
-			throw new StoreException(ErrorCode.BAD_REQUEST);
+			throw new StoreException(errorCode);
 		}
 	}
 
@@ -65,31 +65,13 @@ public class StoreValidator implements Validator<Store> {
 		}
 	}
 
-	public void validateOwnership(final Store store, final Long userId) {
-		if (store == null) {
-			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
-		}
-
+	public void validateStoreOwnership(final Store store, final Long userId, final ErrorCode errorCode) {
 		if (!store.getOwnerId().equals(userId)) {
-			throw new StoreException(ErrorCode.STORE_OWNER_ONLY);
+			throw new StoreException(errorCode);
 		}
 	}
 
-	public void validateAccess(final Store store, final Long userId) {
-		if (store == null) {
-			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
-		}
-
-		if (!store.getOwnerId().equals(userId)) {
-			throw new StoreException(ErrorCode.STORE_ACCESS_DENIED);
-		}
-	}
-
-	public void validateNotDeleted(final Store store) {
-		if (store == null) {
-			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
-		}
-
+	private void validateNotDeleted(final Store store) {
 		if (store.getDeletedAt() != null) {
 			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
 		}
