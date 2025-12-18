@@ -14,7 +14,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -23,7 +22,7 @@ import lombok.RequiredArgsConstructor;
  * - RefreshToken은 브라우저가 자동으로 쿠키에서 전송 (withCredentials: true)
  */
 @Configuration
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class SwaggerConfig {
 
 	private final Environment env;

@@ -102,16 +102,6 @@ jobs:
           source: "redis.conf"
           target: "/home/ubuntu/comeet/"
 
-      - name: Copy nginx to EC2
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          source: "nginx"
-          target: "/home/ubuntu/comeet/"
-
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
