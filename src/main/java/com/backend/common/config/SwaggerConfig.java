@@ -1,11 +1,12 @@
 package com.backend.common.config;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.springdoc.core.properties.SwaggerUiConfigProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Swagger OpenAPI 설정
@@ -20,10 +22,17 @@ import io.swagger.v3.oas.models.servers.Server;
  * - RefreshToken은 브라우저가 자동으로 쿠키에서 전송 (withCredentials: true)
  */
 @Configuration
+@RequiredArgsConstructor
 public class SwaggerConfig {
+
+	private final Environment env;
 
 	@Bean
 	public OpenAPI customOpenAPI() {
+
+		// 현재 활성화된 profile 가져오기
+		String profile = env.getActiveProfiles().length > 0 ? env.getActiveProfiles()[0] : "local";
+
 		// JWT Access Token 인증 스킴 (Authorization Header)
 		SecurityScheme bearerAuth = new SecurityScheme()
 			.type(SecurityScheme.Type.HTTP)
@@ -37,16 +46,21 @@ public class SwaggerConfig {
 		SecurityRequirement securityRequirement = new SecurityRequirement()
 			.addList("bearerAuth");
 
-		Server localServer = new Server()
-			.url("http://localhost:8080")
-			.description("로컬 개발 서버");
+		Server server = new Server();
+		if (profile.equals("dev")) {
+			server.setUrl("http://43.201.91.242");
+			server.setDescription("개발 서버");
+		} else {
+			server.setUrl("http://localhost:8080");
+			server.setDescription("로컬 서버");
+		}
 
 		return new OpenAPI()
 			.info(new Info()
 				.title("Comeet API")
 				.description("커피 탐방 플랫폼 Comeet API 문서")
 				.version("v1.0.0"))
-			.servers(Arrays.asList(localServer))
+			.servers(List.of(server))
 			.components(new Components()
 				.addSecuritySchemes("bearerAuth", bearerAuth))
 			.addSecurityItem(securityRequirement);

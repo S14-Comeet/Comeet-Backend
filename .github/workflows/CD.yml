@@ -38,6 +38,7 @@ jobs:
           mv .env deploy/
           cp docker-compose.yml deploy/
           cp redis.conf deploy/       # Redis 설정 파일 포함
+          cp -r nginx deploy/         # Nginx 설정 파일 포함
           tar -czvf deploy.tar.gz -C deploy .
         shell: bash
 
