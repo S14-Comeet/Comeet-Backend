@@ -1,7 +1,10 @@
 package com.backend.domain.store.controller.query;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.common.annotation.CurrentUser;
+import com.backend.common.auth.principal.AuthenticatedUser;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.response.PageResponse;
 import com.backend.common.util.ResponseUtils;
@@ -98,6 +103,19 @@ class StoreQueryController {
 		@RequestParam(defaultValue = "10") @Min(1) int size
 	) {
 		return ResponseUtils.page(storeFacadeService.getMenusByStore(storeId, page, size));
+	}
+
+	@Operation(
+		summary = "내 가맹점 목록 조회",
+		description = "로그인한 사용자가 소유한 가맹점 목록을 조회합니다. (OWNER 권한 필요)"
+	)
+	@GetMapping("/my")
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
+	public ResponseEntity<BaseResponse<List<StoreDetailResDto>>> getMyStores(
+		@CurrentUser AuthenticatedUser user
+	) {
+		List<StoreDetailResDto> response = storeFacadeService.findMyStores(user.getUser().getId());
+		return ResponseUtils.ok(response);
 	}
 
 }
