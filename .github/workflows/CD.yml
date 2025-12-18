@@ -38,6 +38,7 @@ jobs:
           mv .env deploy/
           cp docker-compose.yml deploy/
           cp redis.conf deploy/       # Redis 설정 파일 포함
+          cp -r nginx deploy/         # Nginx 설정 파일 포함
           tar -czvf deploy.tar.gz -C deploy .
         shell: bash
 
@@ -99,6 +100,16 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           source: "redis.conf"
+          target: "/home/ubuntu/comeet/"
+
+      - name: Copy nginx to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: "nginx"
           target: "/home/ubuntu/comeet/"
 
       - name: Deploy to EC2
