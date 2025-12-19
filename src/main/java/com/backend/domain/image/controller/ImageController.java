@@ -1,4 +1,4 @@
-package com.backend.domain.image;
+package com.backend.domain.image.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,11 @@ import com.backend.domain.image.service.facade.ImageFacadeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Image", description = "사진 관리 API")
+@Tag(name = "Image", description = "이미지 관리 API")
 @RestController
 @RequestMapping("/images")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,10 +27,10 @@ public class ImageController {
 
 	private final ImageFacadeService imageFacadeService;
 
-	@Operation(summary = "문제 이미지 업로드 API", description = "문제에 이미지를 업로드합니다.")
+	@Operation(summary = " 이미지 업로드 API", description = "이미지를 업로드합니다.")
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<BaseResponse<ImageResDto>> uploadImage(
-		@RequestPart("image") MultipartFile image
+		@RequestPart("image") @NotNull MultipartFile image
 	) {
 		ImageResDto imageResDto = imageFacadeService.uploadImage(image);
 		return ResponseUtils.ok(imageResDto);
