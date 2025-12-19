@@ -52,6 +52,10 @@ dependencies {
     // Development Tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+    // AWS S3
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.2.1'
+    implementation 'software.amazon.awssdk:s3'
+
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5'
