@@ -124,6 +124,18 @@ public enum ErrorCode {
 	INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "F-001", "파일 이름이 유효하지 않습니다."),
 	INVALID_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "F-002", "파일 타입이 유효하지 않습니다."),
 	IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"F-003" , "이미지 업로드에 실패했습니다."),
+
+	/**
+	 * Passport Error
+	 */
+	PASSPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "P-001", "여권을 찾을 수 없습니다."),
+	INVALID_YEAR(HttpStatus.BAD_REQUEST, "P-002", "유효하지 않은 연도입니다."),
+	PASSPORT_NOT_AVAILABLE_YET(HttpStatus.BAD_REQUEST, "P-003", "아직 조회할 수 없는 여권입니다."),
+	PASSPORT_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "P-004", "여권 생성에 실패했습니다."),
+	AI_IMAGE_SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "P-005", "AI 이미지 생성 서비스 연결 실패"),
+	PASSPORT_ALREADY_EXISTS(HttpStatus.CONFLICT, "P-006", "여권이 이미 존재합니다."),
+	PASSPORT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "P-007", "여권 조회 권한이 없습니다."),
+	NO_VISIT_RECORDS(HttpStatus.NOT_FOUND, "P-008", "해당 기간에 방문 기록이 없습니다."),
 	;
 
 	private final HttpStatus httpStatus;
