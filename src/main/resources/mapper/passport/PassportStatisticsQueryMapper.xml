@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.passport.mapper.query.PassportStatisticsQueryMapper">
+
+    <resultMap id="RoasteryStatResultMap" type="com.backend.domain.passport.dto.common.RoasteryStatDto">
+        <constructor>
+            <arg column="roastery_name" javaType="String"/>
+            <arg column="visit_count" javaType="Integer"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="CountryStatResultMap" type="com.backend.domain.passport.dto.common.CountryStatDto">
+        <constructor>
+            <arg column="country" javaType="String"/>
+            <arg column="count" javaType="Integer"/>
+        </constructor>
+    </resultMap>
+
+    <select id="getRoasteryStatistics" resultMap="RoasteryStatResultMap">
+        SELECT r.name      AS roastery_name,
+               COUNT(v.id) AS visit_count
+        FROM visits v
+                 INNER JOIN menus m ON v.menu_id = m.id
+                 INNER JOIN stores s ON m.store_id = s.id
+                 INNER JOIN roasteries r ON s.roastery_id = r.id
+        WHERE v.user_id = #{userId}
+          AND v.menu_id IS NOT NULL
+        GROUP BY r.id, r.name
+        ORDER BY visit_count DESC
+    </select>
+
+    <select id="getCountryStatistics" resultMap="CountryStatResultMap">
+        SELECT b.country   AS country,
+               COUNT(v.id) AS count
+        FROM visits v
+                 INNER JOIN menus m ON v.menu_id = m.id
+                 INNER JOIN menu_bean_mappings mbm ON m.id = mbm.menu_id
+                 INNER JOIN beans b ON mbm.bean_id = b.id
+        WHERE v.user_id = #{userId}
+          AND v.menu_id IS NOT NULL
+          AND b.country IS NOT NULL
+        GROUP BY b.country
+        ORDER BY count DESC
+    </select>
+
+</mapper>
