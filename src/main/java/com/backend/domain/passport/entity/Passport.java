@@ -1,6 +1,5 @@
 package com.backend.domain.passport.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
@@ -25,7 +24,7 @@ public class Passport {
 	private String topOrigin;
 	private String topRoastery;
 	private String originSequence;
-	private BigDecimal totalOriginDistance;
+	private Double totalOriginDistance;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }

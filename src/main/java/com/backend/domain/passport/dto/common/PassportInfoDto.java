@@ -1,6 +1,5 @@
 package com.backend.domain.passport.dto.common;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Builder;
@@ -13,6 +12,6 @@ public record PassportInfoDto(
 	String topOrigin,
 	String topRoastery,
 	List<String> originSequence,
-	BigDecimal totalOriginDistance
+	Double totalOriginDistance
 ) {
 }
