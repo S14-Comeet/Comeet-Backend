@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS passports
     total_origin_distance DECIMAL(10, 2) COMMENT '원산지 순서 기반 총 이동 거리 (km)',
     created_at            TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
     updated_at            TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_passport_user_year_month (user_id, year, month),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 

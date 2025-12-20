@@ -18,13 +18,20 @@ ALTER TABLE roasteries
 CREATE UNIQUE INDEX uniq_passport_user_year_month ON passports (user_id, year, month);
 
 -- 2. visits 테이블에 컬럼 추가
-ALTER TABLE visits ADD COLUMN store_id BIGINT;
-ALTER TABLE visits ADD COLUMN passport_id BIGINT;
+ALTER TABLE visits
+    ADD COLUMN store_id BIGINT;
+ALTER TABLE visits
+    ADD COLUMN passport_id BIGINT;
 
 -- 3. visits 테이블 외래키 추가
-ALTER TABLE visits ADD FOREIGN KEY (store_id) REFERENCES stores (id);
-ALTER TABLE visits ADD FOREIGN KEY (passport_id) REFERENCES passports (id);
+ALTER TABLE visits
+    ADD FOREIGN KEY (store_id) REFERENCES stores (id);
+ALTER TABLE visits
+    ADD FOREIGN KEY (passport_id) REFERENCES passports (id);
 
 -- 4. visits 테이블 인덱스 추가
 CREATE INDEX idx_visit_passport ON visits (passport_id);
 CREATE INDEX idx_visit_store ON visits (store_id);
+
+ALTER TABLE passports
+    ADD UNIQUE KEY uniq_passport_user_year_month (user_id, year, month),
