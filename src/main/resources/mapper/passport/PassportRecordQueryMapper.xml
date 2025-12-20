@@ -4,17 +4,7 @@
 
 <mapper namespace="com.backend.domain.passport.mapper.query.PassportRecordQueryMapper">
 
-    <resultMap id="PassportRecordResultMap" type="com.backend.domain.passport.dto.common.PassportRecordDto">
-        <result property="visitId" column="visit_id"/>
-        <result property="visitDate" column="visit_date"/>
-        <result property="storeId" column="store_id"/>
-        <result property="storeName" column="store_name"/>
-        <result property="storeAddress" column="store_address"/>
-        <result property="beanOrigin" column="bean_origin"/>
-        <result property="menuName" column="menu_name"/>
-    </resultMap>
-
-    <select id="findRecordsByPassportId" resultMap="PassportRecordResultMap">
+    <select id="findRecordsByPassportId" resultType="com.backend.domain.passport.dto.common.PassportRecordDto">
         SELECT v.id                 AS visit_id,
                v.created_at         AS visit_date,
                s.id                 AS store_id,
