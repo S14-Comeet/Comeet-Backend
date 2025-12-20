@@ -1,6 +1,6 @@
 package com.backend.domain.passport.converter;
 
-import static com.backend.domain.passport.service.PassportStatisticsCalculator.*;
+import static com.backend.domain.passport.service.calculator.PassportStatisticsCalculator.*;
 
 import java.util.Arrays;
 import java.util.Collections;
