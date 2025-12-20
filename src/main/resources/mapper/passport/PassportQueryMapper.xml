@@ -4,61 +4,52 @@
 
 <mapper namespace="com.backend.domain.passport.mapper.query.PassportQueryMapper">
 
-    <resultMap id="PassportResultMap" type="com.backend.domain.passport.entity.Passport">
-        <id property="id" column="id"/>
-        <result property="userId" column="user_id"/>
-        <result property="year" column="year"/>
-        <result property="month" column="month"/>
-        <result property="coverImageUrl" column="cover_image_url"/>
-        <result property="totalCoffeeCount" column="total_coffee_count"/>
-        <result property="totalStoreCount" column="total_store_count"/>
-        <result property="totalBeanCount" column="total_bean_count"/>
-        <result property="topOrigin" column="top_origin"/>
-        <result property="topRoastery" column="top_roastery"/>
-        <result property="originSequence" column="origin_sequence"/>
-        <result property="totalOriginDistance" column="total_origin_distance"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="updatedAt" column="updated_at"/>
-    </resultMap>
-
-    <select id="findById" resultMap="PassportResultMap">
-        SELECT id,
-               user_id,
-               year,
-               month,
-               cover_image_url,
-               total_coffee_count,
-               total_store_count,
-               total_bean_count,
-               top_origin,
-               top_roastery,
-               origin_sequence,
-               total_origin_distance,
-               created_at,
-               updated_at
+    <select id="findById" resultType="com.backend.domain.passport.entity.Passport">
+        SELECT *
         FROM passports
         WHERE id = #{passportId}
     </select>
 
-    <select id="findAllByUserIdAndYear" resultMap="PassportResultMap">
-        SELECT id,
-               user_id,
-               year,
-               month,
-               cover_image_url,
-               total_coffee_count,
-               total_store_count,
-               total_bean_count,
-               top_origin,
-               top_roastery,
-               origin_sequence,
-               total_origin_distance,
-               created_at,
-               updated_at
+    <select id="findAllByUserIdAndYear" resultType="com.backend.domain.passport.entity.Passport">
+        SELECT *
         FROM passports
         WHERE user_id = #{userId}
           AND year = #{year}
         ORDER BY month ASC
     </select>
 
+    <select id="findUsersWithVisitsInMonth" resultType="long">
+        SELECT DISTINCT v.user_id
+        FROM visits v
+        WHERE YEAR(v.created_at) = #{year}
+          AND MONTH(v.created_at) = #{month}
+          AND v.menu_id IS NOT NULL
+    </select>
+
+    <select id="findByUserIdAndYearAndMonth" resultType="com.backend.domain.passport.entity.Passport">
+        SELECT *
+        FROM passports
+        WHERE user_id = #{userId}
+          AND year = #{year}
+          AND month = #{month}
+    </select>
+
+    <select id="findVisitsWithMenuInMonth" resultType="map">
+        SELECT v.id      AS visit_id,
+               v.menu_id,
+               m.store_id,
+               b.id      AS bean_id,
+               b.country AS origin,
+               r.name    AS roastery_name
+        FROM visits v
+                 INNER JOIN menus m ON v.menu_id = m.id
+                 LEFT JOIN menu_bean_mappings mbm ON m.id = mbm.menu_id
+                 LEFT JOIN beans b ON mbm.bean_id = b.id
+                 LEFT JOIN roasteries r ON b.roastery_id = r.id
+        WHERE v.user_id = #{userId}
+          AND YEAR(v.created_at) = #{year}
+          AND MONTH(v.created_at) = #{month}
+          AND v.menu_id IS NOT NULL
+        ORDER BY v.created_at ASC
+    </select>
 </mapper>
