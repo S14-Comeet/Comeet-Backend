@@ -1,7 +1,6 @@
 package com.backend.domain.passport.service.calculator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,11 +10,17 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class PassportStatisticsCalculator {
+
+	private final DistanceCalculator distanceCalculator;
 
 	public PassportStatistics calculate(List<Map<String, Object>> visits) {
 		if (CollectionUtils.isEmpty(visits)) {
@@ -31,9 +36,17 @@ public class PassportStatisticsCalculator {
 		for (Map<String, Object> visit : visits) {
 			processVisit(visit, uniqueStores, uniqueBeans, originCounts, roasteryCounts, originSequence);
 		}
+		double totalOriginDistance = distanceCalculator.calculateTotalOriginDistance(originSequence);
 
-		return PassportStatistics.of(visits, uniqueStores, uniqueBeans, findTopEntry(originCounts),
-			findTopEntry(roasteryCounts), originSequence);
+		return PassportStatistics.of(
+			visits,
+			uniqueStores,
+			uniqueBeans,
+			findTopEntry(originCounts),
+			findTopEntry(roasteryCounts),
+			originSequence,
+			totalOriginDistance
+		);
 	}
 
 	private void processVisit(
@@ -74,16 +87,16 @@ public class PassportStatisticsCalculator {
 			.orElse(null);
 	}
 
-	@Getter
 	@Builder
-	public static class PassportStatistics {
-		private final int totalCoffeeCount;
-		private final int totalStoreCount;
-		private final int totalBeanCount;
-		private final String topOrigin;
-		private final String topRoastery;
-		private final List<String> originSequence;
-
+	public record PassportStatistics(
+		int totalCoffeeCount,
+		int totalStoreCount,
+		int totalBeanCount,
+		String topOrigin,
+		String topRoastery,
+		String originSequence,
+		double totalOriginDistance
+	) {
 		public static PassportStatistics empty() {
 			return PassportStatistics.builder()
 				.totalCoffeeCount(0)
@@ -91,25 +104,28 @@ public class PassportStatisticsCalculator {
 				.totalBeanCount(0)
 				.topOrigin(null)
 				.topRoastery(null)
-				.originSequence(Collections.emptyList())
+				.originSequence(null)
+				.totalOriginDistance(0)
 				.build();
 		}
 
 		public static PassportStatistics of(
-			final List<Map<String, Object>> visits,
-			final Set<Long> uniqueStores,
-			final Set<Long> uniqueBeans,
-			final String originCounts,
-			final String roasteryCounts,
-			final List<String> originSequence
+			List<Map<String, Object>> visits,
+			Set<Long> uniqueStores,
+			Set<Long> uniqueBeans,
+			String topOrigin,
+			String topRoastery,
+			List<String> originSequence,
+			double totalOriginDistance
 		) {
 			return PassportStatistics.builder()
 				.totalCoffeeCount(visits.size())
 				.totalStoreCount(uniqueStores.size())
 				.totalBeanCount(uniqueBeans.size())
-				.topOrigin(originCounts)
-				.topRoastery(roasteryCounts)
-				.originSequence(originSequence)
+				.topOrigin(topOrigin)
+				.topRoastery(topRoastery)
+				.originSequence(originSequence.isEmpty() ? null : String.join(",", originSequence))
+				.totalOriginDistance(totalOriginDistance)
 				.build();
 		}
 	}
