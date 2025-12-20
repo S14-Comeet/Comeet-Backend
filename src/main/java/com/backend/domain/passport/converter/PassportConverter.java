@@ -1,5 +1,7 @@
 package com.backend.domain.passport.converter;
 
+import static com.backend.domain.passport.service.PassportStatisticsCalculator.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +17,26 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class PassportConverter {
+
+	public Passport toPassport(
+		final Long userId,
+		final int year,
+		final int month,
+		final PassportStatistics stats
+	) {
+		return Passport.builder()
+			.userId(userId)
+			.year(year)
+			.month(month)
+			.coverImageUrl(null) // TODO: AI 이미지 생성
+			.totalCoffeeCount(stats.getTotalCoffeeCount())
+			.totalStoreCount(stats.getTotalStoreCount())
+			.totalBeanCount(stats.getTotalBeanCount())
+			.topOrigin(stats.getTopOrigin())
+			.topRoastery(stats.getTopRoastery())
+			.totalOriginDistance(null) // TODO: 거리 계산거리 계산
+			.build();
+	}
 
 	public PassportSummaryDto toPassportSummaryDto(final Passport passport, final boolean isAvailable) {
 		return PassportSummaryDto.builder()
