@@ -53,19 +53,19 @@ CREATE TABLE IF NOT EXISTS stores
 CREATE TABLE IF NOT EXISTS passports
 (
     id                    BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id               BIGINT         NOT NULL,
-    year                  INT            NOT NULL COMMENT '연도 (2024, 2025 등)',
-    month                 TINYINT        NOT NULL COMMENT '월 (1-12)',
+    user_id               BIGINT  NOT NULL,
+    year                  INT     NOT NULL COMMENT '연도 (2024, 2025 등)',
+    month                 TINYINT NOT NULL COMMENT '월 (1-12)',
     cover_image_url       VARCHAR(500) COMMENT 'AI 생성 여권 커버 이미지 URL',
-    total_coffee_count    INT            NOT NULL DEFAULT 0 COMMENT '해당 월 총 커피 마신 횟수',
-    total_store_count     INT            NOT NULL DEFAULT 0 COMMENT '방문 카페 수',
-    total_bean_count      INT            NOT NULL DEFAULT 0 COMMENT '마신 원두 종류 수',
+    total_coffee_count    INT     NOT NULL DEFAULT 0 COMMENT '해당 월 총 커피 마신 횟수',
+    total_store_count     INT     NOT NULL DEFAULT 0 COMMENT '방문 카페 수',
+    total_bean_count      INT     NOT NULL DEFAULT 0 COMMENT '마신 원두 종류 수',
     top_origin            VARCHAR(100) COMMENT '가장 많이 마신 원산지',
     top_roastery          VARCHAR(100) COMMENT '가장 많이 방문한 로스터리',
     origin_sequence       VARCHAR(500) COMMENT '원산지 순서 (쉼표 구분: Ethiopia,Colombia,Brazil)',
     total_origin_distance DECIMAL(10, 2) COMMENT '원산지 순서 기반 총 이동 거리 (km)',
-    created_at            TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
-    updated_at            TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at            TIMESTAMP        DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMP        DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uk_passport_user_year_month (user_id, year, month),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
@@ -226,3 +226,10 @@ CREATE TABLE IF NOT EXISTS bean_flavor_notes
     FOREIGN KEY (bean_id) REFERENCES beans (id) ON DELETE CASCADE,
     FOREIGN KEY (flavor_id) REFERENCES flavors (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS country_coordinates
+(
+    country_name VARCHAR(50)    NOT NULL PRIMARY KEY COMMENT '국가명',
+    latitude     DECIMAL(10, 6) NOT NULL COMMENT '위도',
+    longitude    DECIMAL(11, 6) NOT NULL COMMENT '경도'
+)

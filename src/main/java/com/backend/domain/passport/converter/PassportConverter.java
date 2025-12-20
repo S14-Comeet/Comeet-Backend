@@ -18,23 +18,19 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class PassportConverter {
 
-	public Passport toPassport(
-		final Long userId,
-		final int year,
-		final int month,
-		final PassportStatistics stats
-	) {
+	public Passport toPassport(final Long userId, final int year, final int month, final PassportStatistics stats) {
 		return Passport.builder()
 			.userId(userId)
 			.year(year)
 			.month(month)
 			.coverImageUrl(null) // TODO: AI 이미지 생성
-			.totalCoffeeCount(stats.getTotalCoffeeCount())
-			.totalStoreCount(stats.getTotalStoreCount())
-			.totalBeanCount(stats.getTotalBeanCount())
-			.topOrigin(stats.getTopOrigin())
-			.topRoastery(stats.getTopRoastery())
-			.totalOriginDistance(null) // TODO: 거리 계산거리 계산
+			.totalCoffeeCount(stats.totalCoffeeCount())
+			.totalStoreCount(stats.totalStoreCount())
+			.totalBeanCount(stats.totalBeanCount())
+			.topOrigin(stats.topOrigin())
+			.topRoastery(stats.topRoastery())
+			.originSequence(stats.originSequence())
+			.totalOriginDistance(stats.totalOriginDistance())
 			.build();
 	}
 
