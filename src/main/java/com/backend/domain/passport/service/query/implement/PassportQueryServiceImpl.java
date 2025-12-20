@@ -1,6 +1,8 @@
 package com.backend.domain.passport.service.query.implement;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,5 +39,23 @@ public class PassportQueryServiceImpl implements PassportQueryService {
 	public List<Passport> findAllByUserIdAndYear(final Long userId, final Integer year) {
 		log.info("[Passport] 여권 목록 조회 : userId={}, year={}", userId, year);
 		return passportQueryMapper.findAllByUserIdAndYear(userId, year);
+	}
+
+	@Override
+	public List<Long> findUsersWithVisitsInMonth(final int year, final int month) {
+		log.info("[Passport] 월별 방문 유저 ID 목록 조회 : year={}, month={}", year, month);
+		return passportQueryMapper.findUsersWithVisitsInMonth(year, month);
+	}
+
+	@Override
+	public Optional<Passport> findByUserIdAndYearAndMonth(final Long userId, final int year, final int month) {
+		log.info("[Passport] 유저 월별 여권 조회 : userId={}, year={}, month={}", userId, year, month);
+		return passportQueryMapper.findByUserIdAndYearAndMonth(userId, year, month);
+	}
+
+	@Override
+	public List<Map<String, Object>> findVisitsWithMenuInMonth(final Long userId, final int year, final int month) {
+		log.info("[Passport] 유저 월별 방문 및 메뉴 상세 조회 : userId={}, year={}, month={}", userId, year, month);
+		return passportQueryMapper.findVisitsWithMenuInMonth(userId, year, month);
 	}
 }

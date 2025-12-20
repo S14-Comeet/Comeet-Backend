@@ -1,8 +1,12 @@
 package com.backend.domain.passport.service.facade;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.backend.domain.passport.converter.PassportConverter;
 import com.backend.domain.passport.converter.StatisticsConverter;
@@ -15,6 +19,8 @@ import com.backend.domain.passport.dto.response.PassportDetailResDto;
 import com.backend.domain.passport.dto.response.PassportListResDto;
 import com.backend.domain.passport.dto.response.RoasteryStatisticsResDto;
 import com.backend.domain.passport.entity.Passport;
+import com.backend.domain.passport.service.calculator.PassportStatisticsCalculator;
+import com.backend.domain.passport.service.command.PassportCommandService;
 import com.backend.domain.passport.service.query.PassportQueryService;
 import com.backend.domain.passport.service.query.PassportRecordQueryService;
 import com.backend.domain.passport.service.query.PassportStatisticsQueryService;
@@ -30,8 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 public class PassportFacadeService {
 
 	private final PassportQueryService passportQueryService;
+	private final PassportCommandService passportCommandService;
 	private final PassportRecordQueryService passportRecordQueryService;
 	private final PassportStatisticsQueryService passportStatisticsQueryService;
+
+	private final PassportStatisticsCalculator statisticsCalculator;
 	private final PassportValidator passportValidator;
 
 	public PassportListResDto getPassportList(final Long userId, final Integer year) {
@@ -66,4 +75,35 @@ public class PassportFacadeService {
 		List<CountryStatDto> statistics = passportStatisticsQueryService.getCountryStatistics(userId);
 		return StatisticsConverter.toCountryStatisticsResDto(statistics);
 	}
+
+	public List<Long> findUsersWithVisitsInMonth(final int year, final int month) {
+		return passportQueryService.findUsersWithVisitsInMonth(year, month);
+	}
+
+	@Transactional
+	public void generatePassportForUser(Long userId, int year, int month) {
+		Optional<Passport> existingPassport = passportQueryService.findByUserIdAndYearAndMonth(userId, year, month);
+		if (existingPassport.isPresent()) {
+			log.warn("[Passport] 여권 이미 존재, userId={}, year={}, month={}", userId, year, month);
+			return;
+		}
+
+		List<Map<String, Object>> visits = passportQueryService.findVisitsWithMenuInMonth(userId, year, month);
+		if (CollectionUtils.isEmpty(visits)) {
+			return;
+		}
+
+		PassportStatisticsCalculator.PassportStatistics stats = statisticsCalculator.calculate(visits);
+
+		Passport passport = PassportConverter.toPassport(userId, year, month, stats);
+		Long passportId = passportCommandService.createPassport(passport);
+
+		for (Map<String, Object> visit : visits) {
+			Long visitId = (Long)visit.get("visit_id");
+			passportCommandService.addPassportVisit(passportId, visitId);
+		}
+
+		log.info("[Passport] 여권 생성 완료, passportId={}, userId={}", passportId, userId);
+	}
+
 }
