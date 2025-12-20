@@ -6,7 +6,7 @@ ALTER TABLE roasteries
 
 # 2025-12-17 #35
 ALTER TABLE beans
-    ADD COLUMN name VARCHAR(100) NOT NULL COMMENT '원두 이름' AFTER roastery_id
+    ADD COLUMN name VARCHAR(100) NOT NULL COMMENT '원두 이름' AFTER roastery_id;
 # 38
 ALTER TABLE roasteries
     DROP FOREIGN KEY roasteries_ibfk_1;
@@ -34,4 +34,4 @@ CREATE INDEX idx_visit_passport ON visits (passport_id);
 CREATE INDEX idx_visit_store ON visits (store_id);
 
 ALTER TABLE passports
-    ADD UNIQUE KEY uniq_passport_user_year_month (user_id, year, month),
+    ADD UNIQUE KEY uniq_passport_user_year_month (user_id, year, month);
