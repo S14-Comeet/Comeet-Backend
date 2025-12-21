@@ -8,6 +8,8 @@ public record PassportRecordDto(
 	Long storeId,
 	String storeName,
 	String storeAddress,
+	double latitude,
+	double longitude,
 	String beanOrigin,
 	String menuName
 ) {
