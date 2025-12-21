@@ -96,3 +96,21 @@ jwt:
   secret: ${JWT_SECRET}
   accessTokenExpiration: ${JWT_EXPIRATION}
   refreshTokenExpiration: ${JWT_REFRESH_EXPIRATION}
+
+# OpenAI 설정
+spring.ai:
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    embedding:
+      options:
+        model: text-embedding-3-small
+    chat:
+      options:
+        model: gpt-4o
+        temperature: 0.3
+
+# Redis Vector 설정
+redis:
+  vector:
+    index-name: bean_embeddings
+    dimension: 1536
