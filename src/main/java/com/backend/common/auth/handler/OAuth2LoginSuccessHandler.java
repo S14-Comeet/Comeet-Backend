@@ -2,6 +2,7 @@ package com.backend.common.auth.handler;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
 
+	@Value("${cors.oauth-redirect-url}")
+	private String oAuthRedirectUrl;
+
 	@Override
 	public void onAuthenticationSuccess(
 		HttpServletRequest request, HttpServletResponse response,
@@ -52,7 +56,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 		Cookie cookie = CookieUtil.generateCookie(token.refreshToken(), jwtProperties.refreshTokenExpiration());
 		response.addCookie(cookie);
 		log.info("[Token] JWT 토큰 생성 및 발급 socialId : {}", oAuth2User.getUser().getSocialId());
-		String redirectUrl = AuthConstant.LOCAL_OAUTH_REDIRECT_URI + "?accessToken=" + token.accessToken();
+		String redirectUrl = oAuthRedirectUrl + token.accessToken();
 		response.sendRedirect(redirectUrl);
 	}
 }
