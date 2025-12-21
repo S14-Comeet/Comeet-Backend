@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.beanscore.mapper.query.BeanScoreQueryMapper">
+
+    <resultMap id="BeanScoreResultMap" type="com.backend.domain.beanscore.entity.BeanScore">
+        <id property="id" column="id"/>
+        <result property="beanId" column="bean_id"/>
+        <result property="acidity" column="acidity"/>
+        <result property="body" column="body"/>
+        <result property="sweetness" column="sweetness"/>
+        <result property="bitterness" column="bitterness"/>
+        <result property="aroma" column="aroma"/>
+        <result property="flavor" column="flavor"/>
+        <result property="aftertaste" column="aftertaste"/>
+        <result property="totalScore" column="total_score"/>
+        <result property="roastLevel" column="roast_level"/>
+        <result property="flavorTags" column="flavor_tags"
+                typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="BeanScoreWithBeanResultMap" type="com.backend.domain.beanscore.dto.response.BeanScoreWithBeanDto">
+        <result property="beanId" column="bean_id"/>
+        <result property="beanName" column="bean_name"/>
+        <result property="country" column="country"/>
+        <result property="roasteryName" column="roastery_name"/>
+        <result property="acidity" column="acidity"/>
+        <result property="body" column="body"/>
+        <result property="sweetness" column="sweetness"/>
+        <result property="bitterness" column="bitterness"/>
+        <result property="aroma" column="aroma"/>
+        <result property="flavor" column="flavor"/>
+        <result property="aftertaste" column="aftertaste"/>
+        <result property="totalScore" column="total_score"/>
+        <result property="roastLevel" column="roast_level"/>
+        <result property="flavorTags" column="flavor_tags"
+                typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+    </resultMap>
+
+    <select id="findByBeanId" resultMap="BeanScoreResultMap">
+        SELECT id,
+               bean_id,
+               acidity,
+               body,
+               sweetness,
+               bitterness,
+               aroma,
+               flavor,
+               aftertaste,
+               total_score,
+               roast_level,
+               flavor_tags,
+               created_at,
+               updated_at
+        FROM bean_scores
+        WHERE bean_id = #{beanId}
+    </select>
+
+    <select id="existsByBeanId" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1 FROM bean_scores WHERE bean_id = #{beanId}
+        )
+    </select>
+
+    <select id="findAll" resultMap="BeanScoreResultMap">
+        SELECT id,
+               bean_id,
+               acidity,
+               body,
+               sweetness,
+               bitterness,
+               aroma,
+               flavor,
+               aftertaste,
+               total_score,
+               roast_level,
+               flavor_tags,
+               created_at,
+               updated_at
+        FROM bean_scores
+    </select>
+
+    <select id="findWithBeanByBeanId" resultMap="BeanScoreWithBeanResultMap">
+        SELECT bs.bean_id,
+               b.name AS bean_name,
+               b.country,
+               r.name AS roastery_name,
+               bs.acidity,
+               bs.body,
+               bs.sweetness,
+               bs.bitterness,
+               bs.aroma,
+               bs.flavor,
+               bs.aftertaste,
+               bs.total_score,
+               bs.roast_level,
+               bs.flavor_tags
+        FROM bean_scores bs
+        INNER JOIN beans b ON bs.bean_id = b.id
+        LEFT JOIN roasteries r ON b.roastery_id = r.id
+        WHERE bs.bean_id = #{beanId}
+          AND b.deleted_at IS NULL
+    </select>
+
+    <select id="findWithBeanByBeanIds" resultMap="BeanScoreWithBeanResultMap">
+        SELECT bs.bean_id,
+               b.name AS bean_name,
+               b.country,
+               r.name AS roastery_name,
+               bs.acidity,
+               bs.body,
+               bs.sweetness,
+               bs.bitterness,
+               bs.aroma,
+               bs.flavor,
+               bs.aftertaste,
+               bs.total_score,
+               bs.roast_level,
+               bs.flavor_tags
+        FROM bean_scores bs
+        INNER JOIN beans b ON bs.bean_id = b.id
+        LEFT JOIN roasteries r ON b.roastery_id = r.id
+        WHERE bs.bean_id IN
+        <foreach collection="beanIds" item="beanId" open="(" separator="," close=")">
+            #{beanId}
+        </foreach>
+        AND b.deleted_at IS NULL
+    </select>
+
+    <select id="findFilteredBeanScores" resultMap="BeanScoreWithBeanResultMap">
+        SELECT bs.bean_id,
+               b.name AS bean_name,
+               b.country,
+               r.name AS roastery_name,
+               bs.acidity,
+               bs.body,
+               bs.sweetness,
+               bs.bitterness,
+               bs.aroma,
+               bs.flavor,
+               bs.aftertaste,
+               bs.total_score,
+               bs.roast_level,
+               bs.flavor_tags
+        FROM bean_scores bs
+        INNER JOIN beans b ON bs.bean_id = b.id
+        LEFT JOIN roasteries r ON b.roastery_id = r.id
+        WHERE b.deleted_at IS NULL
+        <!-- disliked_tags 필터링 -->
+        <if test="dislikedTagsJson != null and dislikedTagsJson != '[]' and dislikedTagsJson != ''">
+            AND (bs.flavor_tags IS NULL OR NOT JSON_OVERLAPS(bs.flavor_tags, #{dislikedTagsJson}))
+        </if>
+        <!-- preferred_roast_levels 필터링 -->
+        <if test="preferredRoastLevels != null and !preferredRoastLevels.isEmpty()">
+            AND bs.roast_level IN
+            <foreach collection="preferredRoastLevels" item="level" open="(" separator="," close=")">
+                #{level}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

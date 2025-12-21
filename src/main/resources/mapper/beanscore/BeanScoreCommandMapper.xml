@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.beanscore.mapper.command.BeanScoreCommandMapper">
+
+    <insert id="insert" parameterType="BeanScore" useGeneratedKeys="true" keyProperty="beanScore.id">
+        INSERT INTO bean_scores (
+            bean_id,
+            acidity,
+            body,
+            sweetness,
+            bitterness,
+            aroma,
+            flavor,
+            aftertaste,
+            total_score,
+            roast_level,
+            flavor_tags,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{beanScore.beanId},
+            #{beanScore.acidity},
+            #{beanScore.body},
+            #{beanScore.sweetness},
+            #{beanScore.bitterness},
+            #{beanScore.aroma},
+            #{beanScore.flavor},
+            #{beanScore.aftertaste},
+            #{beanScore.totalScore},
+            #{beanScore.roastLevel},
+            #{beanScore.flavorTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <update id="update" parameterType="BeanScore">
+        UPDATE bean_scores
+        SET acidity = #{beanScore.acidity},
+            body = #{beanScore.body},
+            sweetness = #{beanScore.sweetness},
+            bitterness = #{beanScore.bitterness},
+            aroma = #{beanScore.aroma},
+            flavor = #{beanScore.flavor},
+            aftertaste = #{beanScore.aftertaste},
+            total_score = #{beanScore.totalScore},
+            roast_level = #{beanScore.roastLevel},
+            flavor_tags = #{beanScore.flavorTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            updated_at = NOW()
+        WHERE bean_id = #{beanScore.beanId}
+    </update>
+
+    <delete id="deleteByBeanId">
+        DELETE FROM bean_scores
+        WHERE bean_id = #{beanId}
+    </delete>
+
+</mapper>
