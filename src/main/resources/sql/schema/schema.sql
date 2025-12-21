@@ -267,8 +267,7 @@ CREATE TABLE IF NOT EXISTS user_preferences
     pref_sweetness           TINYINT NOT NULL DEFAULT 5 COMMENT '선호 단맛 (1-10): 1=드라이, 10=달콤함',
     pref_bitterness          TINYINT NOT NULL DEFAULT 5 COMMENT '선호 쓴맛 (1-10): 1=거의없음, 10=강함',
 
-    preferred_roast_levels   JSON             DEFAULT '["LIGHT", "MEDIUM", "HEAVY"]'
-        COMMENT '선호 배전도 목록 (JSON Array): LIGHT, MEDIUM, HEAVY',
+    preferred_roast_levels   JSON             DEFAULT NULL COMMENT '선호 배전도 목록 (JSON Array): LIGHT, MEDIUM, HEAVY',
     liked_tags               JSON             DEFAULT NULL COMMENT '선호 플레이버 태그 - Soft Scoring용',
     disliked_tags            JSON             DEFAULT NULL COMMENT '비선호 태그 - 하드 필터링으로 제외 (알러지 등)',
     created_at               TIMESTAMP        DEFAULT CURRENT_TIMESTAMP,
