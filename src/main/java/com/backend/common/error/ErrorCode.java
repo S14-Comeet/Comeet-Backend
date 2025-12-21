@@ -136,6 +136,26 @@ public enum ErrorCode {
 	PASSPORT_ALREADY_EXISTS(HttpStatus.CONFLICT, "P-006", "여권이 이미 존재합니다."),
 	PASSPORT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "P-007", "여권 조회 권한이 없습니다."),
 	NO_VISIT_RECORDS(HttpStatus.NOT_FOUND, "P-008", "해당 기간에 방문 기록이 없습니다."),
+
+	/**
+	 * Preference Error
+	 */
+	PREFERENCE_NOT_FOUND(HttpStatus.NOT_FOUND, "PR-001", "사용자 취향 정보를 찾을 수 없습니다."),
+	PREFERENCE_ALREADY_EXISTS(HttpStatus.CONFLICT, "PR-002", "이미 취향 정보가 존재합니다."),
+
+	/**
+	 * BeanScore Error
+	 */
+	BEAN_SCORE_NOT_FOUND(HttpStatus.NOT_FOUND, "BS-001", "원두 점수를 찾을 수 없습니다."),
+	BEAN_SCORE_ALREADY_EXISTS(HttpStatus.CONFLICT, "BS-002", "이미 원두 점수가 존재합니다."),
+
+	/**
+	 * Recommendation Error
+	 */
+	RECOMMENDATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RC-001", "추천 생성에 실패했습니다."),
+	EMBEDDING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RC-002", "임베딩 생성에 실패했습니다."),
+	LLM_SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "RC-003", "LLM 서비스 연결에 실패했습니다."),
+	INSUFFICIENT_DATA(HttpStatus.BAD_REQUEST, "RC-004", "추천을 위한 데이터가 부족합니다."),
 	;
 
 	private final HttpStatus httpStatus;
