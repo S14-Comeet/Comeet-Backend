@@ -38,3 +38,4 @@ logging:
 # CORS 설정 (로컬)
 cors:
   allowed-origins: http://localhost:5173,http://localhost:8080
+  oauth-redirect-url: ${OAUTH_REDIRECT_URI}
