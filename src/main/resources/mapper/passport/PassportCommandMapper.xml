@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.passport.mapper.command.PassportCommandMapper">
+
+    <insert id="insertPassport" parameterType="com.backend.domain.passport.entity.Passport" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO passports (user_id,
+                               year,
+                               month,
+                               cover_image_url,
+                               total_coffee_count,
+                               total_store_count,
+                               total_bean_count,
+                               top_origin,
+                               top_roastery,
+                               origin_sequence,
+                               total_origin_distance)
+        VALUES (#{userId},
+                #{year},
+                #{month},
+                #{coverImageUrl},
+                #{totalCoffeeCount},
+                #{totalStoreCount},
+                #{totalBeanCount},
+                #{topOrigin},
+                #{topRoastery},
+                #{originSequence},
+                #{totalOriginDistance})
+    </insert>
+
+    <insert id="insertPassportVisit">
+        INSERT INTO passport_visits (passport_id, visit_id)
+        VALUES (#{passportId}, #{visitId})
+    </insert>
+
+</mapper>

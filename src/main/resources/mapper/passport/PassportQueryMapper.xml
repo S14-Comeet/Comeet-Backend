@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.passport.mapper.query.PassportQueryMapper">
+
+    <select id="findById" resultType="com.backend.domain.passport.entity.Passport">
+        SELECT *
+        FROM passports
+        WHERE id = #{passportId}
+    </select>
+
+    <select id="findAllByUserIdAndYear" resultType="com.backend.domain.passport.entity.Passport">
+        SELECT *
+        FROM passports
+        WHERE user_id = #{userId}
+          AND year = #{year}
+        ORDER BY month ASC
+    </select>
+
+    <select id="findUsersWithVisitsInMonth" resultType="long">
+        SELECT DISTINCT v.user_id
+        FROM visits v
+        WHERE YEAR(v.created_at) = #{year}
+          AND MONTH(v.created_at) = #{month}
+          AND v.menu_id IS NOT NULL
+    </select>
+
+    <select id="findByUserIdAndYearAndMonth" resultType="com.backend.domain.passport.entity.Passport">
+        SELECT *
+        FROM passports
+        WHERE user_id = #{userId}
+          AND year = #{year}
+          AND month = #{month}
+    </select>
+
+    <select id="findVisitsWithMenuInMonth" resultType="map">
+        SELECT v.id      AS visit_id,
+               v.menu_id,
+               m.store_id,
+               b.id      AS bean_id,
+               b.country AS origin,
+               r.name    AS roastery_name
+        FROM visits v
+                 INNER JOIN menus m ON v.menu_id = m.id
+                 LEFT JOIN menu_bean_mappings mbm ON m.id = mbm.menu_id
+                 LEFT JOIN beans b ON mbm.bean_id = b.id
+                 LEFT JOIN roasteries r ON b.roastery_id = r.id
+        WHERE v.user_id = #{userId}
+          AND YEAR(v.created_at) = #{year}
+          AND MONTH(v.created_at) = #{month}
+          AND v.menu_id IS NOT NULL
+        ORDER BY v.created_at ASC
+    </select>
+</mapper>
