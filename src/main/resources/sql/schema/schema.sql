@@ -227,6 +227,87 @@ CREATE TABLE IF NOT EXISTS bean_flavor_notes
     FOREIGN KEY (flavor_id) REFERENCES flavors (id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS bean_scores
+(
+    id                     BIGINT AUTO_INCREMENT PRIMARY KEY,
+    bean_id                BIGINT   NOT NULL UNIQUE COMMENT 'beans 테이블 FK (1:1 관계)',
+    acidity                TINYINT  NOT NULL DEFAULT 5 COMMENT '산미 (1-10): 1=Very Low, 5=Medium, 10=Very High',
+    body                   TINYINT  NOT NULL DEFAULT 5 COMMENT '바디감 (1-10): 1=Very Light, 5=Medium, 10=Very Full',
+    sweetness              TINYINT  NOT NULL DEFAULT 5 COMMENT '단맛 (1-10): 1=Very Low, 5=Medium, 10=Very High',
+    bitterness             TINYINT  NOT NULL DEFAULT 5 COMMENT '쓴맛 (1-10): 1=Very Low, 5=Medium, 10=Very Strong',
+    aroma                  TINYINT  NOT NULL DEFAULT 5 COMMENT '향 (1-10): 1=Weak, 5=Medium, 10=Intense',
+    flavor                 TINYINT  NOT NULL DEFAULT 5 COMMENT '풍미 (1-10): 1=Simple, 5=Balanced, 10=Complex',
+    aftertaste             TINYINT  NOT NULL DEFAULT 5 COMMENT '여운 (1-10): 1=Short, 5=Medium, 10=Long',
+
+    total_score            TINYINT  NOT NULL DEFAULT 0 COMMENT '총점 (0-100): 외부 데이터 그대로 또는 cupping_notes 변환',
+    roast_level            ENUM ('LIGHT', 'MEDIUM', 'HEAVY')
+                                    NOT NULL DEFAULT 'MEDIUM' COMMENT '배전도 (라이트/미디엄/헤비)',
+    flavor_tags            JSON              DEFAULT NULL COMMENT 'Redis 임베딩 생성용 태그 배열 (JSON Array)',
+    created_at             TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
+    updated_at             TIMESTAMP         DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_acidity CHECK (acidity BETWEEN 1 AND 10),
+    CONSTRAINT chk_body CHECK (body BETWEEN 1 AND 10),
+    CONSTRAINT chk_sweetness CHECK (sweetness BETWEEN 1 AND 10),
+    CONSTRAINT chk_bitterness CHECK (bitterness BETWEEN 1 AND 10),
+    CONSTRAINT chk_aroma CHECK (aroma BETWEEN 1 AND 10),
+    CONSTRAINT chk_flavor CHECK (flavor BETWEEN 1 AND 10),
+    CONSTRAINT chk_aftertaste CHECK (aftertaste BETWEEN 1 AND 10),
+    CONSTRAINT chk_total_score CHECK (total_score BETWEEN 0 AND 100),
+
+    FOREIGN KEY (bean_id) REFERENCES beans (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS user_preferences
+(
+    id                       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id                  BIGINT  NOT NULL UNIQUE,
+    pref_acidity             TINYINT NOT NULL DEFAULT 5 COMMENT '선호 산미 (1-10): 1=부드러움, 10=강렬함',
+    pref_body                TINYINT NOT NULL DEFAULT 5 COMMENT '선호 바디감 (1-10): 1=가벼움, 10=묵직함',
+    pref_sweetness           TINYINT NOT NULL DEFAULT 5 COMMENT '선호 단맛 (1-10): 1=드라이, 10=달콤함',
+    pref_bitterness          TINYINT NOT NULL DEFAULT 5 COMMENT '선호 쓴맛 (1-10): 1=거의없음, 10=강함',
+
+    preferred_roast_levels   JSON             DEFAULT NULL COMMENT '선호 배전도 목록 (JSON Array): LIGHT, MEDIUM, HEAVY',
+    liked_tags               JSON             DEFAULT NULL COMMENT '선호 플레이버 태그 - Soft Scoring용',
+    disliked_tags            JSON             DEFAULT NULL COMMENT '비선호 태그 - 하드 필터링으로 제외 (알러지 등)',
+    created_at               TIMESTAMP        DEFAULT CURRENT_TIMESTAMP,
+    updated_at               TIMESTAMP        DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_pref_acidity CHECK (pref_acidity BETWEEN 1 AND 10),
+    CONSTRAINT chk_pref_body CHECK (pref_body BETWEEN 1 AND 10),
+    CONSTRAINT chk_pref_sweetness CHECK (pref_sweetness BETWEEN 1 AND 10),
+    CONSTRAINT chk_pref_bitterness CHECK (pref_bitterness BETWEEN 1 AND 10),
+
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS bookmark_folders
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id     BIGINT       NOT NULL COMMENT '폴더 소유자',
+    icon        VARCHAR(50)  NOT NULL DEFAULT 'bookmark-fill' COMMENT '폴더 아이콘 이름',
+    name        VARCHAR(50)  NOT NULL COMMENT '폴더 이름',
+    description VARCHAR(255) NULL COMMENT '폴더 설명',
+    created_at  TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS bookmark_items
+(
+    id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    folder_id BIGINT NOT NULL COMMENT '폴더 ID',
+    store_id  BIGINT NOT NULL COMMENT '저장된 카페 ID',
+    added_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '폴더에 추가한 시점',
+    UNIQUE KEY uk_folder_store (folder_id, store_id) COMMENT '동일 폴더에 동일 카페 중복 저장 방지',
+    FOREIGN KEY (folder_id) REFERENCES bookmark_folders (id) ON DELETE CASCADE,
+    FOREIGN KEY (store_id) REFERENCES stores (id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_bookmark_folders_user_id ON bookmark_folders (user_id);
+CREATE INDEX idx_bookmark_items_folder_id ON bookmark_items (folder_id);
+
+
 CREATE TABLE IF NOT EXISTS country_coordinates
 (
     country_name VARCHAR(50)    NOT NULL PRIMARY KEY COMMENT '국가명',
