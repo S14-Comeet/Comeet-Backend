@@ -70,17 +70,6 @@ CREATE TABLE IF NOT EXISTS passports
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE IF NOT EXISTS passport_visits
-(
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    passport_id BIGINT NOT NULL,
-    visit_id    BIGINT NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_passport_visit (passport_id, visit_id),
-    FOREIGN KEY (passport_id) REFERENCES passports (id) ON DELETE CASCADE,
-    FOREIGN KEY (visit_id) REFERENCES visits (id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS visits
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -91,6 +80,17 @@ CREATE TABLE IF NOT EXISTS visits
     is_verified BOOLEAN        NOT NULL DEFAULT FALSE,
     created_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS passport_visits
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    passport_id BIGINT NOT NULL,
+    visit_id    BIGINT NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_passport_visit (passport_id, visit_id),
+    FOREIGN KEY (passport_id) REFERENCES passports (id) ON DELETE CASCADE,
+    FOREIGN KEY (visit_id) REFERENCES visits (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS reviews
@@ -290,6 +290,7 @@ CREATE TABLE IF NOT EXISTS bookmark_folders
     description VARCHAR(255) NULL COMMENT '폴더 설명',
     created_at  TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_bookmark_folders_user_id (user_id),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
@@ -300,13 +301,10 @@ CREATE TABLE IF NOT EXISTS bookmark_items
     store_id  BIGINT NOT NULL COMMENT '저장된 카페 ID',
     added_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '폴더에 추가한 시점',
     UNIQUE KEY uk_folder_store (folder_id, store_id) COMMENT '동일 폴더에 동일 카페 중복 저장 방지',
+    INDEX idx_bookmark_items_folder_id (folder_id),
     FOREIGN KEY (folder_id) REFERENCES bookmark_folders (id) ON DELETE CASCADE,
     FOREIGN KEY (store_id) REFERENCES stores (id) ON DELETE CASCADE
 );
-
-CREATE INDEX idx_bookmark_folders_user_id ON bookmark_folders (user_id);
-CREATE INDEX idx_bookmark_items_folder_id ON bookmark_items (folder_id);
-
 
 CREATE TABLE IF NOT EXISTS country_coordinates
 (
