@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.preference.mapper.query.PreferenceQueryMapper">
+
+    <resultMap id="UserPreferenceResultMap" type="com.backend.domain.preference.entity.UserPreference">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="prefAcidity" column="pref_acidity"/>
+        <result property="prefBody" column="pref_body"/>
+        <result property="prefSweetness" column="pref_sweetness"/>
+        <result property="prefBitterness" column="pref_bitterness"/>
+        <result property="preferredRoastLevels" column="preferred_roast_levels"
+                typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+        <result property="likedTags" column="liked_tags"
+                typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+        <result property="dislikedTags" column="disliked_tags"
+                typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findByUserId" resultMap="UserPreferenceResultMap">
+        SELECT id,
+               user_id,
+               pref_acidity,
+               pref_body,
+               pref_sweetness,
+               pref_bitterness,
+               preferred_roast_levels,
+               liked_tags,
+               disliked_tags,
+               created_at,
+               updated_at
+        FROM user_preferences
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="existsByUserId" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1 FROM user_preferences WHERE user_id = #{userId}
+        )
+    </select>
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.preference.mapper.command.PreferenceCommandMapper">
+
+    <insert id="insert" parameterType="UserPreference" useGeneratedKeys="true" keyProperty="preference.id">
+        INSERT INTO user_preferences (
+            user_id,
+            pref_acidity,
+            pref_body,
+            pref_sweetness,
+            pref_bitterness,
+            preferred_roast_levels,
+            liked_tags,
+            disliked_tags,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{preference.userId},
+            #{preference.prefAcidity},
+            #{preference.prefBody},
+            #{preference.prefSweetness},
+            #{preference.prefBitterness},
+            #{preference.preferredRoastLevels, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            #{preference.likedTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            #{preference.dislikedTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <update id="update" parameterType="UserPreference">
+        UPDATE user_preferences
+        SET pref_acidity = #{preference.prefAcidity},
+            pref_body = #{preference.prefBody},
+            pref_sweetness = #{preference.prefSweetness},
+            pref_bitterness = #{preference.prefBitterness},
+            preferred_roast_levels = #{preference.preferredRoastLevels, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            liked_tags = #{preference.likedTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            disliked_tags = #{preference.dislikedTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            updated_at = NOW()
+        WHERE user_id = #{preference.userId}
+    </update>
+
+    <delete id="deleteByUserId">
+        DELETE FROM user_preferences
+        WHERE user_id = #{userId}
+    </delete>
+
+</mapper>
