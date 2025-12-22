@@ -242,7 +242,6 @@ CREATE TABLE IF NOT EXISTS bean_scores
     total_score            TINYINT  NOT NULL DEFAULT 0 COMMENT '총점 (0-100): 외부 데이터 그대로 또는 cupping_notes 변환',
     roast_level            ENUM ('LIGHT', 'MEDIUM', 'HEAVY')
                                     NOT NULL DEFAULT 'MEDIUM' COMMENT '배전도 (라이트/미디엄/헤비)',
-    flavor_tags            JSON              DEFAULT NULL COMMENT 'Redis 임베딩 생성용 태그 배열 (JSON Array)',
     created_at             TIMESTAMP         DEFAULT CURRENT_TIMESTAMP,
     updated_at             TIMESTAMP         DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
