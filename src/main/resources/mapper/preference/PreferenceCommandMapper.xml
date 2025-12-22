@@ -22,7 +22,7 @@
             #{preference.prefBody},
             #{preference.prefSweetness},
             #{preference.prefBitterness},
-            #{preference.preferredRoastLevels, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            #{preference.preferredRoastLevels, typeHandler=com.backend.common.mybatis.RoastingLevelListTypeHandler},
             #{preference.likedTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
             #{preference.dislikedTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
             NOW(),
@@ -36,7 +36,7 @@
             pref_body = #{preference.prefBody},
             pref_sweetness = #{preference.prefSweetness},
             pref_bitterness = #{preference.prefBitterness},
-            preferred_roast_levels = #{preference.preferredRoastLevels, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
+            preferred_roast_levels = #{preference.preferredRoastLevels, typeHandler=com.backend.common.mybatis.RoastingLevelListTypeHandler},
             liked_tags = #{preference.likedTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
             disliked_tags = #{preference.dislikedTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
             updated_at = NOW()

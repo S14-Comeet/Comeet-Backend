@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Preference", description = "사용자 취향 관련 API")
 @RestController
-@RequestMapping("/api/preferences")
+@RequestMapping("/preferences")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class PreferenceQueryController {
 

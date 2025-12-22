@@ -12,7 +12,7 @@
         <result property="prefSweetness" column="pref_sweetness"/>
         <result property="prefBitterness" column="pref_bitterness"/>
         <result property="preferredRoastLevels" column="preferred_roast_levels"
-                typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+                typeHandler="com.backend.common.mybatis.RoastingLevelListTypeHandler"/>
         <result property="likedTags" column="liked_tags"
                 typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
         <result property="dislikedTags" column="disliked_tags"
