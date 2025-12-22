@@ -11,7 +11,6 @@ import com.backend.common.error.exception.BeanScoreException;
 import com.backend.domain.beanscore.dto.response.BeanScoreWithBeanDto;
 import com.backend.domain.beanscore.entity.BeanScore;
 import com.backend.domain.beanscore.mapper.query.BeanScoreQueryMapper;
-import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class BeanScoreQueryServiceImpl implements BeanScoreQueryService {
 
 	private final BeanScoreQueryMapper beanScoreQueryMapper;
-	private final Gson gson = new Gson();
 
 	@Override
 	public Optional<BeanScore> findByBeanId(Long beanId) {
@@ -63,10 +61,6 @@ public class BeanScoreQueryServiceImpl implements BeanScoreQueryService {
 	@Override
 	public List<BeanScoreWithBeanDto> findFilteredBeanScores(List<String> dislikedTags,
 		List<String> preferredRoastLevels) {
-		String dislikedTagsJson = (dislikedTags != null && !dislikedTags.isEmpty())
-			? gson.toJson(dislikedTags)
-			: null;
-
-		return beanScoreQueryMapper.findFilteredBeanScores(dislikedTagsJson, preferredRoastLevels);
+		return beanScoreQueryMapper.findFilteredBeanScores(dislikedTags, preferredRoastLevels);
 	}
 }

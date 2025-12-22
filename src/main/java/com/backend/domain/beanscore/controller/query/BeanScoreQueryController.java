@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "BeanScore", description = "원두 점수 관련 API")
 @RestController
-@RequestMapping("/api/bean-scores")
+@RequestMapping("/bean-scores")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BeanScoreQueryController {
 

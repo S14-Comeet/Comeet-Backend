@@ -3,10 +3,10 @@ package com.backend.domain.beanscore.service.facade;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.common.ai.service.EmbeddingService;
 import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.BeanScoreException;
 import com.backend.common.redis.service.RedisVectorService;
+import com.backend.domain.beanscore.batch.BeanEmbeddingBatchService;
 import com.backend.domain.beanscore.converter.BeanScoreConverter;
 import com.backend.domain.beanscore.dto.request.BeanScoreUpdateReqDto;
 import com.backend.domain.beanscore.dto.response.BeanScoreResDto;
@@ -27,7 +27,7 @@ public class BeanScoreFacadeService {
 
 	private final BeanScoreCommandService beanScoreCommandService;
 	private final BeanScoreQueryService beanScoreQueryService;
-	private final EmbeddingService embeddingService;
+	private final BeanEmbeddingBatchService beanEmbeddingBatchService;
 	private final RedisVectorService redisVectorService;
 
 	/**
@@ -58,16 +58,13 @@ public class BeanScoreFacadeService {
 			reqDto.flavor(),
 			reqDto.aftertaste(),
 			reqDto.totalScore(),
-			reqDto.roastLevel(),
-			reqDto.flavorTags()
+			reqDto.roastLevel()
 		);
 
 		beanScoreCommandService.save(beanScore);
 
-		// 임베딩 생성 및 저장
-		if (reqDto.flavorTags() != null && !reqDto.flavorTags().isEmpty()) {
-			updateEmbedding(beanId, reqDto.flavorTags());
-		}
+		// 임베딩 생성 및 저장 (bean_flavor_notes 기반)
+		beanEmbeddingBatchService.updateEmbedding(beanId);
 
 		return BeanScoreConverter.toResDto(beanScore);
 	}
@@ -93,16 +90,13 @@ public class BeanScoreFacadeService {
 			reqDto.flavor(),
 			reqDto.aftertaste(),
 			reqDto.totalScore(),
-			reqDto.roastLevel(),
-			reqDto.flavorTags()
+			reqDto.roastLevel()
 		);
 
 		beanScoreCommandService.update(beanScore);
 
-		// 임베딩 업데이트
-		if (reqDto.flavorTags() != null && !reqDto.flavorTags().isEmpty()) {
-			updateEmbedding(beanId, reqDto.flavorTags());
-		}
+		// 임베딩 업데이트 (bean_flavor_notes 기반)
+		beanEmbeddingBatchService.updateEmbedding(beanId);
 
 		return BeanScoreConverter.toResDto(beanScore);
 	}
@@ -119,16 +113,4 @@ public class BeanScoreFacadeService {
 		redisVectorService.deleteEmbedding(beanId);
 	}
 
-	/**
-	 * 임베딩 업데이트
-	 */
-	private void updateEmbedding(Long beanId, java.util.List<String> flavorTags) {
-		try {
-			float[] embedding = embeddingService.embedTags(flavorTags);
-			redisVectorService.saveEmbedding(beanId, embedding);
-			log.debug("Updated embedding for bean {}", beanId);
-		} catch (Exception e) {
-			log.error("Failed to update embedding for bean {}", beanId, e);
-		}
-	}
 }

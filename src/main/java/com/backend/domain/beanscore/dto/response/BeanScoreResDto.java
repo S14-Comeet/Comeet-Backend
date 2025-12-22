@@ -1,7 +1,5 @@
 package com.backend.domain.beanscore.dto.response;
 
-import java.util.List;
-
 import com.backend.domain.bean.enums.RoastingLevel;
 
 /**
@@ -18,7 +16,6 @@ public record BeanScoreResDto(
 	Integer flavor,
 	Integer aftertaste,
 	Integer totalScore,
-	RoastingLevel roastLevel,
-	List<String> flavorTags
+	RoastingLevel roastLevel
 ) {
 }

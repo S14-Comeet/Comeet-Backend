@@ -16,7 +16,6 @@
             aftertaste,
             total_score,
             roast_level,
-            flavor_tags,
             created_at,
             updated_at
         ) VALUES (
@@ -30,7 +29,6 @@
             #{beanScore.aftertaste},
             #{beanScore.totalScore},
             #{beanScore.roastLevel},
-            #{beanScore.flavorTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
             NOW(),
             NOW()
         )
@@ -47,7 +45,6 @@
             aftertaste = #{beanScore.aftertaste},
             total_score = #{beanScore.totalScore},
             roast_level = #{beanScore.roastLevel},
-            flavor_tags = #{beanScore.flavorTags, typeHandler=com.backend.common.mybatis.JsonListTypeHandler},
             updated_at = NOW()
         WHERE bean_id = #{beanScore.beanId}
     </update>

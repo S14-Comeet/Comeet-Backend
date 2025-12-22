@@ -42,9 +42,10 @@ public interface BeanScoreQueryMapper {
 
 	/**
 	 * 하드 필터링된 원두 점수 조회 (추천용)
+	 * dislikedTags: bean_flavor_notes를 통해 필터링
 	 */
 	List<BeanScoreWithBeanDto> findFilteredBeanScores(
-		@Param("dislikedTagsJson") String dislikedTagsJson,
+		@Param("dislikedTags") List<String> dislikedTags,
 		@Param("preferredRoastLevels") List<String> preferredRoastLevels
 	);
 }

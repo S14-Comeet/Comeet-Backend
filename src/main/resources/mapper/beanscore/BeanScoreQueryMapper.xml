@@ -16,28 +16,28 @@
         <result property="aftertaste" column="aftertaste"/>
         <result property="totalScore" column="total_score"/>
         <result property="roastLevel" column="roast_level"/>
-        <result property="flavorTags" column="flavor_tags"
-                typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
     <resultMap id="BeanScoreWithBeanResultMap" type="com.backend.domain.beanscore.dto.response.BeanScoreWithBeanDto">
-        <result property="beanId" column="bean_id"/>
-        <result property="beanName" column="bean_name"/>
-        <result property="country" column="country"/>
-        <result property="roasteryName" column="roastery_name"/>
-        <result property="acidity" column="acidity"/>
-        <result property="body" column="body"/>
-        <result property="sweetness" column="sweetness"/>
-        <result property="bitterness" column="bitterness"/>
-        <result property="aroma" column="aroma"/>
-        <result property="flavor" column="flavor"/>
-        <result property="aftertaste" column="aftertaste"/>
-        <result property="totalScore" column="total_score"/>
-        <result property="roastLevel" column="roast_level"/>
-        <result property="flavorTags" column="flavor_tags"
-                typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+        <constructor>
+            <arg column="bean_id" javaType="java.lang.Long"/>
+            <arg column="bean_name" javaType="java.lang.String"/>
+            <arg column="country" javaType="java.lang.String"/>
+            <arg column="roastery_name" javaType="java.lang.String"/>
+            <arg column="acidity" javaType="java.lang.Integer"/>
+            <arg column="body" javaType="java.lang.Integer"/>
+            <arg column="sweetness" javaType="java.lang.Integer"/>
+            <arg column="bitterness" javaType="java.lang.Integer"/>
+            <arg column="aroma" javaType="java.lang.Integer"/>
+            <arg column="flavor" javaType="java.lang.Integer"/>
+            <arg column="aftertaste" javaType="java.lang.Integer"/>
+            <arg column="total_score" javaType="java.lang.Integer"/>
+            <arg column="roast_level" javaType="com.backend.domain.bean.enums.RoastingLevel"/>
+            <arg column="flavor_tags" javaType="java.util.List"
+                 typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+        </constructor>
     </resultMap>
 
     <select id="findByBeanId" resultMap="BeanScoreResultMap">
@@ -52,7 +52,6 @@
                aftertaste,
                total_score,
                roast_level,
-               flavor_tags,
                created_at,
                updated_at
         FROM bean_scores
@@ -77,7 +76,6 @@
                aftertaste,
                total_score,
                roast_level,
-               flavor_tags,
                created_at,
                updated_at
         FROM bean_scores
@@ -97,7 +95,10 @@
                bs.aftertaste,
                bs.total_score,
                bs.roast_level,
-               bs.flavor_tags
+               (SELECT JSON_ARRAYAGG(f.code)
+                FROM bean_flavor_notes bfn
+                INNER JOIN flavors f ON bfn.flavor_id = f.id
+                WHERE bfn.bean_id = bs.bean_id) AS flavor_tags
         FROM bean_scores bs
         INNER JOIN beans b ON bs.bean_id = b.id
         LEFT JOIN roasteries r ON b.roastery_id = r.id
@@ -119,7 +120,10 @@
                bs.aftertaste,
                bs.total_score,
                bs.roast_level,
-               bs.flavor_tags
+               (SELECT JSON_ARRAYAGG(f.code)
+                FROM bean_flavor_notes bfn
+                INNER JOIN flavors f ON bfn.flavor_id = f.id
+                WHERE bfn.bean_id = bs.bean_id) AS flavor_tags
         FROM bean_scores bs
         INNER JOIN beans b ON bs.bean_id = b.id
         LEFT JOIN roasteries r ON b.roastery_id = r.id
@@ -144,14 +148,25 @@
                bs.aftertaste,
                bs.total_score,
                bs.roast_level,
-               bs.flavor_tags
+               (SELECT JSON_ARRAYAGG(f.code)
+                FROM bean_flavor_notes bfn
+                INNER JOIN flavors f ON bfn.flavor_id = f.id
+                WHERE bfn.bean_id = bs.bean_id) AS flavor_tags
         FROM bean_scores bs
         INNER JOIN beans b ON bs.bean_id = b.id
         LEFT JOIN roasteries r ON b.roastery_id = r.id
         WHERE b.deleted_at IS NULL
-        <!-- disliked_tags 필터링 -->
-        <if test="dislikedTagsJson != null and dislikedTagsJson != '[]' and dislikedTagsJson != ''">
-            AND (bs.flavor_tags IS NULL OR NOT JSON_OVERLAPS(bs.flavor_tags, #{dislikedTagsJson}))
+        <!-- disliked_tags 필터링: bean_flavor_notes를 통해 필터링 -->
+        <if test="dislikedTags != null and !dislikedTags.isEmpty()">
+            AND NOT EXISTS (
+                SELECT 1 FROM bean_flavor_notes bfn
+                INNER JOIN flavors f ON bfn.flavor_id = f.id
+                WHERE bfn.bean_id = bs.bean_id
+                AND f.code IN
+                <foreach collection="dislikedTags" item="tag" open="(" separator="," close=")">
+                    #{tag}
+                </foreach>
+            )
         </if>
         <!-- preferred_roast_levels 필터링 -->
         <if test="preferredRoastLevels != null and !preferredRoastLevels.isEmpty()">

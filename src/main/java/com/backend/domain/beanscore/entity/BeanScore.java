@@ -1,7 +1,6 @@
 package com.backend.domain.beanscore.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.backend.domain.bean.enums.RoastingLevel;
 
@@ -31,7 +30,6 @@ public class BeanScore {
 	private Integer aftertaste;
 	private Integer totalScore;
 	private RoastingLevel roastLevel;
-	private List<String> flavorTags;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
@@ -50,7 +48,6 @@ public class BeanScore {
 			.aftertaste(5)
 			.totalScore(0)
 			.roastLevel(RoastingLevel.MEDIUM)
-			.flavorTags(List.of())
 			.build();
 	}
 
@@ -66,8 +63,7 @@ public class BeanScore {
 		Integer flavor,
 		Integer aftertaste,
 		Integer totalScore,
-		RoastingLevel roastLevel,
-		List<String> flavorTags
+		RoastingLevel roastLevel
 	) {
 		if (acidity != null) {
 			this.acidity = acidity;
@@ -95,9 +91,6 @@ public class BeanScore {
 		}
 		if (roastLevel != null) {
 			this.roastLevel = roastLevel;
-		}
-		if (flavorTags != null) {
-			this.flavorTags = flavorTags;
 		}
 	}
 }

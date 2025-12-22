@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "BeanScore Admin", description = "원두 점수 관리자 API")
 @RestController
-@RequestMapping("/api/admin/bean-scores")
+@RequestMapping("/admin/bean-scores")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BeanEmbeddingController {
 
@@ -40,7 +40,7 @@ public class BeanEmbeddingController {
 
 	@Operation(
 		summary = "누락된 원두 임베딩 생성",
-		description = "임베딩이 없는 원두만 처리합니다. 관리자 전용 API입니다."
+		description = "임베딩이 없는 원두만 처리합니다. flavor가 없는 원두는 skip됩니다. 관리자 전용 API입니다."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "임베딩 생성 성공"),
@@ -52,8 +52,33 @@ public class BeanEmbeddingController {
 		return ResponseUtils.ok(new EmbedAllResponse(processedCount, "누락된 원두 임베딩 생성 완료"));
 	}
 
+	@Operation(
+		summary = "전체 임베딩 삭제 후 재생성",
+		description = "기존 임베딩을 모두 삭제하고, flavor가 있는 원두만 새로 임베딩합니다. 관리자 전용 API입니다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "임베딩 재생성 성공"),
+		@ApiResponse(responseCode = "403", description = "관리자 권한 필요")
+	})
+	@PostMapping("/drop-and-embed")
+	public ResponseEntity<BaseResponse<DropAndEmbedResponse>> dropAndEmbedAll() {
+		BeanEmbeddingBatchService.EmbedResult result = beanEmbeddingBatchService.dropAndEmbedAll();
+		return ResponseUtils.ok(new DropAndEmbedResponse(
+			result.deletedCount(),
+			result.embeddedCount(),
+			"기존 임베딩 삭제 후 재생성 완료 (flavor가 있는 원두만)"
+		));
+	}
+
 	public record EmbedAllResponse(
 		int processedCount,
+		String message
+	) {
+	}
+
+	public record DropAndEmbedResponse(
+		int deletedCount,
+		int embeddedCount,
 		String message
 	) {
 	}

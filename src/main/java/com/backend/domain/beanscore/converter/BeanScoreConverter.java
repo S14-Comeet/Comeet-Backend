@@ -24,8 +24,7 @@ public final class BeanScoreConverter {
 			entity.getFlavor(),
 			entity.getAftertaste(),
 			entity.getTotalScore(),
-			entity.getRoastLevel(),
-			entity.getFlavorTags()
+			entity.getRoastLevel()
 		);
 	}
 }
