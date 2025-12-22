@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.common.ai.dto.MenuRerankRequest;
+import com.backend.common.ai.dto.MenuRerankResponse;
 import com.backend.common.ai.dto.RerankRequest;
 import com.backend.common.ai.dto.RerankResponse;
 import com.backend.common.ai.service.EmbeddingService;
@@ -22,14 +24,18 @@ import com.backend.common.util.GeoUtils;
 import com.backend.domain.bean.dto.common.BeanBadgeDto;
 import com.backend.domain.beanscore.dto.response.BeanScoreWithBeanDto;
 import com.backend.domain.beanscore.service.query.BeanScoreQueryService;
+import com.backend.domain.flavor.converter.FlavorConverter;
+import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
+import com.backend.domain.flavor.entity.Flavor;
+import com.backend.domain.flavor.service.FlavorQueryService;
 import com.backend.domain.preference.entity.UserPreference;
 import com.backend.domain.preference.service.query.PreferenceQueryService;
 import com.backend.domain.recommendation.dto.internal.MenuWithBeanScoreDto;
 import com.backend.domain.recommendation.dto.request.RecommendationReqDto;
 import com.backend.domain.recommendation.dto.response.BeanRecommendationResDto;
 import com.backend.domain.recommendation.dto.response.MenuRecommendationResDto;
+import com.backend.domain.recommendation.dto.response.NearbyMenuRecommendationResDto;
 import com.backend.domain.recommendation.service.query.RecommendationQueryService;
-import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
  * 1. 위치 필터링 (LOCAL 모드)
  * 2. 하드 필터링 (disliked_tags, roast_level)
  * 3. 벡터 검색 (liked_tags 유사도)
- * 4. LLM 리랭킹 (Top 3 선정)
+ * 4. LLM 리랭킹 (Top 5 선정)
  */
 @Slf4j
 @Service
@@ -51,13 +57,15 @@ public class RecommendationFacadeService {
 	private final PreferenceQueryService preferenceQueryService;
 	private final BeanScoreQueryService beanScoreQueryService;
 	private final RecommendationQueryService recommendationQueryService;
+	private final FlavorQueryService flavorQueryService;
 	private final EmbeddingService embeddingService;
 	private final RedisVectorService redisVectorService;
 	private final LlmService llmService;
-	private final Gson gson = new Gson();
 
 	private static final int VECTOR_SEARCH_TOP_K = 20;
-	private static final int FINAL_RECOMMENDATION_COUNT = 3;
+	private static final int FINAL_RECOMMENDATION_COUNT = 5;
+	private static final int MAX_RADIUS_EXPANSION_ATTEMPTS = 3;
+	private static final int MAX_RADIUS_KM = 30;
 
 	/**
 	 * 원두 추천 (전역)
@@ -71,13 +79,11 @@ public class RecommendationFacadeService {
 			.orElseGet(() -> UserPreference.createDefault(userId));
 
 		// 2. 하드 필터링 (SQL)
-		String dislikedTagsJson = convertToJson(preference.getDislikedTags());
 		List<String> preferredRoastLevels = convertRoastLevelsToStrings(preference);
 
 		List<BeanScoreWithBeanDto> filteredBeans = beanScoreQueryService.findFilteredBeanScores(
-			preference.getDislikedTags(), preference.getPreferredRoastLevels().stream()
-				.map(Enum::name)
-				.toList()
+			preference.getDislikedTags(),
+			preferredRoastLevels
 		);
 
 		if (filteredBeans.isEmpty()) {
@@ -99,7 +105,13 @@ public class RecommendationFacadeService {
 			// 벡터 검색 결과가 없으면 필터링된 원두 중 상위 3개 반환
 			return filteredBeans.stream()
 				.limit(FINAL_RECOMMENDATION_COUNT)
-				.map(bean -> createBeanRecommendation(bean, filteredBeans.indexOf(bean) + 1, 0.0, "취향에 맞는 원두입니다."))
+				.map(bean -> createBeanRecommendation(
+					bean,
+					filteredBeans.indexOf(bean) + 1,
+					0.0,
+					"취향에 맞는 원두입니다.",
+					getFlavorBadges(bean.flavorTags())
+				))
 				.toList();
 		}
 
@@ -152,7 +164,13 @@ public class RecommendationFacadeService {
 						return null;
 					}
 					Double similarity = similarityMap.getOrDefault(rec.beanId(), 0.0);
-					return createBeanRecommendation(bean, rec.rank(), similarity, rec.reason());
+					return createBeanRecommendation(
+						bean,
+						rec.rank(),
+						similarity,
+						rec.reason(),
+						getFlavorBadges(bean.flavorTags())
+					);
 				})
 				.filter(r -> r != null)
 				.toList();
@@ -165,8 +183,13 @@ public class RecommendationFacadeService {
 				.map(vr -> {
 					BeanScoreWithBeanDto bean = beanMap.get(vr.beanId());
 					if (bean == null) return null;
-					return createBeanRecommendation(bean, vectorResults.indexOf(vr) + 1,
-						vr.score(), "취향과 유사한 플레이버를 가진 원두입니다.");
+					return createBeanRecommendation(
+						bean,
+						vectorResults.indexOf(vr) + 1,
+						vr.score(),
+						"취향과 유사한 플레이버를 가진 원두입니다.",
+						getFlavorBadges(bean.flavorTags())
+					);
 				})
 				.filter(r -> r != null)
 				.toList();
@@ -196,11 +219,10 @@ public class RecommendationFacadeService {
 		}
 
 		// 3. 하드 필터링 (SQL)
-		String dislikedTagsJson = convertToJson(preference.getDislikedTags());
 		List<String> preferredRoastLevels = convertRoastLevelsToStrings(preference);
 
 		List<MenuWithBeanScoreDto> filteredMenus = recommendationQueryService.findFilteredMenus(
-			dislikedTagsJson,
+			preference.getDislikedTags(),
 			preferredRoastLevels,
 			boundingBox
 		);
@@ -241,9 +263,12 @@ public class RecommendationFacadeService {
 			return List.of();
 		}
 
-		// 6. LLM 리랭킹
-		List<RerankRequest.CandidateInfo> candidates = menuWithScores.stream()
-			.map(ms -> new RerankRequest.CandidateInfo(
+		// 6. LLM 리랭킹 (메뉴 정보 + 원두/플레이버 정보 포함)
+		List<RerankRequest.MenuCandidateInfo> menuCandidates = menuWithScores.stream()
+			.map(ms -> new RerankRequest.MenuCandidateInfo(
+				ms.menu.menuId(),
+				ms.menu.menuName(),
+				ms.menu.menuDescription(),
 				ms.menu.beanId(),
 				ms.menu.beanName(),
 				ms.menu.roasteryName(),
@@ -258,7 +283,7 @@ public class RecommendationFacadeService {
 			))
 			.toList();
 
-		RerankRequest rerankRequest = new RerankRequest(
+		MenuRerankRequest menuRerankRequest = new MenuRerankRequest(
 			new RerankRequest.UserPreferenceInfo(
 				preference.getPrefAcidity(),
 				preference.getPrefBody(),
@@ -267,24 +292,28 @@ public class RecommendationFacadeService {
 				preferredRoastLevels,
 				preference.getLikedTags() != null ? preference.getLikedTags() : List.of()
 			),
-			candidates
+			menuCandidates
 		);
 
 		try {
-			RerankResponse rerankResponse = llmService.rerank(rerankRequest);
+			MenuRerankResponse rerankResponse = llmService.rerankMenus(menuRerankRequest);
 
-			// LLM 결과와 메뉴 매핑
-			Map<Long, MenuWithScore> beanToMenuMap = new HashMap<>();
-			for (MenuWithScore ms : menuWithScores) {
-				// 같은 beanId를 가진 메뉴 중 첫 번째만 사용
-				beanToMenuMap.putIfAbsent(ms.menu.beanId(), ms);
-			}
+			// LLM 결과와 메뉴 매핑 (menuId로 매핑)
+			Map<Long, MenuWithScore> menuIdToMenuMap = menuWithScores.stream()
+				.collect(Collectors.toMap(ms -> ms.menu.menuId(), ms -> ms, (a, b) -> a));
 
 			return rerankResponse.recommendations().stream()
 				.map(rec -> {
-					MenuWithScore ms = beanToMenuMap.get(rec.beanId());
+					MenuWithScore ms = menuIdToMenuMap.get(rec.menuId());
 					if (ms == null) return null;
-					return createMenuRecommendation(ms.menu, rec.rank(), ms.similarity, rec.reason(), ms.distance);
+					return createMenuRecommendation(
+						ms.menu,
+						rec.rank(),
+						ms.similarity,
+						rec.reason(),
+						ms.distance,
+						getFlavorBadges(ms.menu.flavorTags())
+					);
 				})
 				.filter(r -> r != null)
 				.toList();
@@ -299,10 +328,67 @@ public class RecommendationFacadeService {
 					menuWithScores.indexOf(ms) + 1,
 					ms.similarity,
 					"취향과 유사한 플레이버의 메뉴입니다.",
-					ms.distance
+					ms.distance,
+					getFlavorBadges(ms.menu.flavorTags())
 				))
 				.toList();
 		}
+	}
+
+	/**
+	 * 근거리 메뉴 추천 (반경 자동 확장 지원)
+	 *
+	 * 결과가 없을 경우 반경을 2배씩 확장하여 재검색합니다.
+	 * 최대 3회 확장, 최대 30km까지 확장합니다.
+	 */
+	@Transactional(readOnly = true)
+	public NearbyMenuRecommendationResDto recommendNearbyMenus(Long userId, RecommendationReqDto reqDto) {
+		log.info("Starting nearby menu recommendation for user {} with radius {}km", userId, reqDto.radiusKm());
+
+		int requestedRadius = reqDto.radiusKm();
+		int currentRadius = requestedRadius;
+		int attempts = 0;
+
+		List<MenuRecommendationResDto> recommendations = List.of();
+
+		while (attempts <= MAX_RADIUS_EXPANSION_ATTEMPTS && currentRadius <= MAX_RADIUS_KM) {
+			RecommendationReqDto currentReqDto = new RecommendationReqDto(
+				reqDto.type(),
+				reqDto.latitude(),
+				reqDto.longitude(),
+				currentRadius
+			);
+
+			recommendations = recommendMenus(userId, currentReqDto);
+
+			if (!recommendations.isEmpty()) {
+				log.info("Found {} recommendations at radius {}km", recommendations.size(), currentRadius);
+				break;
+			}
+
+			// 결과가 없으면 반경 확장
+			attempts++;
+			int nextRadius = currentRadius * 2;
+			if (nextRadius > MAX_RADIUS_KM) {
+				nextRadius = MAX_RADIUS_KM;
+			}
+
+			// 이미 최대 반경이면 중단
+			if (currentRadius >= MAX_RADIUS_KM) {
+				log.warn("No menus found even at max radius {}km for user {}", MAX_RADIUS_KM, userId);
+				break;
+			}
+
+			log.info("No menus found at {}km, expanding to {}km (attempt {})", currentRadius, nextRadius, attempts);
+			currentRadius = nextRadius;
+		}
+
+		return NearbyMenuRecommendationResDto.builder()
+			.recommendations(recommendations)
+			.requestedRadiusKm(requestedRadius)
+			.actualRadiusKm(currentRadius)
+			.radiusExpanded(currentRadius > requestedRadius)
+			.build();
 	}
 
 	/**
@@ -331,7 +417,14 @@ public class RecommendationFacadeService {
 						menu, reqDto.latitude(), reqDto.longitude()
 					);
 				}
-				return createMenuRecommendation(menu, null, null, null, distance);
+				return createMenuRecommendation(
+					menu,
+					null,
+					null,
+					null,
+					distance,
+					getFlavorBadges(menu.flavorTags())
+				);
 			})
 			.toList();
 	}
@@ -346,19 +439,16 @@ public class RecommendationFacadeService {
 		}
 
 		try {
-			float[] queryEmbedding = embeddingService.embedTags(likedTags);
+			// 플레이버 태그를 계층 구조 경로로 변환
+			List<String> hierarchyPaths = flavorQueryService.getHierarchyPaths(likedTags);
+			log.debug("Liked tags hierarchy paths: {}", hierarchyPaths);
+
+			float[] queryEmbedding = embeddingService.embedTags(hierarchyPaths);
 			return redisVectorService.searchSimilarInBeans(queryEmbedding, beanIds, VECTOR_SEARCH_TOP_K);
 		} catch (Exception e) {
 			log.error("Vector search failed", e);
 			return List.of();
 		}
-	}
-
-	private String convertToJson(List<String> tags) {
-		if (tags == null || tags.isEmpty()) {
-			return null;
-		}
-		return gson.toJson(tags);
 	}
 
 	private List<String> convertRoastLevelsToStrings(UserPreference preference) {
@@ -371,7 +461,8 @@ public class RecommendationFacadeService {
 	}
 
 	private BeanRecommendationResDto createBeanRecommendation(
-		BeanScoreWithBeanDto bean, int rank, Double similarity, String reason
+		BeanScoreWithBeanDto bean, int rank, Double similarity, String reason,
+		List<FlavorBadgeDto> flavors
 	) {
 		return BeanRecommendationResDto.builder()
 			.beanId(bean.beanId())
@@ -379,7 +470,7 @@ public class RecommendationFacadeService {
 			.description(null) // BeanScoreWithBeanDto에 description이 없음
 			.origin(bean.country())
 			.roastLevel(bean.roastLevel())
-			.flavorTags(bean.flavorTags())
+			.flavors(flavors)
 			.totalScore(bean.totalScore())
 			.rank(rank)
 			.reason(reason)
@@ -388,7 +479,8 @@ public class RecommendationFacadeService {
 	}
 
 	private MenuRecommendationResDto createMenuRecommendation(
-		MenuWithBeanScoreDto menu, Integer rank, Double similarity, String reason, Double distance
+		MenuWithBeanScoreDto menu, Integer rank, Double similarity, String reason, Double distance,
+		List<FlavorBadgeDto> flavors
 	) {
 		return MenuRecommendationResDto.builder()
 			.menuId(menu.menuId())
@@ -406,10 +498,22 @@ public class RecommendationFacadeService {
 				.id(menu.beanId())
 				.name(menu.beanName())
 				.build()))
+			.flavors(flavors)
 			.rank(rank)
 			.reason(reason)
 			.similarityScore(similarity)
 			.build();
+	}
+
+	/**
+	 * Flavor 코드 목록을 FlavorBadgeDto 목록으로 변환
+	 */
+	private List<FlavorBadgeDto> getFlavorBadges(List<String> flavorCodes) {
+		if (flavorCodes == null || flavorCodes.isEmpty()) {
+			return List.of();
+		}
+		List<Flavor> flavors = flavorQueryService.findByCodes(flavorCodes);
+		return FlavorConverter.toFlavorBadgeDtoList(flavors);
 	}
 
 	/**

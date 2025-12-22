@@ -26,7 +26,7 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 
 	@Override
 	public List<MenuWithBeanScoreDto> findFilteredMenus(
-		String dislikedTagsJson,
+		List<String> dislikedTags,
 		List<String> preferredRoastLevels,
 		GeoUtils.BoundingBox boundingBox
 	) {
@@ -39,7 +39,7 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 		}
 
 		List<MenuWithBeanScoreDto> menus = recommendationQueryMapper.findFilteredMenus(
-			dislikedTagsJson,
+			dislikedTags,
 			preferredRoastLevels,
 			minLat, maxLat, minLon, maxLon
 		);

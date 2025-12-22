@@ -3,6 +3,7 @@ package com.backend.domain.recommendation.dto.response;
 import java.util.List;
 
 import com.backend.domain.bean.enums.RoastingLevel;
+import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -25,8 +26,8 @@ public record BeanRecommendationResDto(
 	@Schema(description = "로스팅 레벨", example = "LIGHT")
 	RoastingLevel roastLevel,
 
-	@Schema(description = "플레이버 태그", example = "[\"FLORAL\", \"CITRUS\", \"BERRY\"]")
-	List<String> flavorTags,
+	@Schema(description = "플레이버 상세 목록")
+	List<FlavorBadgeDto> flavors,
 
 	@Schema(description = "총 점수", example = "85")
 	Integer totalScore,

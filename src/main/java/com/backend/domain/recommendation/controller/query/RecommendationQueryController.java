@@ -17,6 +17,7 @@ import com.backend.common.util.ResponseUtils;
 import com.backend.domain.recommendation.dto.request.RecommendationReqDto;
 import com.backend.domain.recommendation.dto.response.BeanRecommendationResDto;
 import com.backend.domain.recommendation.dto.response.MenuRecommendationResDto;
+import com.backend.domain.recommendation.dto.response.NearbyMenuRecommendationResDto;
 import com.backend.domain.recommendation.enums.RecommendationType;
 import com.backend.domain.recommendation.service.facade.RecommendationFacadeService;
 
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Recommendation", description = "추천 관련 API")
 @RestController
-@RequestMapping("/api/recommendations")
+@RequestMapping("/recommendations")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecommendationQueryController {
 
@@ -38,7 +39,7 @@ public class RecommendationQueryController {
 
 	@Operation(
 		summary = "원두 추천",
-		description = "사용자 취향에 맞는 원두 Top 3를 추천합니다. 벡터 유사도 검색과 LLM 리랭킹을 사용합니다."
+		description = "사용자 취향에 맞는 원두 Top 5를 추천합니다. 벡터 유사도 검색과 LLM 리랭킹을 사용합니다."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "추천 성공"),
@@ -56,7 +57,7 @@ public class RecommendationQueryController {
 
 	@Operation(
 		summary = "메뉴 추천 (전역)",
-		description = "사용자 취향에 맞는 메뉴 Top 3를 추천합니다. 거리와 무관하게 전체 메뉴에서 추천합니다."
+		description = "사용자 취향에 맞는 메뉴 Top 5를 추천합니다. 거리와 무관하게 전체 메뉴에서 추천합니다."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "추천 성공"),
@@ -77,7 +78,8 @@ public class RecommendationQueryController {
 
 	@Operation(
 		summary = "메뉴 추천 (근거리)",
-		description = "사용자 위치 기준 반경 내 카페의 메뉴 중 취향에 맞는 Top 3를 추천합니다."
+		description = "사용자 위치 기준 반경 내 카페의 메뉴 중 취향에 맞는 Top 5를 추천합니다. " +
+			"결과가 없을 경우 반경을 자동으로 확장합니다 (최대 30km)."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "추천 성공"),
@@ -85,11 +87,11 @@ public class RecommendationQueryController {
 		@ApiResponse(responseCode = "401", description = "인증되지 않은 사용자")
 	})
 	@GetMapping("/menus/nearby")
-	public ResponseEntity<BaseResponse<List<MenuRecommendationResDto>>> recommendNearbyMenus(
+	public ResponseEntity<BaseResponse<NearbyMenuRecommendationResDto>> recommendNearbyMenus(
 		@CurrentUser AuthenticatedUser user,
-		@Parameter(description = "사용자 위도", required = true)
+		@Parameter(description = "사용자 위도", required = true, example = "37.5665")
 		@RequestParam BigDecimal latitude,
-		@Parameter(description = "사용자 경도", required = true)
+		@Parameter(description = "사용자 경도", required = true, example = "126.9780")
 		@RequestParam BigDecimal longitude,
 		@Parameter(description = "검색 반경 (km)", example = "5")
 		@RequestParam(defaultValue = "5") Integer radiusKm
@@ -97,10 +99,10 @@ public class RecommendationQueryController {
 		RecommendationReqDto reqDto = new RecommendationReqDto(
 			RecommendationType.LOCAL, latitude, longitude, radiusKm
 		);
-		List<MenuRecommendationResDto> recommendations = recommendationFacadeService.recommendMenus(
+		NearbyMenuRecommendationResDto result = recommendationFacadeService.recommendNearbyMenus(
 			user.getUser().getId(), reqDto
 		);
-		return ResponseUtils.ok(recommendations);
+		return ResponseUtils.ok(result);
 	}
 
 	@Operation(
@@ -134,11 +136,11 @@ public class RecommendationQueryController {
 	})
 	@GetMapping("/beans/{beanId}/menus/nearby")
 	public ResponseEntity<BaseResponse<List<MenuRecommendationResDto>>> findNearbyMenusByBean(
-		@Parameter(description = "원두 ID", required = true)
+		@Parameter(description = "원두 ID", required = true, example = "1")
 		@PathVariable Long beanId,
-		@Parameter(description = "사용자 위도", required = true)
+		@Parameter(description = "사용자 위도", required = true, example = "37.5665")
 		@RequestParam BigDecimal latitude,
-		@Parameter(description = "사용자 경도", required = true)
+		@Parameter(description = "사용자 경도", required = true, example = "126.9780")
 		@RequestParam BigDecimal longitude,
 		@Parameter(description = "검색 반경 (km)", example = "5")
 		@RequestParam(defaultValue = "5") Integer radiusKm

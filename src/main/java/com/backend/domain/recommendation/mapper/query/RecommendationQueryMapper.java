@@ -17,7 +17,7 @@ public interface RecommendationQueryMapper {
 	/**
 	 * 필터링된 메뉴 조회 (하드 필터링 + 위치 필터링)
 	 *
-	 * @param dislikedTagsJson     비선호 태그 JSON (JSON_OVERLAPS용)
+	 * @param dislikedTags         비선호 태그 목록 (bean_flavor_notes를 통해 필터링)
 	 * @param preferredRoastLevels 선호 로스트 레벨 목록
 	 * @param minLatitude          최소 위도 (LOCAL 모드 시)
 	 * @param maxLatitude          최대 위도 (LOCAL 모드 시)
@@ -26,7 +26,7 @@ public interface RecommendationQueryMapper {
 	 * @return 필터링된 메뉴 목록
 	 */
 	List<MenuWithBeanScoreDto> findFilteredMenus(
-		@Param("dislikedTagsJson") String dislikedTagsJson,
+		@Param("dislikedTags") List<String> dislikedTags,
 		@Param("preferredRoastLevels") List<String> preferredRoastLevels,
 		@Param("minLatitude") BigDecimal minLatitude,
 		@Param("maxLatitude") BigDecimal maxLatitude,

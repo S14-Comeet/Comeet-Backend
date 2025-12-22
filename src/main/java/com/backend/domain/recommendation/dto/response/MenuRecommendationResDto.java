@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.backend.domain.bean.dto.common.BeanBadgeDto;
+import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -48,6 +49,10 @@ public record MenuRecommendationResDto(
 	// 원두 정보
 	@Schema(description = "사용된 원두 목록")
 	List<BeanBadgeDto> beans,
+
+	// 플레이버 정보
+	@Schema(description = "플레이버 상세 목록")
+	List<FlavorBadgeDto> flavors,
 
 	// 추천 정보
 	@Schema(description = "추천 순위 (1-3)", example = "1")

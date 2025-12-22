@@ -14,13 +14,13 @@ public interface RecommendationQueryService {
 	/**
 	 * 하드 필터링된 메뉴 조회
 	 *
-	 * @param dislikedTagsJson     비선호 태그 JSON
+	 * @param dislikedTags         비선호 태그 목록 (bean_flavor_notes를 통해 필터링)
 	 * @param preferredRoastLevels 선호 로스트 레벨 목록
 	 * @param boundingBox          위치 필터링용 BoundingBox (null이면 전역 검색)
 	 * @return 필터링된 메뉴 목록
 	 */
 	List<MenuWithBeanScoreDto> findFilteredMenus(
-		String dislikedTagsJson,
+		List<String> dislikedTags,
 		List<String> preferredRoastLevels,
 		GeoUtils.BoundingBox boundingBox
 	);
