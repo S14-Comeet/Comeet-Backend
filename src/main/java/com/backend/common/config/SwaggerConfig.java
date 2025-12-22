@@ -48,7 +48,7 @@ public class SwaggerConfig {
 
 		Server server = new Server();
 		if (profile.equals("dev")) {
-			server.setUrl("http://43.201.91.242");
+			server.setUrl("https://comeet.kro.kr");
 			server.setDescription("개발 서버");
 		} else {
 			server.setUrl("http://localhost:8080");
