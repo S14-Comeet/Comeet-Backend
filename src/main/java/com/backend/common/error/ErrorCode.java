@@ -156,7 +156,16 @@ public enum ErrorCode {
 	EMBEDDING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "RC-002", "임베딩 생성에 실패했습니다."),
 	LLM_SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "RC-003", "LLM 서비스 연결에 실패했습니다."),
 	INSUFFICIENT_DATA(HttpStatus.BAD_REQUEST, "RC-004", "추천을 위한 데이터가 부족합니다."),
-	;
+
+	/**
+	 * AI Error
+	 */
+	AI_IMAGE_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI-001", "AI 이미지 생성에 실패했습니다."),
+	AI_IMAGE_EMPTY_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, "AI-002", "AI 이미지 생성 응답이 비어있습니다."),
+	AI_SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "AI-003", "AI 서비스를 사용할 수 없습니다."),
+	USER_PROMPT_REQUIRED(HttpStatus.BAD_REQUEST, "AI-004", "사용자 프롬프트는 필수 입력값입니다."),
+	AI_IMAGE_DATA_EMPTY(HttpStatus.BAD_REQUEST, "AI-005", "이미지 데이터는 비어있을 수 없습니다."),
+	AI_MIME_TYPE_EMPTY(HttpStatus.BAD_REQUEST, "AI-006", "MIME 타입은 비어있을 수 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
