@@ -18,6 +18,9 @@ public record BeanResDto(
 	@Schema(description = "로스터리 ID", example = "1")
 	Long roasteryId,
 
+	@Schema(description = "원두 이름", example = "워터멜론")
+	String name,
+
 	@Schema(description = "생산 국가", example = "에티오피아")
 	String country,
 

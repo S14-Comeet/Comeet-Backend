@@ -16,6 +16,7 @@ public class BeanConverter {
 		return BeanResDto.builder()
 			.id(bean.getId())
 			.roasteryId(bean.getRoasteryId())
+			.name(bean.getName())
 			.country(bean.getCountry())
 			.farm(bean.getFarm())
 			.variety(bean.getVariety())

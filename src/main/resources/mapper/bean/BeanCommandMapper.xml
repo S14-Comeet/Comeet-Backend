@@ -2,13 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.backend.domain.bean.mapper.command.BeanCommandMapper">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO beans (roastery_id, country, farm, variety, processing_method, roasting_level, created_at, updated_at)
-        VALUES (#{bean.roasteryId}, #{bean.country}, #{bean.farm}, #{bean.variety}, #{bean.processingMethod}, #{bean.roastingLevel}, NOW(), NOW())
+        INSERT INTO beans (roastery_id, name, country, farm, variety, processing_method, roasting_level, created_at, updated_at)
+        VALUES (#{bean.roasteryId}, #{bean.name}, #{bean.country}, #{bean.farm}, #{bean.variety}, #{bean.processingMethod}, #{bean.roastingLevel}, NOW(), NOW())
     </insert>
 
     <update id="update">
         UPDATE beans
-        SET country           = #{bean.country},
+        SET name              = #{bean.name},
+            country           = #{bean.country},
             farm              = #{bean.farm},
             variety           = #{bean.variety},
             processing_method = #{bean.processingMethod},
