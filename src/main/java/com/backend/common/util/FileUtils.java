@@ -17,4 +17,15 @@ public class FileUtils {
 		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
 		return FileExtension.fromExtension(extension);
 	}
+
+	public static FileExtension getFileExtensionFromMimeType(String mimeType) {
+		if (!StringUtils.hasText(mimeType)) {
+			throw new FileException(ErrorCode.INVALID_FILE_NAME);
+		}
+		return switch (mimeType) {
+			case "image/png" -> FileExtension.PNG;
+			case "image/jpeg", "image/jpg" -> FileExtension.JPEG;
+			default -> throw new FileException(ErrorCode.INVALID_FILE_EXTENSION);
+		};
+	}
 }
