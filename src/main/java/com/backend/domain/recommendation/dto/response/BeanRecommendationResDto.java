@@ -32,7 +32,7 @@ public record BeanRecommendationResDto(
 	@Schema(description = "총 점수", example = "85")
 	Integer totalScore,
 
-	@Schema(description = "추천 순위 (1-3)", example = "1")
+	@Schema(description = "추천 순위 (1-5)", example = "1")
 	Integer rank,
 
 	@Schema(description = "추천 이유", example = "밝은 산미와 플로럴 향을 선호하시는 취향에 딱 맞는 원두입니다.")

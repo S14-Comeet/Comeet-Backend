@@ -102,10 +102,10 @@ public class LlmService {
 		""";
 
 	/**
-	 * 후보 원두들을 리랭킹하여 Top 3 추천
+	 * 후보 원두들을 리랭킹하여 Top 5 추천
 	 *
 	 * @param request 사용자 취향 및 후보 원두 정보
-	 * @return 리랭킹된 Top 3 추천 결과
+	 * @return 리랭킹된 Top 5 추천 결과
 	 */
 	public RerankResponse rerank(RerankRequest request) {
 		log.debug("Reranking {} candidates for user preference", request.candidates().size());
@@ -163,10 +163,10 @@ public class LlmService {
 	}
 
 	/**
-	 * 후보 메뉴들을 리랭킹하여 Top 3 추천
+	 * 후보 메뉴들을 리랭킹하여 Top 5 추천
 	 *
 	 * @param request 사용자 취향 및 후보 메뉴 정보
-	 * @return 리랭킹된 Top 3 메뉴 추천 결과
+	 * @return 리랭킹된 Top 5 메뉴 추천 결과
 	 */
 	public MenuRerankResponse rerankMenus(MenuRerankRequest request) {
 		log.debug("Reranking {} menu candidates for user preference", request.menuCandidates().size());

@@ -55,7 +55,7 @@ public record MenuRecommendationResDto(
 	List<FlavorBadgeDto> flavors,
 
 	// 추천 정보
-	@Schema(description = "추천 순위 (1-3)", example = "1")
+	@Schema(description = "추천 순위 (1-5)", example = "1")
 	Integer rank,
 
 	@Schema(description = "추천 이유", example = "선호하시는 산미 특성이 잘 나타나는 메뉴입니다.")
