@@ -3,16 +3,14 @@ package com.backend.common.ai.service;
 import java.util.List;
 
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.embedding.EmbeddingRequest;
 import org.springframework.ai.embedding.EmbeddingResponse;
-import org.springframework.ai.openai.OpenAiEmbeddingOptions;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * OpenAI Embedding 서비스
+ * OpenAI Embedding 서비스 (Spring AI + GMS 프록시)
  */
 @Slf4j
 @Service
@@ -25,20 +23,24 @@ public class EmbeddingService {
 	 * 텍스트를 임베딩 벡터로 변환
 	 *
 	 * @param text 임베딩할 텍스트
-	 * @return 임베딩 벡터 (1536 차원)
+	 * @return 임베딩 벡터
 	 */
 	public float[] embed(String text) {
 		log.debug("Embedding text: {}", text);
 
-		EmbeddingRequest request = new EmbeddingRequest(
-			List.of(text),
-			OpenAiEmbeddingOptions.builder()
-				.withModel("text-embedding-3-small")
-				.build()
-		);
+		try {
+			EmbeddingResponse response = embeddingModel.embedForResponse(List.of(text));
 
-		EmbeddingResponse response = embeddingModel.call(request);
-		return response.getResult().getOutput();
+			if (response == null || response.getResults().isEmpty()) {
+				log.error("Empty embedding response");
+				return new float[1536];
+			}
+
+			return response.getResults().get(0).getOutput();
+		} catch (Exception e) {
+			log.error("Failed to embed text", e);
+			throw new RuntimeException("Embedding failed", e);
+		}
 	}
 
 	/**
@@ -65,16 +67,20 @@ public class EmbeddingService {
 	public List<float[]> embedBatch(List<String> texts) {
 		log.debug("Batch embedding {} texts", texts.size());
 
-		EmbeddingRequest request = new EmbeddingRequest(
-			texts,
-			OpenAiEmbeddingOptions.builder()
-				.withModel("text-embedding-3-small")
-				.build()
-		);
+		try {
+			EmbeddingResponse response = embeddingModel.embedForResponse(texts);
 
-		EmbeddingResponse response = embeddingModel.call(request);
-		return response.getResults().stream()
-			.map(result -> result.getOutput())
-			.toList();
+			if (response == null || response.getResults() == null) {
+				log.error("Empty batch embedding response");
+				return List.of();
+			}
+
+			return response.getResults().stream()
+				.map(result -> result.getOutput())
+				.toList();
+		} catch (Exception e) {
+			log.error("Failed to batch embed", e);
+			throw new RuntimeException("Batch embedding failed", e);
+		}
 	}
 }
