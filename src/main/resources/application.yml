@@ -97,6 +97,10 @@ jwt:
   accessTokenExpiration: ${JWT_EXPIRATION}
   refreshTokenExpiration: ${JWT_REFRESH_EXPIRATION}
 
+gemini:
+  api-key: ${GEMINI_API_KEY}
+  model: ${GEMINI_AI_MODEL}
+
 # OpenAI 설정 (GMS 프록시 사용)
 spring.ai:
   openai:
