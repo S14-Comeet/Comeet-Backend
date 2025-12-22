@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 
 import com.backend.common.redis.config.RedisVectorConfig.RedisVectorProperties;
 import com.backend.common.redis.dto.VectorSearchResult;
+import com.google.gson.Gson;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.JedisPooled;
 import redis.clients.jedis.exceptions.JedisDataException;
+import redis.clients.jedis.json.Path;
 import redis.clients.jedis.search.Document;
 import redis.clients.jedis.search.FTCreateParams;
 import redis.clients.jedis.search.IndexDataType;
@@ -36,6 +38,7 @@ public class RedisVectorService {
 
 	private final JedisPooled jedis;
 	private final RedisVectorProperties properties;
+	private final Gson gson = new Gson();
 
 	private static final String KEY_PREFIX = "bean:";
 
@@ -94,13 +97,19 @@ public class RedisVectorService {
 	 */
 	public void saveEmbedding(Long beanId, float[] embedding) {
 		String key = KEY_PREFIX + beanId;
-		Map<String, Object> data = new HashMap<>();
-		data.put("beanId", beanId);
-		data.put("embedding", embedding);
 
-		jedis.jsonSet(key, data);
+		// JSON 문자열 직접 생성
+		BeanEmbeddingData data = new BeanEmbeddingData(beanId, embedding);
+		String jsonString = gson.toJson(data);
+
+		jedis.jsonSetWithPlainString(key, Path.ROOT_PATH, jsonString);
 		log.debug("Saved embedding for bean {}", beanId);
 	}
+
+	/**
+	 * 임베딩 데이터 DTO
+	 */
+	private record BeanEmbeddingData(Long beanId, float[] embedding) {}
 
 	/**
 	 * 원두 임베딩 삭제
@@ -111,6 +120,33 @@ public class RedisVectorService {
 		String key = KEY_PREFIX + beanId;
 		jedis.del(key);
 		log.debug("Deleted embedding for bean {}", beanId);
+	}
+
+	/**
+	 * 모든 원두 임베딩 삭제 (drop)
+	 *
+	 * @return 삭제된 임베딩 수
+	 */
+	public int dropAllEmbeddings() {
+		log.info("Dropping all bean embeddings...");
+
+		int deletedCount = 0;
+		String cursor = "0";
+
+		do {
+			var scanResult = jedis.scan(cursor, new redis.clients.jedis.params.ScanParams()
+				.match(KEY_PREFIX + "*")
+				.count(100));
+			cursor = scanResult.getCursor();
+
+			for (String key : scanResult.getResult()) {
+				jedis.del(key);
+				deletedCount++;
+			}
+		} while (!cursor.equals("0"));
+
+		log.info("Dropped {} bean embeddings", deletedCount);
+		return deletedCount;
 	}
 
 	/**
