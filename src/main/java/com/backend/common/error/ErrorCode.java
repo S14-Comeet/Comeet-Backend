@@ -165,7 +165,15 @@ public enum ErrorCode {
 	AI_SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "AI-003", "AI 서비스를 사용할 수 없습니다."),
 	USER_PROMPT_REQUIRED(HttpStatus.BAD_REQUEST, "AI-004", "사용자 프롬프트는 필수 입력값입니다."),
 	AI_IMAGE_DATA_EMPTY(HttpStatus.BAD_REQUEST, "AI-005", "이미지 데이터는 비어있을 수 없습니다."),
-	AI_MIME_TYPE_EMPTY(HttpStatus.BAD_REQUEST, "AI-006", "MIME 타입은 비어있을 수 없습니다.");
+	AI_MIME_TYPE_EMPTY(HttpStatus.BAD_REQUEST, "AI-006", "MIME 타입은 비어있을 수 없습니다."),
+
+	/**
+	 * Batch Error
+	 */
+	BATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "BA-001", "배치 작업을 찾을 수 없습니다."),
+	BATCH_ALREADY_COMPLETED(HttpStatus.CONFLICT, "BA-002", "이미 완료된 배치 작업입니다."),
+	BATCH_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BA-003", "배치 진행 상황 저장에 실패했습니다."),
+	BATCH_LOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BA-004", "배치 진행 상황 조회에 실패했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
