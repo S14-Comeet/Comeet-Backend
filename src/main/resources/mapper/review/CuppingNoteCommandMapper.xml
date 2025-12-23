@@ -23,7 +23,7 @@
         )
         VALUES (
             #{cuppingNote.reviewId},
-            #{cuppingNote.roastLevel},
+            #{cuppingNote.roastingLevel},
             #{cuppingNote.fragranceScore},
             #{cuppingNote.aromaScore},
             #{cuppingNote.flavorScore},
@@ -45,7 +45,7 @@
     <update id="update">
         UPDATE cupping_notes
         SET review_id = #{cuppingNote.reviewId},
-            roast_level = #{cuppingNote.roastLevel},
+            roast_level = #{cuppingNote.roastingLevel},
             fragrance_score = #{cuppingNote.fragranceScore},
             aroma_score = #{cuppingNote.aromaScore},
             flavor_score = #{cuppingNote.flavorScore},
