@@ -11,8 +11,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Run locally
 ./gradlew bootRun
 
-# Run tests
+# Run all tests
 ./gradlew test
+
+# Run single test class
+./gradlew test --tests "com.backend.domain.bean.BeanServiceTest"
+
+# Run single test method
+./gradlew test --tests "com.backend.domain.bean.BeanServiceTest.shouldCreateBean"
 
 # Docker build
 docker build -t comeet-backend .
@@ -101,20 +107,57 @@ All endpoints return `BaseResponse<T>`:
 }
 ```
 
-Use `BaseResponse.ok(data)`, `BaseResponse.created(data)`, or `BaseResponse.fail(error)`.
+Use `ResponseUtils.ok(data)`, `ResponseUtils.created(data)`, or `ResponseUtils.noContent()`.
 
 ### Error Handling
 
 - All error codes are centralized in `ErrorCode.java` enum
-- Each domain has its own exception class (e.g., `UserException`, `StoreException`)
+- Each domain has its own exception class (e.g., `UserException`, `StoreException`, `BeanException`)
 - Exceptions are caught by `GlobalExceptionHandler`
 
-### Authentication
+### Authentication & Authorization
 
 - JWT tokens in `Authorization: Bearer {token}` header
 - Refresh tokens stored in HttpOnly cookies
 - `@CurrentUser AuthenticatedUser` annotation for injecting current user in controllers
-- Roles: `GUEST` (initial signup), `USER`, `OWNER` (store owner)
+- Roles: `GUEST` (initial signup), `USER`, `OWNER` (store owner), `MANAGER` (admin)
+- Use `@PreAuthorize("hasRole('ROLE_MANAGER')")` for role-based access control
+
+## Coding Conventions
+
+### DTO Pattern
+
+Request DTOs use Java records with validation annotations:
+```java
+@Schema(description = "원두 생성 요청 DTO")
+public record BeanCreateReqDto(
+    @Schema(description = "이름", requiredMode = RequiredMode.REQUIRED)
+    @NotBlank(message = "이름은 필수 입력값입니다.")
+    String name
+) {}
+```
+
+### Logging Convention
+
+Services follow this logging pattern:
+```java
+log.info("[Domain] 작업명 - contextInfo={}", value);
+// Examples:
+log.info("[Bean] 원두 생성 - roasteryId={}", bean.getRoasteryId());
+log.info("[BeanFlavor] 원두-플레이버 매핑 생성 - beanId={}, flavorIds={}", beanId, flavorIds);
+```
+
+### Converter Pattern
+
+Use `@UtilityClass` for entity-to-DTO conversions:
+```java
+@UtilityClass
+public class BeanConverter {
+    public BeanResDto toBeanResDto(final Bean bean, final List<FlavorBadgeDto> flavors) {
+        return BeanResDto.builder()...build();
+    }
+}
+```
 
 ## Recommendation System
 
@@ -122,7 +165,7 @@ The project includes an AI-powered recommendation system for coffee beans and me
 
 1. **Vector Embeddings**: Bean flavor tags are embedded using OpenAI's `text-embedding-3-small`
 2. **Redis Vector Search**: Stored in Redis with cosine similarity index (`bean_embeddings`)
-3. **LLM Reranking**: GPT-4o selects top 3 from vector search candidates with personalized reasons
+3. **LLM Reranking**: GPT-4o selects top 5 from vector search candidates with personalized reasons
 
 Key components:
 - `EmbeddingService` - Creates embeddings via OpenAI
@@ -136,3 +179,4 @@ Key components:
 - **Commit format**: `[gitmoji] type(#issue): subject`
   - Example: `✨ feat(#54): Add menu recommendation API`
 - **Types**: feat, fix, docs, style, refactor, test, chore, perf
+- **Gitmoji**: ✨(feat), 🐛(fix), 📝(docs), ♻️(refactor), ✅(test), 🔧(chore), ⚡(perf), 🔊(logging)
