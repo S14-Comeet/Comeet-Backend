@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation("org.springframework.retry:spring-retry:2.0.12")
 
     // MySQL Database Driver
     runtimeOnly 'com.mysql:mysql-connector-j:8.2.0'
@@ -70,6 +71,10 @@ dependencies {
 
     // JSON 처리 (MyBatis TypeHandler)
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Jackson for JSON processing
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
