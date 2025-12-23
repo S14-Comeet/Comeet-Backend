@@ -37,7 +37,9 @@ import com.backend.domain.roastery.validator.RoasteryValidator;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BeanFacadeService {
@@ -164,7 +166,11 @@ public class BeanFacadeService {
 			.map(Bean::getId)
 			.toList();
 
+		log.info("[Bean] buildBeanPageDtos - beanIds: {}", beanIds);
+
 		List<BeanFlavorDto> beanFlavors = beanFlavorQueryService.findFlavorIdsByBeanIds(beanIds);
+		log.info("[Bean] buildBeanPageDtos - beanFlavors 조회 결과: {} 건", beanFlavors.size());
+		log.info("[Bean] buildBeanPageDtos - beanFlavors 상세: {}", beanFlavors);
 
 		// * Flavor ID를 모아서 한 번에 조회
 		List<Long> allFlavorIds = beanFlavors.stream()
