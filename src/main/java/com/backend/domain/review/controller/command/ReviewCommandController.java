@@ -36,7 +36,19 @@ public class ReviewCommandController {
 
 	@Operation(
 		summary = "리뷰 작성",
-		description = "방문 기록과 메뉴에 대한 리뷰를 작성합니다. 리뷰 내용, 이미지, 공개 여부, Flavor 뱃지를 선택할 수 있습니다."
+		description = """
+			방문 기록과 메뉴에 대한 리뷰를 작성합니다.
+
+			**입력 항목:**
+			- 리뷰 내용, 이미지 URL, 공개 여부
+			- **평점 (rating)**: 0.5 ~ 5.0 (0.5 단위, 선택)
+			- Flavor 뱃지 ID 목록
+
+			**평점 규칙:**
+			- 범위: 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0
+			- 선택 입력 (null 허용)
+			- 리뷰 작성 시 해당 가맹점의 평균 평점(averageRating)이 자동으로 재계산됩니다.
+			"""
 	)
 	@PostMapping
 	public ResponseEntity<BaseResponse<ReviewedResDto>> saveReview(
@@ -48,7 +60,16 @@ public class ReviewCommandController {
 
 	@Operation(
 		summary = "리뷰 수정",
-		description = "작성한 리뷰를 수정합니다. 본인이 작성한 리뷰만 수정할 수 있습니다."
+		description = """
+			작성한 리뷰를 수정합니다. 본인이 작성한 리뷰만 수정할 수 있습니다.
+
+			**수정 가능 항목:**
+			- 리뷰 내용, 이미지 URL, 공개 여부
+			- **평점 (rating)**: 0.5 ~ 5.0 (0.5 단위, 선택)
+			- Flavor 뱃지 ID 목록
+
+			**참고:** 평점 수정 시 해당 가맹점의 평균 평점(averageRating)이 자동으로 재계산됩니다.
+			"""
 	)
 	@PatchMapping("/{reviewId}")
 	public ResponseEntity<BaseResponse<ReviewedResDto>> updatedReview(
@@ -61,7 +82,11 @@ public class ReviewCommandController {
 
 	@Operation(
 		summary = "리뷰 삭제",
-		description = "작성한 리뷰를 삭제합니다. 본인이 작성한 리뷰만 삭제할 수 있으며, Soft Delete 방식으로 처리됩니다."
+		description = """
+			작성한 리뷰를 삭제합니다. 본인이 작성한 리뷰만 삭제할 수 있으며, Soft Delete 방식으로 처리됩니다.
+
+			**참고:** 리뷰 삭제 시 해당 가맹점의 평균 평점(averageRating)이 자동으로 재계산됩니다.
+			"""
 	)
 	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<BaseResponse<Void>> deleteReview(

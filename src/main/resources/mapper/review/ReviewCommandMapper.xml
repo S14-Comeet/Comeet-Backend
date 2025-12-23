@@ -2,16 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.backend.domain.review.mapper.command.ReviewCommandMapper">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO reviews (visit_id, user_id, menu_id, store_id, content, is_public, image_url, deleted_at,
+        INSERT INTO reviews (visit_id, user_id, menu_id, store_id, content, is_public, image_url, rating, deleted_at,
                              created_at,
                              updated_at)
-        VALUES (#{review.visitId}, #{review.userId}, #{review.menuId}, #{review.storeId}, #{review.content}, #{review.isPublic}, #{review.imageUrl}, NULL, NOW(), NOW())
+        VALUES (#{review.visitId}, #{review.userId}, #{review.menuId}, #{review.storeId}, #{review.content},
+                #{review.isPublic}, #{review.imageUrl}, #{review.rating}, NULL, NOW(), NOW())
     </insert>
     <update id="update">
         UPDATE reviews
         SET content    = #{review.content},
             is_public  = #{review.isPublic},
             image_url  = #{review.imageUrl},
+            rating     = #{review.rating},
             updated_at = now()
         WHERE id = #{review.id}
     </update>

@@ -1,5 +1,6 @@
 package com.backend.domain.review.service.facade;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,6 +20,7 @@ import com.backend.domain.review.converter.CuppingNoteConverter;
 import com.backend.domain.review.converter.ReviewConverter;
 import com.backend.domain.review.dto.common.ReviewFlavorDto;
 import com.backend.domain.review.dto.common.ReviewPageDto;
+import com.backend.domain.review.dto.common.StoreRatingStatsDto;
 import com.backend.domain.review.dto.request.CuppingNoteReqDto;
 import com.backend.domain.review.dto.request.ReviewReqDto;
 import com.backend.domain.review.dto.response.CuppingResDto;
@@ -35,11 +37,14 @@ import com.backend.domain.review.service.command.TastingNoteCommandService;
 import com.backend.domain.review.service.query.CuppingNoteQueryService;
 import com.backend.domain.review.service.query.ReviewQueryService;
 import com.backend.domain.review.validator.ReviewValidator;
+import com.backend.domain.store.service.command.StoreCommandService;
 import com.backend.domain.user.entity.User;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewFacadeService {
@@ -52,6 +57,7 @@ public class ReviewFacadeService {
 	private final TastingNoteCommandService tastingNoteCommandService;
 	private final CuppingNoteCommandService cuppingNoteCommandService;
 	private final ReviewCommandService reviewCommandService;
+	private final StoreCommandService storeCommandService;
 
 	private final ReviewValidator reviewValidator;
 
@@ -62,6 +68,7 @@ public class ReviewFacadeService {
 		validateVisitIdNotDuplicate(reqDto.visitId());
 		Review review = processCreateReview(userId, reqDto);
 		tastingNoteCommandService.appendTastingNotes(review.getId(), reqDto.flavorIdList());
+		updateStoreRatingStats(review.getStoreId());
 		return createReviewedResDto(review, reqDto.flavorIdList());
 	}
 
@@ -75,15 +82,18 @@ public class ReviewFacadeService {
 		Review existingReview = getValidatedReview(reviewId, userId);
 		Review updatedReview = processUpdateReview(existingReview, reqDto);
 		tastingNoteCommandService.overwriteTastingNotes(reviewId, reqDto.flavorIdList());
+		updateStoreRatingStats(updatedReview.getStoreId());
 		return createReviewedResDto(updatedReview, reqDto.flavorIdList());
 	}
 
 	public void deleteReview(final Long reviewId, final Long userId) {
 		Review review = getValidatedReview(reviewId, userId);
+		Long storeId = review.getStoreId();
 		int affectedRows = reviewCommandService.softDelete(review.getId());
 		if (affectedRows == 0) {
 			throw new ReviewException(ErrorCode.REVIEW_SOFT_DELETE_FAILED);
 		}
+		updateStoreRatingStats(storeId);
 	}
 
 	public ReportResDto reportReview(final Long reviewId, final User user) {
@@ -252,5 +262,13 @@ public class ReviewFacadeService {
 
 	private CuppingResDto createCuppingResDto(final CuppingNote cuppingNote) {
 		return CuppingNoteConverter.toCuppingResDto(cuppingNote);
+	}
+
+	private void updateStoreRatingStats(final Long storeId) {
+		StoreRatingStatsDto stats = reviewQueryService.findRatingStatsByStoreId(storeId)
+			.orElse(new StoreRatingStatsDto(BigDecimal.ZERO, 0));
+		storeCommandService.updateRatingStats(storeId, stats.averageRating(), stats.reviewCount());
+		log.debug("[Review] 가맹점 평점 업데이트 - storeId: {}, avgRating: {}, count: {}",
+			storeId, stats.averageRating(), stats.reviewCount());
 	}
 }

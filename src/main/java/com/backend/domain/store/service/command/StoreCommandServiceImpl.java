@@ -1,5 +1,7 @@
 package com.backend.domain.store.service.command;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +52,18 @@ public class StoreCommandServiceImpl implements StoreCommandService {
 		}
 
 		log.info("[Store] 가맹점 삭제 완료 - ID: {}", storeId);
+	}
+
+	@Override
+	public void updateRatingStats(final Long storeId, final BigDecimal averageRating, final Integer reviewCount) {
+		int affectedRows = storeCommandMapper.updateRatingStats(storeId, averageRating, reviewCount);
+
+		if (affectedRows == 0) {
+			log.warn("[Store] 평점 업데이트 실패 - storeId: {}", storeId);
+			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
+		}
+
+		log.info("[Store] 평점 업데이트 완료 - storeId: {}, averageRating: {}, reviewCount: {}",
+			storeId, averageRating, reviewCount);
 	}
 }

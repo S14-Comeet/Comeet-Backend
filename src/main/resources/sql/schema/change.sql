@@ -35,3 +35,13 @@ CREATE INDEX idx_visit_store ON visits (store_id);
 
 ALTER TABLE passports
     ADD UNIQUE KEY uniq_passport_user_year_month (user_id, year, month);
+
+-- 2025-12-23 #58: Review Rating 추가
+ALTER TABLE reviews
+    ADD COLUMN rating DECIMAL(2, 1) NULL COMMENT '평점 (0.5 ~ 5.0, 0.5 단위)' AFTER image_url;
+
+ALTER TABLE reviews
+    ADD CONSTRAINT chk_rating CHECK (rating IS NULL OR (rating >= 0.5 AND rating <= 5.0));
+
+ALTER TABLE stores
+    ADD CONSTRAINT chk_average_rating CHECK (average_rating >= 0 AND average_rating <= 5.0);

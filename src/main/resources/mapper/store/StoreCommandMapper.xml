@@ -70,4 +70,13 @@
         <include refid="common.CommonSql.notDeleted"/>
     </update>
 
+    <update id="updateRatingStats">
+        UPDATE stores
+        SET average_rating = #{averageRating},
+            review_count   = #{reviewCount},
+            updated_at     = NOW()
+        WHERE id = #{storeId}
+        <include refid="common.CommonSql.notDeleted"/>
+    </update>
+
 </mapper>

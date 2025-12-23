@@ -1,5 +1,7 @@
 package com.backend.domain.store.mapper.command;
 
+import java.math.BigDecimal;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,4 +15,8 @@ public interface StoreCommandMapper {
 	int update(@Param("store") Store store);
 
 	int softDelete(@Param("storeId") Long storeId);
+
+	int updateRatingStats(@Param("storeId") Long storeId,
+		@Param("averageRating") BigDecimal averageRating,
+		@Param("reviewCount") Integer reviewCount);
 }

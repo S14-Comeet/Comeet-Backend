@@ -1,5 +1,6 @@
 package com.backend.domain.review.dto.common;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public record ReviewPageDto(
 
 	@Schema(description = "공개 여부", example = "true")
 	Boolean isPublic,
+
+	@Schema(description = "평점 (0.5 ~ 5.0)", example = "4.5")
+	BigDecimal rating,
 
 	@Schema(description = "Flavor 뱃지 목록")
 	List<FlavorBadgeDto> flavorBadges,
