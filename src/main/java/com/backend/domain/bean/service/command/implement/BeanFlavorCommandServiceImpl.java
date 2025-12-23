@@ -21,11 +21,13 @@ public class BeanFlavorCommandServiceImpl implements BeanFlavorCommandService {
 
 	@Override
 	public int insertBeanFlavors(final Long beanId, final List<Long> flavorIds) {
-		return commandMapper.insertBeanFlavors(beanId,flavorIds);
+		log.info("[BeanFlavor] 원두-플레이버 매핑 생성 - beanId={}, flavorIds={}", beanId, flavorIds);
+		return commandMapper.insertBeanFlavors(beanId, flavorIds);
 	}
 
 	@Override
 	public int deleteBeanFlavors(final Long beanId) {
+		log.info("[BeanFlavor] 원두-플레이버 매핑 삭제 - beanId={}", beanId);
 		return commandMapper.deleteBeanFlavors(beanId);
 	}
 }
