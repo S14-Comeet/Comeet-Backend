@@ -35,3 +35,7 @@ CREATE INDEX idx_visit_store ON visits (store_id);
 
 ALTER TABLE passports
     ADD UNIQUE KEY uniq_passport_user_year_month (user_id, year, month);
+
+-- 2025-12-23 #50
+ALTER TABLE menu_bean_mappings
+    DROP is_blended;
