@@ -1,5 +1,6 @@
 package com.backend.domain.review.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
@@ -21,6 +22,7 @@ public class Review {
 	private String content;
 	private String imageUrl;
 	private Boolean isPublic;
+	private BigDecimal rating;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	private LocalDateTime deletedAt;

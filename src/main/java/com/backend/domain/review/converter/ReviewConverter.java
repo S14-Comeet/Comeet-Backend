@@ -29,6 +29,7 @@ public class ReviewConverter {
 			.content(review.getContent())
 			.imageUrl(review.getImageUrl())
 			.isPublic(review.getIsPublic())
+			.rating(review.getRating())
 			.flavorBadges(badgeDtos)
 			.createdAt(review.getCreatedAt())
 			.build();
@@ -44,6 +45,7 @@ public class ReviewConverter {
 			.content(review.getContent())
 			.imageUrl(review.getImageUrl())
 			.isPublic(review.getIsPublic())
+			.rating(review.getRating())
 			.createdAt(review.getCreatedAt())
 			.build();
 	}

@@ -23,6 +23,7 @@ public class ReviewFactory {
 			.content(dto.content())
 			.isPublic(dto.isPublic())
 			.imageUrl(dto.imageUrl())
+			.rating(dto.rating())
 			.build();
 
 		reviewValidator.validate(review);
@@ -39,6 +40,7 @@ public class ReviewFactory {
 			.content(dto.content())
 			.isPublic(dto.isPublic())
 			.imageUrl(dto.imageUrl())
+			.rating(dto.rating())
 			.build();
 
 		reviewValidator.validate(review);

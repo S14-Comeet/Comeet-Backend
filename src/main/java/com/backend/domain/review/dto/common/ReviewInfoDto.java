@@ -1,5 +1,6 @@
 package com.backend.domain.review.dto.common;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,6 +32,9 @@ public record ReviewInfoDto (
 
 	@Schema(description = "공개 여부", example = "true")
 	Boolean isPublic,
+
+	@Schema(description = "평점 (0.5 ~ 5.0)", example = "4.5")
+	BigDecimal rating,
 
 	@Schema(description = "생성일시", example = "2025-12-09T12:00:00")
 	LocalDateTime createdAt
