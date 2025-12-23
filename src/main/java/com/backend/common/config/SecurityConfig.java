@@ -66,13 +66,12 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
 				.requestMatchers(WHITELIST).permitAll()
-				.requestMatchers(HttpMethod.GET, "/stores/").permitAll()
-				.requestMatchers(HttpMethod.GET, "/stores/*").permitAll()
-				.requestMatchers(HttpMethod.GET, "/stores/*/menus").permitAll()
-				.requestMatchers(HttpMethod.GET, "/stores/*/reviews").permitAll()
-				.requestMatchers(HttpMethod.GET, "/menus/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/stores").permitAll()
+				.requestMatchers(HttpMethod.GET, "/stores/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/menus/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/beans").permitAll()
+				.requestMatchers(HttpMethod.GET, "/beans/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/flavors").permitAll()
-				.requestMatchers(HttpMethod.GET, "/beans/*").permitAll()
 
 				.anyRequest().authenticated()
 			).oauth2Login(oauth2 -> oauth2
