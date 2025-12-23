@@ -7,6 +7,9 @@ import com.backend.common.error.ErrorCode;
 import com.backend.common.error.exception.VisitException;
 import com.backend.common.util.GeoUtils;
 import com.backend.common.util.PageUtils;
+import com.backend.domain.menu.entity.Menu;
+import com.backend.domain.menu.service.query.MenuQueryService;
+import com.backend.domain.store.service.command.StoreCommandService;
 import com.backend.domain.user.entity.User;
 import com.backend.domain.user.validator.UserValidator;
 import com.backend.domain.visit.converter.VisitConverter;
@@ -33,6 +36,9 @@ public class VisitFacadeService {
 	private final VisitValidator visitValidator;
 	private final VisitFactory visitFactory;
 
+	private final MenuQueryService menuQueryService;
+	private final StoreCommandService storeCommandService;
+
 	private final UserValidator userValidator;
 
 	public VerifiedResDto verifyVisit(final User user, final VerifyReqDto reqDto) {
@@ -42,6 +48,11 @@ public class VisitFacadeService {
 
 		if (visitCommandService.save(visit) == 0) {
 			throw new VisitException(ErrorCode.VISIT_SAVE_FAILED);
+		}
+
+		if (isVerified) {
+			Menu menu = menuQueryService.findById(reqDto.menuId());
+			storeCommandService.incrementVisitCount(menu.getStoreId());
 		}
 
 		return VisitConverter.toVerifiedResDto(visit);
