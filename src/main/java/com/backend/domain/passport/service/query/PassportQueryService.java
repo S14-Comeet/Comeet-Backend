@@ -17,4 +17,6 @@ public interface PassportQueryService {
 	Optional<Passport> findByUserIdAndYearAndMonth(Long userId, int year, int month);
 
 	List<Map<String, Object>> findVisitsWithMenuInMonth(Long userId, int year, int month);
+
+	Passport findLatestByUserId(Long userId);
 }

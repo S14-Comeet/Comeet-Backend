@@ -31,12 +31,12 @@ public class S3FileUploader implements FileUploader {
 
 	@Override
 	public String uploadFile(final MultipartFile file, FileType type) {
-		final String originalFilename = file.getOriginalFilename();
-		final FileExtension extension = FileUtils.getFileExtension(originalFilename);
+		String originalFilename = file.getOriginalFilename();
+		FileExtension extension = FileUtils.getFileExtension(originalFilename);
 
 		validateFileExtensions(type, extension);
 
-		final String key = FileUploader.generateKey(type.getDirectory(), extension);
+		String key = FileUploader.generateKey(type.getDirectory(), extension);
 
 		PutObjectRequest putObjectRequest = PutObjectRequest.builder()
 			.bucket(s3Property.bucket())
@@ -46,6 +46,29 @@ public class S3FileUploader implements FileUploader {
 			.build();
 
 		putObject(file, putObjectRequest);
+
+		return s3Client.utilities()
+			.getUrl(GetUrlRequest.builder()
+				.bucket(s3Property.bucket())
+				.key(key)
+				.build()
+			).toExternalForm();
+	}
+
+	public String uploadFile(final byte[] fileBytes, final String contentType, final FileType type) {
+		FileExtension extension = FileUtils.getFileExtensionFromMimeType(contentType);
+
+		validateFileExtensions(type, extension);
+
+		String key = FileUploader.generateKey(type.getDirectory(), extension);
+		PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+			.bucket(s3Property.bucket())
+			.key(key)
+			.contentType(contentType)
+			.contentLength((long)fileBytes.length)
+			.build();
+
+		s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileBytes));
 
 		return s3Client.utilities()
 			.getUrl(GetUrlRequest.builder()

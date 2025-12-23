@@ -45,3 +45,7 @@ ALTER TABLE reviews
 
 ALTER TABLE stores
     ADD CONSTRAINT chk_average_rating CHECK (average_rating >= 0 AND average_rating <= 5.0);
+
+-- 2025-12-23 #50
+ALTER TABLE menu_bean_mappings
+    DROP is_blended;

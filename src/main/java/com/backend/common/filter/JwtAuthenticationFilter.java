@@ -49,6 +49,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// OAuth2
 		"/oauth2/**",
 		"/login/**",
+
+		// Auth
+		"/auth/reissue",
+
+		// Public GET APIs
+		"/stores",
+		"/stores/*",
+		"/stores/*/menus",
+		"/stores/*/reviews",
+		"/menus/*",
+		"/flavors",
+		"/beans/*"
 	};
 
 	@Override

@@ -52,4 +52,12 @@
           AND v.menu_id IS NOT NULL
         ORDER BY v.created_at ASC
     </select>
+
+    <select id="findLatestByUserId" resultType="com.backend.domain.passport.entity.Passport">
+        SELECT *
+        FROM passports
+        WHERE user_id = #{userId}
+        ORDER BY year DESC, month DESC
+        LIMIT 1
+    </select>
 </mapper>

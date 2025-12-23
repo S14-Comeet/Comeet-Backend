@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.common.error.ErrorCode;
+import com.backend.common.error.exception.AiException;
 import com.backend.common.error.exception.PassportException;
 import com.backend.domain.passport.entity.Passport;
 import com.backend.domain.passport.mapper.query.PassportQueryMapper;
@@ -57,5 +58,13 @@ public class PassportQueryServiceImpl implements PassportQueryService {
 	public List<Map<String, Object>> findVisitsWithMenuInMonth(final Long userId, final int year, final int month) {
 		log.info("[Passport] 유저 월별 방문 및 메뉴 상세 조회 : userId={}, year={}, month={}", userId, year, month);
 		return passportQueryMapper.findVisitsWithMenuInMonth(userId, year, month);
+	}
+
+	@Override
+	public Passport findLatestByUserId(final Long userId) {
+		Passport passport = passportQueryMapper.findLatestByUserId(userId).
+			orElseThrow(() -> new AiException(ErrorCode.PASSPORT_NOT_FOUND));
+		log.info("[Passport] 최신 여권 조회 : userId={}", userId);
+		return passport;
 	}
 }

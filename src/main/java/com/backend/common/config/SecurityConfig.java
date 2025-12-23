@@ -3,6 +3,7 @@ package com.backend.common.config;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -65,6 +66,13 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
 				.requestMatchers(WHITELIST).permitAll()
+				.requestMatchers(HttpMethod.GET, "/stores").permitAll()
+				.requestMatchers(HttpMethod.GET, "/stores/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/menus/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/beans").permitAll()
+				.requestMatchers(HttpMethod.GET, "/beans/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/flavors").permitAll()
+
 				.anyRequest().authenticated()
 			).oauth2Login(oauth2 -> oauth2
 				.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))

@@ -35,4 +35,11 @@
         VALUES (#{passportId}, #{visitId})
     </insert>
 
+    <update id="updateCoverImage">
+        UPDATE passports
+        SET cover_image_url = #{imageUrl},
+            updated_at      = CURRENT_TIMESTAMP
+        WHERE id = #{passportId}
+    </update>
+
 </mapper>

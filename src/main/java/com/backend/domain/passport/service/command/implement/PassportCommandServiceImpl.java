@@ -28,4 +28,10 @@ public class PassportCommandServiceImpl implements PassportCommandService {
 	public void addPassportVisit(Long passportId, Long visitId) {
 		passportCommandMapper.insertPassportVisit(passportId, visitId);
 	}
+
+	@Override
+	public void updateCoverImage(Long passportId, String imageUrl) {
+		passportCommandMapper.updateCoverImage(passportId, imageUrl);
+		log.info("[Passport] 커버 이미지 업데이트 완료 - passportId: {}, imageUrl: {}", passportId, imageUrl);
+	}
 }
