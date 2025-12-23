@@ -173,7 +173,18 @@ public enum ErrorCode {
 	BATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "BA-001", "배치 작업을 찾을 수 없습니다."),
 	BATCH_ALREADY_COMPLETED(HttpStatus.CONFLICT, "BA-002", "이미 완료된 배치 작업입니다."),
 	BATCH_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BA-003", "배치 진행 상황 저장에 실패했습니다."),
-	BATCH_LOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BA-004", "배치 진행 상황 조회에 실패했습니다.");
+	BATCH_LOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BA-004", "배치 진행 상황 조회에 실패했습니다."),
+
+	/**
+	 * Bookmark Error
+	 */
+	BOOKMARK_FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "BK-001", "북마크 폴더를 찾을 수 없습니다."),
+	BOOKMARK_FOLDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "BK-002", "북마크 폴더에 대한 접근 권한이 없습니다."),
+	BOOKMARK_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "BK-003", "북마크 항목을 찾을 수 없습니다."),
+	BOOKMARK_ITEM_ALREADY_EXISTS(HttpStatus.CONFLICT, "BK-004", "이미 폴더에 저장된 카페입니다."),
+	BOOKMARK_FOLDER_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "BK-005", "폴더 이름은 필수 입력값입니다."),
+	BOOKMARK_INVALID_ICON(HttpStatus.BAD_REQUEST, "BK-006", "유효하지 않은 아이콘입니다."),
+	;
 
 	private final HttpStatus httpStatus;
 	private final String code;

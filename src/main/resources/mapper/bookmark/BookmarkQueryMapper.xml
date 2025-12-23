@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.bookmark.mapper.query.BookmarkQueryMapper">
+
+    <select id="findFoldersByUserId" resultType="com.backend.domain.bookmark.dto.response.FolderResDto">
+        SELECT
+            bf.id,
+            bf.icon,
+            bf.name,
+            bf.description,
+            COUNT(bi.id) as storeCount,
+            bf.created_at as createdAt,
+            MAX(bi.added_at) as lastAddedAt
+        FROM bookmark_folders bf
+        LEFT JOIN bookmark_items bi ON bf.id = bi.folder_id
+        WHERE bf.user_id = #{userId}
+        GROUP BY bf.id
+        ORDER BY bf.created_at DESC
+    </select>
+
+    <select id="findFolderById" resultType="BookmarkFolder">
+        SELECT
+            id,
+            user_id as userId,
+            icon,
+            name,
+            description,
+            created_at as createdAt,
+            updated_at as updatedAt
+        FROM bookmark_folders
+        WHERE id = #{folderId}
+    </select>
+
+    <select id="findStoresByFolderId" resultType="com.backend.domain.bookmark.dto.response.BookmarkedStoreResDto">
+        SELECT
+            s.id as storeId,
+            s.name,
+            s.description,
+            s.address,
+            s.latitude,
+            s.longitude,
+            s.category,
+            s.average_rating as averageRating,
+            s.review_count as reviewCount,
+            s.thumbnail_url as thumbnailUrl,
+            s.is_closed as isClosed,
+            bi.added_at as addedAt
+        FROM bookmark_items bi
+        JOIN stores s ON bi.store_id = s.id
+        WHERE bi.folder_id = #{folderId}
+          AND s.deleted_at IS NULL
+        ORDER BY bi.added_at DESC
+    </select>
+
+    <select id="findItemByFolderIdAndStoreId" resultType="BookmarkItem">
+        SELECT
+            id,
+            folder_id as folderId,
+            store_id as storeId,
+            added_at as addedAt
+        FROM bookmark_items
+        WHERE folder_id = #{folderId}
+          AND store_id = #{storeId}
+    </select>
+
+    <select id="findFoldersByUserIdAndStoreId" resultType="com.backend.domain.bookmark.dto.response.BookmarkStatusResDto$BookmarkedFolderInfo">
+        SELECT
+            bf.id as folderId,
+            bf.name as folderName,
+            bi.added_at as addedAt
+        FROM bookmark_items bi
+        JOIN bookmark_folders bf ON bi.folder_id = bf.id
+        WHERE bf.user_id = #{userId}
+          AND bi.store_id = #{storeId}
+        ORDER BY bi.added_at DESC
+    </select>
+
+    <select id="existsItemByFolderIdAndStoreId" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM bookmark_items
+            WHERE folder_id = #{folderId}
+              AND store_id = #{storeId}
+        )
+    </select>
+
+</mapper>
