@@ -21,7 +21,6 @@ import com.backend.domain.bookmark.dto.request.FolderUpdateReqDto;
 import com.backend.domain.bookmark.dto.response.BookmarkItemResDto;
 import com.backend.domain.bookmark.dto.response.BookmarkedStoreResDto;
 import com.backend.domain.bookmark.dto.response.FolderResDto;
-import com.backend.domain.bookmark.dto.response.FolderStoresResDto;
 import com.backend.domain.bookmark.entity.BookmarkFolder;
 import com.backend.domain.bookmark.service.command.BookmarkCommandService;
 import com.backend.domain.bookmark.service.query.BookmarkQueryService;
@@ -55,8 +54,6 @@ class BookmarkCommandController {
 		@RequestBody @Valid FolderCreateReqDto reqDto,
 		@CurrentUser AuthenticatedUser user
 	) {
-		bookmarkValidator.validateIcon(reqDto.icon());
-
 		BookmarkFolder folder = BookmarkConverter.toFolderEntity(reqDto, user.getUser().getId());
 		BookmarkFolder savedFolder = bookmarkCommandService.createFolder(folder);
 		FolderResDto response = BookmarkConverter.toFolderResDto(savedFolder);
@@ -77,13 +74,11 @@ class BookmarkCommandController {
 	) {
 		BookmarkFolder existingFolder = bookmarkQueryService.findFolderById(folderId);
 		bookmarkValidator.validateFolderOwnership(existingFolder, user.getUser().getId());
-		bookmarkValidator.validateIcon(reqDto.icon());
 
 		BookmarkFolder updatedFolder = BookmarkConverter.toUpdatedFolderEntity(existingFolder, reqDto);
 		bookmarkCommandService.updateFolder(updatedFolder);
 
 		List<BookmarkedStoreResDto> stores = bookmarkQueryService.findStoresByFolderId(folderId);
-		FolderStoresResDto folderWithStores = BookmarkConverter.toFolderStoresResDto(updatedFolder, stores);
 
 		FolderResDto response = FolderResDto.builder()
 			.id(updatedFolder.getId())
