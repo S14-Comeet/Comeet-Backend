@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.bookmark.mapper.command.BookmarkCommandMapper">
+
+    <insert id="saveFolder" parameterType="BookmarkFolder" useGeneratedKeys="true" keyProperty="folder.id">
+        INSERT INTO bookmark_folders (user_id, icon, name, description, created_at, updated_at)
+        VALUES (#{folder.userId}, #{folder.icon}, #{folder.name}, #{folder.description}, NOW(), NOW())
+    </insert>
+
+    <update id="updateFolder" parameterType="BookmarkFolder">
+        UPDATE bookmark_folders
+        SET icon = #{folder.icon},
+            name = #{folder.name},
+            description = #{folder.description},
+            updated_at = NOW()
+        WHERE id = #{folder.id}
+    </update>
+
+    <delete id="deleteFolder">
+        DELETE FROM bookmark_folders
+        WHERE id = #{folderId}
+    </delete>
+
+    <insert id="saveItem" parameterType="BookmarkItem" useGeneratedKeys="true" keyProperty="item.id">
+        INSERT INTO bookmark_items (folder_id, store_id, added_at)
+        VALUES (#{item.folderId}, #{item.storeId}, NOW())
+    </insert>
+
+    <delete id="deleteItem">
+        DELETE FROM bookmark_items
+        WHERE folder_id = #{folderId}
+          AND store_id = #{storeId}
+    </delete>
+
+</mapper>
