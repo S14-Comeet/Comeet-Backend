@@ -7,4 +7,6 @@ public interface PassportCommandService {
     Long createPassport(Passport passport);
 
     void addPassportVisit(Long passportId, Long visitId);
+
+	void updateCoverImage(Long passportId, String imageUrl);
 }

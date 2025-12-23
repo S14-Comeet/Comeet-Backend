@@ -31,4 +31,6 @@ public interface PassportQueryMapper {
 		@Param("year") int year,
 		@Param("month") int month
 	);
+
+	Optional<Passport> findLatestByUserId(@Param("userId") Long userId);
 }

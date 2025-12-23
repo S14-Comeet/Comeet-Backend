@@ -11,4 +11,6 @@ public interface PassportCommandMapper {
     void insertPassport(Passport passport);
 
     void insertPassportVisit(@Param("passportId") Long passportId, @Param("visitId") Long visitId);
+
+    void updateCoverImage(@Param("passportId") Long passportId, @Param("imageUrl") String imageUrl);
 }
