@@ -14,4 +14,6 @@ public interface FlavorQueryMapper {
 	List<Flavor> findAllByReviewId(@Param("reviewId") Long reviewId);
 
 	List<Flavor> findAll();
+
+	List<Flavor> findByCodes(@Param("codes") List<String> codes);
 }

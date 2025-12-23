@@ -19,4 +19,12 @@
         SELECT *
         FROM flavors
     </select>
+    <select id="findByCodes" resultType="com.backend.domain.flavor.entity.Flavor">
+        SELECT *
+        FROM flavors
+        WHERE code IN
+        <foreach collection="codes" item="code" open="(" separator="," close=")">
+            #{code}
+        </foreach>
+    </select>
 </mapper>

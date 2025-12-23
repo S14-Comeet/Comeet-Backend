@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.backend.domain.recommendation.mapper.query.RecommendationQueryMapper">
+
+    <resultMap id="MenuWithBeanScoreResultMap" type="com.backend.domain.recommendation.dto.internal.MenuWithBeanScoreDto">
+        <constructor>
+            <arg column="menu_id" javaType="java.lang.Long"/>
+            <arg column="menu_name" javaType="java.lang.String"/>
+            <arg column="menu_description" javaType="java.lang.String"/>
+            <arg column="menu_price" javaType="java.lang.Integer"/>
+            <arg column="menu_image_url" javaType="java.lang.String"/>
+            <arg column="store_id" javaType="java.lang.Long"/>
+            <arg column="store_name" javaType="java.lang.String"/>
+            <arg column="store_address" javaType="java.lang.String"/>
+            <arg column="store_latitude" javaType="java.math.BigDecimal"/>
+            <arg column="store_longitude" javaType="java.math.BigDecimal"/>
+            <arg column="bean_id" javaType="java.lang.Long"/>
+            <arg column="bean_name" javaType="java.lang.String"/>
+            <arg column="bean_country" javaType="java.lang.String"/>
+            <arg column="roastery_name" javaType="java.lang.String"/>
+            <arg column="acidity" javaType="java.lang.Integer"/>
+            <arg column="body" javaType="java.lang.Integer"/>
+            <arg column="sweetness" javaType="java.lang.Integer"/>
+            <arg column="bitterness" javaType="java.lang.Integer"/>
+            <arg column="aroma" javaType="java.lang.Integer"/>
+            <arg column="flavor" javaType="java.lang.Integer"/>
+            <arg column="aftertaste" javaType="java.lang.Integer"/>
+            <arg column="total_score" javaType="java.lang.Integer"/>
+            <arg column="roast_level" javaType="com.backend.domain.bean.enums.RoastingLevel"/>
+            <arg column="flavor_tags" javaType="java.util.List"
+                 typeHandler="com.backend.common.mybatis.JsonListTypeHandler"/>
+        </constructor>
+    </resultMap>
+
+    <!-- 하드 필터링 + 위치 필터링된 메뉴 조회 -->
+    <select id="findFilteredMenus" resultMap="MenuWithBeanScoreResultMap">
+        SELECT
+            m.id AS menu_id,
+            m.name AS menu_name,
+            m.description AS menu_description,
+            m.price AS menu_price,
+            m.image_url AS menu_image_url,
+            s.id AS store_id,
+            s.name AS store_name,
+            s.address AS store_address,
+            s.latitude AS store_latitude,
+            s.longitude AS store_longitude,
+            b.id AS bean_id,
+            b.name AS bean_name,
+            b.country AS bean_country,
+            r.name AS roastery_name,
+            bs.acidity,
+            bs.body,
+            bs.sweetness,
+            bs.bitterness,
+            bs.aroma,
+            bs.flavor,
+            bs.aftertaste,
+            bs.total_score,
+            bs.roast_level,
+            (SELECT JSON_ARRAYAGG(f.code)
+             FROM bean_flavor_notes bfn
+             INNER JOIN flavors f ON bfn.flavor_id = f.id
+             WHERE bfn.bean_id = b.id) AS flavor_tags
+        FROM menus m
+        INNER JOIN stores s ON m.store_id = s.id
+        INNER JOIN menu_bean_mappings mbm ON m.id = mbm.menu_id
+        INNER JOIN beans b ON mbm.bean_id = b.id
+        INNER JOIN bean_scores bs ON b.id = bs.bean_id
+        LEFT JOIN roasteries r ON b.roastery_id = r.id
+        WHERE m.deleted_at IS NULL
+          AND s.deleted_at IS NULL
+          AND b.deleted_at IS NULL
+          AND s.is_closed = FALSE
+
+        <!-- 위치 필터링 (BoundingBox) -->
+        <if test="minLatitude != null and maxLatitude != null and minLongitude != null and maxLongitude != null">
+            AND s.latitude BETWEEN #{minLatitude} AND #{maxLatitude}
+            AND s.longitude BETWEEN #{minLongitude} AND #{maxLongitude}
+        </if>
+
+        <!-- disliked_tags 필터링: bean_flavor_notes를 통해 필터링 -->
+        <if test="dislikedTags != null and !dislikedTags.isEmpty()">
+            AND NOT EXISTS (
+                SELECT 1 FROM bean_flavor_notes bfn
+                INNER JOIN flavors f ON bfn.flavor_id = f.id
+                WHERE bfn.bean_id = b.id
+                AND f.code IN
+                <foreach collection="dislikedTags" item="tag" open="(" separator="," close=")">
+                    #{tag}
+                </foreach>
+            )
+        </if>
+
+        <!-- preferred_roast_levels 필터링 -->
+        <if test="preferredRoastLevels != null and !preferredRoastLevels.isEmpty()">
+            AND bs.roast_level IN
+            <foreach collection="preferredRoastLevels" item="level" open="(" separator="," close=")">
+                #{level}
+            </foreach>
+        </if>
+
+        ORDER BY bs.total_score DESC
+    </select>
+
+    <!-- 특정 원두를 사용하는 메뉴 조회 -->
+    <select id="findMenusByBeanId" resultMap="MenuWithBeanScoreResultMap">
+        SELECT
+            m.id AS menu_id,
+            m.name AS menu_name,
+            m.description AS menu_description,
+            m.price AS menu_price,
+            m.image_url AS menu_image_url,
+            s.id AS store_id,
+            s.name AS store_name,
+            s.address AS store_address,
+            s.latitude AS store_latitude,
+            s.longitude AS store_longitude,
+            b.id AS bean_id,
+            b.name AS bean_name,
+            b.country AS bean_country,
+            r.name AS roastery_name,
+            bs.acidity,
+            bs.body,
+            bs.sweetness,
+            bs.bitterness,
+            bs.aroma,
+            bs.flavor,
+            bs.aftertaste,
+            bs.total_score,
+            bs.roast_level,
+            (SELECT JSON_ARRAYAGG(f.code)
+             FROM bean_flavor_notes bfn
+             INNER JOIN flavors f ON bfn.flavor_id = f.id
+             WHERE bfn.bean_id = b.id) AS flavor_tags
+        FROM menus m
+        INNER JOIN stores s ON m.store_id = s.id
+        INNER JOIN menu_bean_mappings mbm ON m.id = mbm.menu_id
+        INNER JOIN beans b ON mbm.bean_id = b.id
+        INNER JOIN bean_scores bs ON b.id = bs.bean_id
+        LEFT JOIN roasteries r ON b.roastery_id = r.id
+        WHERE m.deleted_at IS NULL
+          AND s.deleted_at IS NULL
+          AND b.deleted_at IS NULL
+          AND s.is_closed = FALSE
+          AND b.id = #{beanId}
+
+        <!-- 위치 필터링 (BoundingBox) -->
+        <if test="minLatitude != null and maxLatitude != null and minLongitude != null and maxLongitude != null">
+            AND s.latitude BETWEEN #{minLatitude} AND #{maxLatitude}
+            AND s.longitude BETWEEN #{minLongitude} AND #{maxLongitude}
+        </if>
+
+        ORDER BY s.average_rating DESC, s.review_count DESC
+    </select>
+
+</mapper>

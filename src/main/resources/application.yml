@@ -96,3 +96,23 @@ jwt:
   secret: ${JWT_SECRET}
   accessTokenExpiration: ${JWT_EXPIRATION}
   refreshTokenExpiration: ${JWT_REFRESH_EXPIRATION}
+
+# OpenAI 설정 (GMS 프록시 사용)
+spring.ai:
+  openai:
+    api-key: ${GMS_KEY:}
+    base-url: https://gms.ssafy.io/gmsapi/api.openai.com/v1/
+    chat:
+      completions-path: chat/completions
+      options:
+        model: gpt-4o
+    embedding:
+      base-url: https://gms.ssafy.io/gmsapi/api.openai.com/
+      options:
+        model: text-embedding-3-small
+
+# Redis Vector 설정
+redis:
+  vector:
+    index-name: bean_embeddings
+    dimension: 1536

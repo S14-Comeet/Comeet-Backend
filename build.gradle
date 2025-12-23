@@ -56,6 +56,18 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.2.1'
     implementation 'software.amazon.awssdk:s3'
 
+    // OpenAI API (Spring AI)
+    implementation platform('org.springframework.ai:spring-ai-bom:1.1.0')
+    implementation('org.springframework.ai:spring-ai-starter-model-openai') {
+        exclude group: 'io.swagger.core.v3', module: 'swagger-annotations'
+    }
+
+    // Redis Vector Search (Jedis)
+    implementation 'redis.clients:jedis:5.1.0'
+
+    // JSON 처리 (MyBatis TypeHandler)
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5'
