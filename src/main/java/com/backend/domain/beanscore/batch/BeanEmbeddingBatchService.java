@@ -43,10 +43,10 @@ public class BeanEmbeddingBatchService {
 	 */
 	@Transactional(readOnly = true)
 	public int embedAllBeans() {
-		log.info("Starting bean embedding batch process (only beans with flavors)");
+		log.info("[Embedding] 원두 임베딩 배치 시작 (flavor 있는 원두만)");
 
 		List<BeanScore> allBeanScores = beanScoreQueryService.findAll();
-		log.info("Found {} bean scores to process", allBeanScores.size());
+		log.info("[Embedding] 처리 대상 BeanScore 조회 완료 - {}건", allBeanScores.size());
 
 		AtomicInteger successCount = new AtomicInteger(0);
 		AtomicInteger skipCount = new AtomicInteger(0);
@@ -59,10 +59,10 @@ public class BeanEmbeddingBatchService {
 
 			processBatch(batch, successCount, skipCount, failCount);
 
-			log.info("Processed batch {}/{}", end, allBeanScores.size());
+			log.info("[Embedding] 배치 처리 진행 - {}/{}", end, allBeanScores.size());
 		}
 
-		log.info("Bean embedding batch completed. Success: {}, Skipped (no flavor): {}, Failed: {}",
+		log.info("[Embedding] 배치 완료 - 성공: {}건, 스킵: {}건, 실패: {}건",
 			successCount.get(), skipCount.get(), failCount.get());
 
 		return successCount.get();
@@ -75,11 +75,11 @@ public class BeanEmbeddingBatchService {
 	 */
 	@Transactional(readOnly = true)
 	public EmbedResult dropAndEmbedAll() {
-		log.info("Dropping all embeddings and re-embedding beans with flavors");
+		log.info("[Embedding] 전체 임베딩 삭제 후 재생성 시작");
 
 		// 1. 기존 임베딩 전체 삭제
 		int deletedCount = redisVectorService.dropAllEmbeddings();
-		log.info("Dropped {} existing embeddings", deletedCount);
+		log.info("[Embedding] 기존 임베딩 삭제 완료 - {}건", deletedCount);
 
 		// 2. flavor가 있는 원두만 임베딩
 		int embeddedCount = embedAllBeans();
@@ -101,7 +101,7 @@ public class BeanEmbeddingBatchService {
 
 				// flavor가 없으면 임베딩 skip
 				if (flavors == null || flavors.isEmpty()) {
-					log.debug("Skipping bean {} - no flavors mapped", beanScore.getBeanId());
+					log.debug("[Embedding] 원두 스킵 (flavor 없음) - beanId: {}", beanScore.getBeanId());
 					skipCount.incrementAndGet();
 					continue;
 				}
@@ -121,15 +121,15 @@ public class BeanEmbeddingBatchService {
 					beanScore.getRoastLevel(),
 					hierarchyPaths
 				);
-				log.debug("Bean {} embedding text: {}", beanScore.getBeanId(), embeddingText);
+				log.debug("[Embedding] 임베딩 텍스트 생성 - beanId: {}, text: {}", beanScore.getBeanId(), embeddingText);
 
 				float[] embedding = embeddingService.embed(embeddingText);
 				redisVectorService.saveEmbedding(beanScore.getBeanId(), embedding);
 				successCount.incrementAndGet();
 
-				log.debug("Embedded bean {}", beanScore.getBeanId());
+				log.debug("[Embedding] 임베딩 저장 완료 - beanId: {}", beanScore.getBeanId());
 			} catch (Exception e) {
-				log.error("Failed to embed bean {}", beanScore.getBeanId(), e);
+				log.error("[Embedding] 임베딩 실패 - beanId: {}", beanScore.getBeanId(), e);
 				failCount.incrementAndGet();
 			}
 		}
@@ -145,7 +145,7 @@ public class BeanEmbeddingBatchService {
 			// BeanScore 조회
 			BeanScore beanScore = beanScoreQueryService.findByBeanId(beanId).orElse(null);
 			if (beanScore == null) {
-				log.debug("Skipping embedding update for bean {} - no bean score", beanId);
+				log.debug("[Embedding] 업데이트 스킵 (BeanScore 없음) - beanId: {}", beanId);
 				redisVectorService.deleteEmbedding(beanId);
 				return;
 			}
@@ -155,7 +155,7 @@ public class BeanEmbeddingBatchService {
 
 			// flavor가 없으면 기존 임베딩 삭제
 			if (flavors == null || flavors.isEmpty()) {
-				log.debug("Deleting embedding for bean {} - no flavors mapped", beanId);
+				log.debug("[Embedding] 임베딩 삭제 (flavor 없음) - beanId: {}", beanId);
 				redisVectorService.deleteEmbedding(beanId);
 				return;
 			}
@@ -175,13 +175,13 @@ public class BeanEmbeddingBatchService {
 				beanScore.getRoastLevel(),
 				hierarchyPaths
 			);
-			log.debug("Bean {} embedding text: {}", beanId, embeddingText);
+			log.debug("[Embedding] 임베딩 텍스트 생성 - beanId: {}, text: {}", beanId, embeddingText);
 
 			float[] embedding = embeddingService.embed(embeddingText);
 			redisVectorService.saveEmbedding(beanId, embedding);
-			log.debug("Updated embedding for bean {}", beanId);
+			log.debug("[Embedding] 임베딩 업데이트 완료 - beanId: {}", beanId);
 		} catch (Exception e) {
-			log.error("Failed to update embedding for bean {}", beanId, e);
+			log.error("[Embedding] 임베딩 업데이트 실패 - beanId: {}", beanId, e);
 		}
 	}
 
@@ -193,9 +193,9 @@ public class BeanEmbeddingBatchService {
 	public void deleteEmbedding(Long beanId) {
 		try {
 			redisVectorService.deleteEmbedding(beanId);
-			log.debug("Deleted embedding for bean {}", beanId);
+			log.debug("[Embedding] 임베딩 삭제 완료 - beanId: {}", beanId);
 		} catch (Exception e) {
-			log.error("Failed to delete embedding for bean {}", beanId, e);
+			log.error("[Embedding] 임베딩 삭제 실패 - beanId: {}", beanId, e);
 		}
 	}
 
@@ -206,7 +206,7 @@ public class BeanEmbeddingBatchService {
 	 */
 	@Transactional(readOnly = true)
 	public int embedMissingBeans() {
-		log.info("Starting missing bean embedding process (only beans with flavors)");
+		log.info("[Embedding] 누락 임베딩 처리 시작 (flavor 있는 원두만)");
 
 		List<BeanScore> allBeanScores = beanScoreQueryService.findAll();
 		AtomicInteger processedCount = new AtomicInteger(0);
@@ -220,7 +220,7 @@ public class BeanEmbeddingBatchService {
 
 					// flavor가 없으면 skip
 					if (flavors == null || flavors.isEmpty()) {
-						log.debug("Skipping bean {} - no flavors mapped", beanScore.getBeanId());
+						log.debug("[Embedding] 원두 스킵 (flavor 없음) - beanId: {}", beanScore.getBeanId());
 						skipCount.incrementAndGet();
 						continue;
 					}
@@ -240,19 +240,19 @@ public class BeanEmbeddingBatchService {
 						beanScore.getRoastLevel(),
 						hierarchyPaths
 					);
-					log.debug("Bean {} embedding text: {}", beanScore.getBeanId(), embeddingText);
+					log.debug("[Embedding] 임베딩 텍스트 생성 - beanId: {}, text: {}", beanScore.getBeanId(), embeddingText);
 
 					float[] embedding = embeddingService.embed(embeddingText);
 					redisVectorService.saveEmbedding(beanScore.getBeanId(), embedding);
 					processedCount.incrementAndGet();
-					log.debug("Created missing embedding for bean {}", beanScore.getBeanId());
+					log.debug("[Embedding] 누락 임베딩 생성 완료 - beanId: {}", beanScore.getBeanId());
 				} catch (Exception e) {
-					log.error("Failed to create embedding for bean {}", beanScore.getBeanId(), e);
+					log.error("[Embedding] 누락 임베딩 생성 실패 - beanId: {}", beanScore.getBeanId(), e);
 				}
 			}
 		}
 
-		log.info("Missing bean embedding completed. Processed: {}, Skipped (no flavor): {}",
+		log.info("[Embedding] 누락 임베딩 처리 완료 - 처리: {}건, 스킵: {}건",
 			processedCount.get(), skipCount.get());
 		return processedCount.get();
 	}

@@ -44,7 +44,7 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 			minLat, maxLat, minLon, maxLon
 		);
 
-		log.debug("Found {} filtered menus", menus.size());
+		log.debug("[Recommendation] 필터링된 메뉴 조회 완료 - {}건", menus.size());
 		return menus;
 	}
 
@@ -62,7 +62,7 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 			beanId, minLat, maxLat, minLon, maxLon
 		);
 
-		log.debug("Found {} menus using bean {}", menus.size(), beanId);
+		log.debug("[Recommendation] 원두 사용 메뉴 조회 완료 - beanId: {}, {}건", beanId, menus.size());
 		return menus;
 	}
 

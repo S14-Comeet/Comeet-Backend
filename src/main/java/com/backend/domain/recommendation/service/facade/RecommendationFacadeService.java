@@ -72,7 +72,7 @@ public class RecommendationFacadeService {
 	 */
 	@Transactional(readOnly = true)
 	public List<BeanRecommendationResDto> recommendBeans(Long userId) {
-		log.info("Starting bean recommendation for user {}", userId);
+		log.info("[Recommendation] 원두 추천 시작 - userId: {}", userId);
 
 		// 1. 사용자 취향 조회
 		UserPreference preference = preferenceQueryService.findByUserId(userId)
@@ -87,11 +87,11 @@ public class RecommendationFacadeService {
 		);
 
 		if (filteredBeans.isEmpty()) {
-			log.warn("No beans found after hard filtering for user {}", userId);
+			log.warn("[Recommendation] 하드 필터링 후 원두 없음 - userId: {}", userId);
 			return List.of();
 		}
 
-		log.debug("Found {} beans after hard filtering", filteredBeans.size());
+		log.debug("[Recommendation] 하드 필터링 완료 - 후보: {}건", filteredBeans.size());
 
 		// 3. 벡터 검색 (liked_tags 기반)
 		List<Long> beanIds = filteredBeans.stream()
@@ -101,7 +101,7 @@ public class RecommendationFacadeService {
 		List<VectorSearchResult> vectorResults = performVectorSearch(preference.getLikedTags(), beanIds);
 
 		if (vectorResults.isEmpty()) {
-			log.warn("No vector search results for user {}", userId);
+			log.warn("[Recommendation] 벡터 검색 결과 없음 - userId: {}", userId);
 			// 벡터 검색 결과가 없으면 필터링된 원두 중 상위 3개 반환
 			return filteredBeans.stream()
 				.limit(FINAL_RECOMMENDATION_COUNT)
@@ -176,7 +176,7 @@ public class RecommendationFacadeService {
 				.toList();
 
 		} catch (Exception e) {
-			log.error("LLM reranking failed, falling back to vector search results", e);
+			log.error("[Recommendation] LLM 리랭킹 실패, 벡터 검색 결과로 대체", e);
 			// LLM 실패시 벡터 검색 결과로 대체
 			return vectorResults.stream()
 				.limit(FINAL_RECOMMENDATION_COUNT)
@@ -201,7 +201,7 @@ public class RecommendationFacadeService {
 	 */
 	@Transactional(readOnly = true)
 	public List<MenuRecommendationResDto> recommendMenus(Long userId, RecommendationReqDto reqDto) {
-		log.info("Starting menu recommendation for user {} with type {}", userId, reqDto.type());
+		log.info("[Recommendation] 메뉴 추천 시작 - userId: {}, type: {}", userId, reqDto.type());
 
 		// 1. 사용자 취향 조회
 		UserPreference preference = preferenceQueryService.findByUserId(userId)
@@ -215,7 +215,7 @@ public class RecommendationFacadeService {
 				reqDto.longitude(),
 				reqDto.radiusKm()
 			);
-			log.debug("LOCAL mode: BoundingBox calculated for radius {}km", reqDto.radiusKm());
+			log.debug("[Recommendation] LOCAL 모드 BoundingBox 계산 완료 - 반경: {}km", reqDto.radiusKm());
 		}
 
 		// 3. 하드 필터링 (SQL)
@@ -228,11 +228,11 @@ public class RecommendationFacadeService {
 		);
 
 		if (filteredMenus.isEmpty()) {
-			log.warn("No menus found after filtering for user {}", userId);
+			log.warn("[Recommendation] 필터링 후 메뉴 없음 - userId: {}", userId);
 			return List.of();
 		}
 
-		log.debug("Found {} menus after filtering", filteredMenus.size());
+		log.debug("[Recommendation] 메뉴 필터링 완료 - 후보: {}건", filteredMenus.size());
 
 		// 4. 벡터 검색 (liked_tags 기반, 중복 beanId 제거)
 		List<Long> beanIds = filteredMenus.stream()
@@ -319,7 +319,7 @@ public class RecommendationFacadeService {
 				.toList();
 
 		} catch (Exception e) {
-			log.error("LLM reranking failed, falling back to vector search results", e);
+			log.error("[Recommendation] LLM 리랭킹 실패, 벡터 검색 결과로 대체", e);
 			// LLM 실패시 벡터 검색 결과로 대체
 			return menuWithScores.stream()
 				.limit(FINAL_RECOMMENDATION_COUNT)
@@ -343,7 +343,7 @@ public class RecommendationFacadeService {
 	 */
 	@Transactional(readOnly = true)
 	public NearbyMenuRecommendationResDto recommendNearbyMenus(Long userId, RecommendationReqDto reqDto) {
-		log.info("Starting nearby menu recommendation for user {} with radius {}km", userId, reqDto.radiusKm());
+		log.info("[Recommendation] 근거리 메뉴 추천 시작 - userId: {}, 반경: {}km", userId, reqDto.radiusKm());
 
 		int requestedRadius = reqDto.radiusKm();
 		int currentRadius = requestedRadius;
@@ -362,7 +362,7 @@ public class RecommendationFacadeService {
 			recommendations = recommendMenus(userId, currentReqDto);
 
 			if (!recommendations.isEmpty()) {
-				log.info("Found {} recommendations at radius {}km", recommendations.size(), currentRadius);
+				log.info("[Recommendation] 추천 결과 발견 - {}건, 반경: {}km", recommendations.size(), currentRadius);
 				break;
 			}
 
@@ -375,11 +375,11 @@ public class RecommendationFacadeService {
 
 			// 이미 최대 반경이면 중단
 			if (currentRadius >= MAX_RADIUS_KM) {
-				log.warn("No menus found even at max radius {}km for user {}", MAX_RADIUS_KM, userId);
+				log.warn("[Recommendation] 최대 반경에서도 메뉴 없음 - 반경: {}km, userId: {}", MAX_RADIUS_KM, userId);
 				break;
 			}
 
-			log.info("No menus found at {}km, expanding to {}km (attempt {})", currentRadius, nextRadius, attempts);
+			log.info("[Recommendation] 반경 확장 - {}km → {}km (시도 {}회)", currentRadius, nextRadius, attempts);
 			currentRadius = nextRadius;
 		}
 
@@ -396,7 +396,7 @@ public class RecommendationFacadeService {
 	 */
 	@Transactional(readOnly = true)
 	public List<MenuRecommendationResDto> findMenusByBean(Long beanId, RecommendationReqDto reqDto) {
-		log.info("Finding menus for bean {} with type {}", beanId, reqDto.type());
+		log.info("[Recommendation] 원두별 메뉴 조회 - beanId: {}, type: {}", beanId, reqDto.type());
 
 		GeoUtils.BoundingBox boundingBox = null;
 		if (reqDto.isLocal() && reqDto.hasValidLocation()) {
@@ -434,19 +434,19 @@ public class RecommendationFacadeService {
 	 */
 	private List<VectorSearchResult> performVectorSearch(List<String> likedTags, List<Long> beanIds) {
 		if (likedTags == null || likedTags.isEmpty()) {
-			log.debug("No liked tags provided, skipping vector search");
+			log.debug("[Recommendation] 선호 태그 없음, 벡터 검색 생략");
 			return List.of();
 		}
 
 		try {
 			// 플레이버 태그를 계층 구조 경로로 변환
 			List<String> hierarchyPaths = flavorQueryService.getHierarchyPaths(likedTags);
-			log.debug("Liked tags hierarchy paths: {}", hierarchyPaths);
+			log.debug("[Recommendation] 플레이버 계층 경로 변환 완료 - {}", hierarchyPaths);
 
 			float[] queryEmbedding = embeddingService.embedTags(hierarchyPaths);
 			return redisVectorService.searchSimilarInBeans(queryEmbedding, beanIds, VECTOR_SEARCH_TOP_K);
 		} catch (Exception e) {
-			log.error("Vector search failed", e);
+			log.error("[Recommendation] 벡터 검색 실패", e);
 			return List.of();
 		}
 	}
