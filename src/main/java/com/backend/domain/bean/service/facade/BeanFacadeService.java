@@ -17,7 +17,9 @@ import com.backend.common.util.PageUtils;
 import com.backend.domain.bean.converter.BeanConverter;
 import com.backend.domain.bean.dto.common.BeanFlavorDto;
 import com.backend.domain.bean.dto.request.BeanCreateReqDto;
+import com.backend.domain.bean.dto.request.BeanFlavorCreateReqDto;
 import com.backend.domain.bean.dto.request.BeanUpdateReqDto;
+import com.backend.domain.bean.dto.response.BeanFlavorResDto;
 import com.backend.domain.bean.dto.response.BeanResDto;
 import com.backend.domain.bean.entity.Bean;
 import com.backend.domain.bean.factory.BeanFactory;
@@ -193,5 +195,53 @@ public class BeanFacadeService {
 				return BeanConverter.toBeanResDto(bean, badges);
 			})
 			.toList();
+	}
+
+	@Transactional
+	public BeanFlavorResDto addBeanFlavors(final Long beanId, final BeanFlavorCreateReqDto reqDto) {
+		Bean bean = beanQueryService.findById(beanId);
+
+		int affectedRows = beanFlavorCommandService.insertBeanFlavors(bean.getId(), reqDto.flavorIds());
+		if (affectedRows == 0) {
+			throw new BeanException(ErrorCode.BEAN_FLAVOR_SAVE_FAILED);
+		}
+
+		return buildBeanFlavorResDto(bean.getId());
+	}
+
+	@Transactional
+	public BeanFlavorResDto updateBeanFlavors(final Long beanId, final BeanFlavorCreateReqDto reqDto) {
+		Bean bean = beanQueryService.findById(beanId);
+
+		beanFlavorCommandService.deleteBeanFlavors(bean.getId());
+
+		if (!CollectionUtils.isEmpty(reqDto.flavorIds())) {
+			int affectedRows = beanFlavorCommandService.insertBeanFlavors(bean.getId(), reqDto.flavorIds());
+			if (affectedRows == 0) {
+				throw new BeanException(ErrorCode.BEAN_FLAVOR_SAVE_FAILED);
+			}
+		}
+
+		return buildBeanFlavorResDto(bean.getId());
+	}
+
+	@Transactional
+	public void deleteBeanFlavors(final Long beanId) {
+		Bean bean = beanQueryService.findById(beanId);
+		beanFlavorCommandService.deleteBeanFlavors(bean.getId());
+	}
+
+	public BeanFlavorResDto getBeanFlavors(final Long beanId) {
+		Bean bean = beanQueryService.findById(beanId);
+		return buildBeanFlavorResDto(bean.getId());
+	}
+
+	private BeanFlavorResDto buildBeanFlavorResDto(final Long beanId) {
+		List<Flavor> flavors = beanFlavorQueryService.findFlavorsByBeanId(beanId);
+		List<FlavorBadgeDto> badges = FlavorConverter.toFlavorBadgeDtoList(flavors);
+		return BeanFlavorResDto.builder()
+			.beanId(beanId)
+			.flavors(badges)
+			.build();
 	}
 }
