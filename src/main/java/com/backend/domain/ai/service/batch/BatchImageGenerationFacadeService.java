@@ -1,12 +1,16 @@
 package com.backend.domain.ai.service.batch;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.io.Resource;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -27,35 +31,21 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 배치 이미지 생성 서비스
- * Semaphore + Virtual Thread + Event 기반 대량 이미지 생성
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BatchImageGenerationFacadeService {
 
 	private static final int PERMITS = 50;
+
 	private final ImageGenerationService imageGenerationService;
 	private final PassportQueryService passportQueryService;
 	private final BatchProgressRepository progressRepository;
 	private final ApplicationEventPublisher eventPublisher;
 	private final Executor virtualThreadExecutor;
 
-	private static final String TEMPLATE = """
-		Create a minimalist vector-style world map illustration on a textured beige background. The continents should be depicted in soft pastel tones (muted green, blue, pink, yellow) with organic, simplified shapes and no borders.
-		
-		Task: Visualize a flight path based on the following location list: %s
-		
-		Instructions:
-		1. Data Processing: First, look at the provided list and ignore any consecutive duplicate locations (e.g., treat "Vietnam, Vietnam, Japan" as "Vietnam -> Japan").
-		2. Path Drawing: Draw a continuous red curved line connecting the unique locations in order. Add small white airplane icons along the line to show direction.
-		3. Pins: Place a red circular pin at each unique destination. Number them sequentially (1, 2, 3...) based on the simplified list.
-		4. Labels: Next to each pin, display ONLY the number and country name in a clean, dark sans-serif font (e.g., "1. Vietnam"). Do NOT display dates.
-		
-		Ensure the visual style remains clean, flat, and infographic-like, maintaining the aesthetic of a high-quality travel illustration.
-		""";
+	@Value("classpath:prompts/passport_image_prompt.txt")
+	private Resource passportImagePrompt;
 
 	private final Semaphore semaphore = new Semaphore(PERMITS);
 
@@ -144,7 +134,11 @@ public class BatchImageGenerationFacadeService {
 	}
 
 	private String buildPromptFromPassport(final Passport passport) {
-		return String.format(TEMPLATE, passport.getOriginSequence());
+		try {
+			return String.format(passportImagePrompt.getContentAsString(StandardCharsets.UTF_8), passport.getOriginSequence());
+		} catch (IOException e) {
+			throw new AiException(ErrorCode.USER_PROMPT_REQUIRED);
+		}
 	}
 
 	private void updateProgressInRedis(final BatchProgress progress) {
