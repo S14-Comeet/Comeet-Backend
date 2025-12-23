@@ -1,9 +1,11 @@
 package com.backend.domain.review.service.query;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 
+import com.backend.domain.review.dto.common.StoreRatingStatsDto;
 import com.backend.domain.review.entity.Review;
 
 public interface ReviewQueryService {
@@ -18,4 +20,6 @@ public interface ReviewQueryService {
 	int countAllByStoreId(Long storeId);
 
 	boolean existsByVisitId(Long visitId);
+
+	Optional<StoreRatingStatsDto> findRatingStatsByStoreId(Long storeId);
 }

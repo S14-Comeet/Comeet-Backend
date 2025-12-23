@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS stores
     deleted_at     TIMESTAMP,
     created_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT chk_average_rating CHECK (average_rating >= 0 AND average_rating <= 5.0),
     FOREIGN KEY (roastery_id) REFERENCES roasteries (id),
     FOREIGN KEY (owner_id) REFERENCES users (id)
 );
@@ -96,16 +97,18 @@ CREATE TABLE IF NOT EXISTS passport_visits
 CREATE TABLE IF NOT EXISTS reviews
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    visit_id   BIGINT    NOT NULL UNIQUE,
-    user_id    BIGINT    NOT NULL,
-    store_id   BIGINT    NOT NULL,
-    menu_id    BIGINT    NOT NULL,
+    visit_id   BIGINT        NOT NULL UNIQUE,
+    user_id    BIGINT        NOT NULL,
+    store_id   BIGINT        NOT NULL,
+    menu_id    BIGINT        NOT NULL,
     content    TEXT,
-    is_public  BOOLEAN   NOT NULL,
+    is_public  BOOLEAN       NOT NULL,
     image_url  TEXT,
+    rating     DECIMAL(2, 1) NULL COMMENT '평점 (0.5 ~ 5.0, 0.5 단위)',
     deleted_at TIMESTAMP,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT chk_rating CHECK (rating IS NULL OR (rating >= 0.5 AND rating <= 5.0)),
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (visit_id) REFERENCES visits (id),
     FOREIGN KEY (store_id) REFERENCES stores (id)

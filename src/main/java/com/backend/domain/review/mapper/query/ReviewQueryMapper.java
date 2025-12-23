@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 
+import com.backend.domain.review.dto.common.StoreRatingStatsDto;
 import com.backend.domain.review.entity.Review;
 
 @Mapper
@@ -22,4 +23,6 @@ public interface ReviewQueryMapper {
 	int countAllByStoreId(@Param("storeId") Long storeId);
 
 	boolean existsByVisitId(@Param("visitId") Long visitId);
+
+	Optional<StoreRatingStatsDto> findRatingStatsByStoreId(@Param("storeId") Long storeId);
 }

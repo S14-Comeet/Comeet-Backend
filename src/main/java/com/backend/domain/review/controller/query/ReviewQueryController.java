@@ -35,7 +35,15 @@ public class ReviewQueryController {
 
 	@Operation(
 		summary = "리뷰 상세 조회",
-		description = "리뷰 ID로 리뷰의 상세 정보를 조회합니다. 리뷰 내용, 이미지, Flavor 뱃지 등을 포함합니다."
+		description = """
+			리뷰 ID로 리뷰의 상세 정보를 조회합니다.
+
+			**응답 항목:**
+			- 리뷰 내용, 이미지 URL, 공개 여부
+			- **평점 (rating)**: 0.5 ~ 5.0 (null일 수 있음)
+			- Flavor 뱃지 목록
+			- 생성일시
+			"""
 	)
 	@GetMapping("{reviewId}")
 	public ResponseEntity<BaseResponse<ReviewedResDto>> getReviewDetails(@PathVariable Long reviewId) {
@@ -43,8 +51,16 @@ public class ReviewQueryController {
 	}
 
 	@Operation(
-		summary = "내 리뷰 목록 조회 ",
-		description = "로그인한 사용자의 리뷰 목록을 Flavor Badge와 함께 페이지네이션으로 조회합니다."
+		summary = "내 리뷰 목록 조회",
+		description = """
+			로그인한 사용자의 리뷰 목록을 페이지네이션으로 조회합니다.
+
+			**응답 항목 (각 리뷰):**
+			- 리뷰 내용, 이미지 URL, 공개 여부
+			- **평점 (rating)**: 0.5 ~ 5.0 (null일 수 있음)
+			- Flavor 뱃지 목록
+			- 생성일시
+			"""
 	)
 	@GetMapping
 	public ResponseEntity<PageResponse<ReviewPageDto>> getReviews(
