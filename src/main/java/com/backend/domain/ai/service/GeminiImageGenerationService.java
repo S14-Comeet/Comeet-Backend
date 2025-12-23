@@ -11,7 +11,6 @@ import com.backend.domain.ai.dto.GeneratedImage;
 import com.backend.domain.ai.dto.ImageGenerationRequest;
 import com.backend.domain.ai.factory.GeminiConfigFactory;
 import com.backend.domain.ai.parser.GeminiResponseParser;
-import com.backend.domain.ai.template.ImagePromptTemplate;
 import com.google.genai.Client;
 import com.google.genai.ResponseStream;
 import com.google.genai.types.Content;
@@ -33,7 +32,6 @@ public class GeminiImageGenerationService implements ImageGenerationService {
 	private final S3FileUploader s3FileUploader;
 	private final GeminiConfigFactory configFactory;
 	private final GeminiResponseParser responseParser;
-	private final ImagePromptTemplate promptTemplate;
 
 	@Override
 	public String generate(final String prompt) {
@@ -57,12 +55,10 @@ public class GeminiImageGenerationService implements ImageGenerationService {
 		}
 	}
 
-	private Content createContent(final String userPrompt) {
-		String fullPrompt = promptTemplate.build(userPrompt);
-
+	private Content createContent(final String prompt) {
 		return Content.builder()
 			.role("user")
-			.parts(Part.fromText(fullPrompt))
+			.parts(Part.fromText(prompt))
 			.build();
 	}
 
