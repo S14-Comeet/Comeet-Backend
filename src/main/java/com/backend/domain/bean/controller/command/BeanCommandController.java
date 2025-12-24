@@ -18,6 +18,7 @@ import com.backend.domain.bean.dto.request.BeanFlavorCreateReqDto;
 import com.backend.domain.bean.dto.request.BeanUpdateReqDto;
 import com.backend.domain.bean.dto.response.BeanFlavorResDto;
 import com.backend.domain.bean.dto.response.BeanResDto;
+import com.backend.domain.bean.service.command.BeanFlavorCommandService;
 import com.backend.domain.bean.service.facade.BeanFacadeService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class BeanCommandController {
 
 	private final BeanFacadeService beanFacadeService;
+	private final BeanFlavorCommandService beanFlavorCommandService;
 
 	@Operation(
 		summary = "원두 생성",
@@ -82,7 +84,7 @@ public class BeanCommandController {
 		@PathVariable Long beanId,
 		@RequestBody @Valid BeanFlavorCreateReqDto reqDto
 	) {
-		return ResponseUtils.created(beanFacadeService.addBeanFlavors(beanId, reqDto));
+		return ResponseUtils.created(beanFlavorCommandService.addBeanFlavors(beanId, reqDto));
 	}
 
 	@Operation(
@@ -95,7 +97,7 @@ public class BeanCommandController {
 		@PathVariable Long beanId,
 		@RequestBody @Valid BeanFlavorCreateReqDto reqDto
 	) {
-		return ResponseUtils.ok(beanFacadeService.updateBeanFlavors(beanId, reqDto));
+		return ResponseUtils.ok(beanFlavorCommandService.updateBeanFlavors(beanId, reqDto));
 	}
 
 	@Operation(
@@ -107,7 +109,7 @@ public class BeanCommandController {
 	public ResponseEntity<BaseResponse<Void>> deleteBeanFlavors(
 		@PathVariable Long beanId
 	) {
-		beanFacadeService.deleteBeanFlavors(beanId);
+		beanFlavorCommandService.deleteBeanFlavorsByBeanId(beanId);
 		return ResponseUtils.noContent();
 	}
 }

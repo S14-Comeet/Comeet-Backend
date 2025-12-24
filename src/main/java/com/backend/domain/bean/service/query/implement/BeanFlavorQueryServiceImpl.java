@@ -7,8 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.backend.domain.bean.dto.common.BeanFlavorDto;
+import com.backend.domain.bean.dto.response.BeanFlavorResDto;
+import com.backend.domain.bean.entity.Bean;
 import com.backend.domain.bean.mapper.query.BeanFlavorQueryMapper;
 import com.backend.domain.bean.service.query.BeanFlavorQueryService;
+import com.backend.domain.bean.service.query.BeanQueryService;
+import com.backend.domain.flavor.converter.FlavorConverter;
+import com.backend.domain.flavor.dto.common.FlavorBadgeDto;
 import com.backend.domain.flavor.entity.Flavor;
 
 import lombok.AccessLevel;
@@ -21,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class BeanFlavorQueryServiceImpl implements BeanFlavorQueryService {
 	private final BeanFlavorQueryMapper beanFlavorQueryMapper;
+	private final BeanQueryService beanQueryService;
 
 	@Override
 	public List<BeanFlavorDto> findFlavorIdsByBeanIds(final List<Long> beanIds) {
@@ -38,5 +44,16 @@ public class BeanFlavorQueryServiceImpl implements BeanFlavorQueryService {
 		List<Flavor> flavors = beanFlavorQueryMapper.findFlavorsByBeanId(beanId);
 		log.info("[BeanFlavor] 원두별 플레이버 조회 - beanId={}", beanId);
 		return flavors;
+	}
+
+	@Override
+	public BeanFlavorResDto getBeanFlavors(final Long beanId) {
+		Bean bean = beanQueryService.findById(beanId);
+		List<Flavor> flavors = findFlavorsByBeanId(bean.getId());
+		List<FlavorBadgeDto> badges = FlavorConverter.toFlavorBadgeDtoList(flavors);
+		return BeanFlavorResDto.builder()
+			.beanId(beanId)
+			.flavors(badges)
+			.build();
 	}
 }
