@@ -38,6 +38,9 @@ public record StoreResDto(
 	@Schema(description = "총 리뷰 수", example = "234")
 	Integer reviewCount,
 
+	@Schema(description = "총 방문 수", example = "891")
+	Integer visitCount,
+
 	@Schema(description = "매장 썸네일 이미지 URL", example = "https://example.com/stores/gangnam2.jpg", nullable = true)
 	String thumbnailUrl,
 
