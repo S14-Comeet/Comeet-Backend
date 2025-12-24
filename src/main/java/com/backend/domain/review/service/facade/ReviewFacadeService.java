@@ -195,9 +195,7 @@ public class ReviewFacadeService {
 				ReviewFlavorDto::reviewId,
 				Collectors.mapping(
 					dto -> flavorMap.get(dto.flavorId()),
-					Collectors.filtering(Objects::nonNull, Collectors.toList())
-				)
-			));
+					Collectors.filtering(Objects::nonNull, Collectors.toList()))));
 
 		// * 리뷰별로 Flavor 뱃지 매핑하여 DTO 변환
 		return reviews.stream()

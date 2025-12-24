@@ -4,9 +4,9 @@ import com.backend.domain.passport.entity.Passport;
 
 public interface PassportCommandService {
 
-    Long createPassport(Passport passport);
+	Long createPassport(Passport passport);
 
-    void addPassportVisit(Long passportId, Long visitId);
+	void addPassportVisit(Long passportId, Long visitId);
 
 	void updateCoverImage(Long passportId, String imageUrl);
 }

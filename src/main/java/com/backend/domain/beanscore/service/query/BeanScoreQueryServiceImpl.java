@@ -59,8 +59,10 @@ public class BeanScoreQueryServiceImpl implements BeanScoreQueryService {
 	}
 
 	@Override
-	public List<BeanScoreWithBeanDto> findFilteredBeanScores(List<String> dislikedTags,
-		List<String> preferredRoastLevels) {
+	public List<BeanScoreWithBeanDto> findFilteredBeanScores(
+		List<String> dislikedTags,
+		List<String> preferredRoastLevels
+	) {
 		return beanScoreQueryMapper.findFilteredBeanScores(dislikedTags, preferredRoastLevels);
 	}
 }

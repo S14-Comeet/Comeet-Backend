@@ -57,7 +57,11 @@ public class BookmarkConverter {
 			.build();
 	}
 
-	public static BookmarkItemResDto toItemResDto(final Long folderId, final Long storeId, final LocalDateTime addedAt) {
+	public static BookmarkItemResDto toItemResDto(
+		final Long folderId,
+		final Long storeId,
+		final LocalDateTime addedAt
+	) {
 		return BookmarkItemResDto.builder()
 			.folderId(folderId)
 			.storeId(storeId)

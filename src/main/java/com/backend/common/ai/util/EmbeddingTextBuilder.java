@@ -6,7 +6,7 @@ import com.backend.domain.bean.enums.RoastingLevel;
 
 /**
  * 임베딩용 텍스트 생성 유틸리티
- *
+ * <p>
  * 점수, 플레이버 태그, 로스팅 레벨을 조합하여 풍부한 임베딩 텍스트 생성
  */
 public final class EmbeddingTextBuilder {
@@ -17,12 +17,12 @@ public final class EmbeddingTextBuilder {
 	/**
 	 * 원두용 임베딩 텍스트 생성
 	 *
-	 * @param acidity      산미 점수 (1-10)
-	 * @param body         바디감 점수 (1-10)
-	 * @param sweetness    단맛 점수 (1-10)
-	 * @param bitterness   쓴맛 점수 (1-10)
-	 * @param roastLevel   로스팅 레벨
-	 * @param flavorPaths  플레이버 계층 경로 목록 (예: "Fruity > Citrus > Lemon")
+	 * @param acidity     산미 점수 (1-10)
+	 * @param body        바디감 점수 (1-10)
+	 * @param sweetness   단맛 점수 (1-10)
+	 * @param bitterness  쓴맛 점수 (1-10)
+	 * @param roastLevel  로스팅 레벨
+	 * @param flavorPaths 플레이버 계층 경로 목록 (예: "Fruity > Citrus > Lemon")
 	 * @return 임베딩용 텍스트
 	 */
 	public static String buildBeanEmbeddingText(
@@ -60,12 +60,12 @@ public final class EmbeddingTextBuilder {
 	/**
 	 * 사용자 취향용 임베딩 텍스트 생성
 	 *
-	 * @param prefAcidity           선호 산미 (1-10)
-	 * @param prefBody              선호 바디감 (1-10)
-	 * @param prefSweetness         선호 단맛 (1-10)
-	 * @param prefBitterness        선호 쓴맛 (1-10)
-	 * @param preferredRoastLevels  선호 로스팅 레벨 목록
-	 * @param likedFlavorPaths      선호 플레이버 계층 경로 목록
+	 * @param prefAcidity          선호 산미 (1-10)
+	 * @param prefBody             선호 바디감 (1-10)
+	 * @param prefSweetness        선호 단맛 (1-10)
+	 * @param prefBitterness       선호 쓴맛 (1-10)
+	 * @param preferredRoastLevels 선호 로스팅 레벨 목록
+	 * @param likedFlavorPaths     선호 플레이버 계층 경로 목록
 	 * @return 임베딩용 텍스트
 	 */
 	public static String buildUserPreferenceEmbeddingText(

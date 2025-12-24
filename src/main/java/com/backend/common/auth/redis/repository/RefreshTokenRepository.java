@@ -14,39 +14,38 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RefreshTokenRepository {
 
-    private static final String KEY_PREFIX = "refreshToken:";
-    private static final long TTL_DAYS = 3; // 3일
+	private static final String KEY_PREFIX = "refreshToken:";
+	private static final long TTL_DAYS = 3; // 3일
 
-    private final RedisTemplate<String, Object> redisTemplate;
+	private final RedisTemplate<String, Object> redisTemplate;
 
+	public void save(RefreshToken refreshToken) {
+		String key = KEY_PREFIX + refreshToken.getSocialId();
+		redisTemplate.opsForValue().set(key, refreshToken, TTL_DAYS, TimeUnit.DAYS);
+	}
 
-    public void save(RefreshToken refreshToken) {
-        String key = KEY_PREFIX + refreshToken.getSocialId();
-        redisTemplate.opsForValue().set(key, refreshToken, TTL_DAYS, TimeUnit.DAYS);
-    }
+	public Optional<RefreshToken> findById(String socialId) {
+		String key = KEY_PREFIX + socialId;
+		Object value = redisTemplate.opsForValue().get(key);
 
-    public Optional<RefreshToken> findById(String socialId) {
-        String key = KEY_PREFIX + socialId;
-        Object value = redisTemplate.opsForValue().get(key);
+		if (value == null) {
+			return Optional.empty();
+		}
 
-        if (value == null) {
-            return Optional.empty();
-        }
+		if (value instanceof RefreshToken refreshToken) {
+			return Optional.of(refreshToken);
+		}
 
-        if (value instanceof RefreshToken) {
-            return Optional.of((RefreshToken) value);
-        }
+		return Optional.empty();
+	}
 
-        return Optional.empty();
-    }
+	public void deleteById(final String socialId) {
+		String key = KEY_PREFIX + socialId;
+		redisTemplate.delete(key);
+	}
 
-    public void deleteById(final String socialId) {
-        String key = KEY_PREFIX + socialId;
-        redisTemplate.delete(key);
-    }
-
-    public boolean existsById(final String socialId) {
-        String key = KEY_PREFIX + socialId;
-        return redisTemplate.hasKey(key);
-    }
+	public boolean existsById(final String socialId) {
+		String key = KEY_PREFIX + socialId;
+		return redisTemplate.hasKey(key);
+	}
 }

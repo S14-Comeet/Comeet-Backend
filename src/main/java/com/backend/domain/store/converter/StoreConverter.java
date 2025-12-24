@@ -69,7 +69,6 @@ public class StoreConverter {
 			.build();
 	}
 
-
 	public static StoreSearchBoundsVo toStoreSearchBoundsVo(final Store store) {
 		return StoreSearchBoundsVo.builder()
 			.minLatitude(store.getLatitude().subtract(BigDecimal.valueOf(SEARCH_BOUND_MARGIN_DEGREES)))

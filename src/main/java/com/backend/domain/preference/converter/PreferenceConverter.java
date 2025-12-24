@@ -6,9 +6,6 @@ import com.backend.domain.preference.entity.UserPreference;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-/**
- * UserPreference 엔티티 <-> DTO 변환
- */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PreferenceConverter {
 
@@ -22,7 +19,6 @@ public final class PreferenceConverter {
 			entity.getPrefBitterness(),
 			entity.getPreferredRoastLevels(),
 			entity.getLikedTags(),
-			entity.getDislikedTags()
-		);
+			entity.getDislikedTags());
 	}
 }

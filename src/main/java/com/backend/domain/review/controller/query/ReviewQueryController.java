@@ -37,7 +37,7 @@ public class ReviewQueryController {
 		summary = "리뷰 상세 조회",
 		description = """
 			리뷰 ID로 리뷰의 상세 정보를 조회합니다.
-
+			
 			**응답 항목:**
 			- 리뷰 내용, 이미지 URL, 공개 여부
 			- **평점 (rating)**: 0.5 ~ 5.0 (null일 수 있음)
@@ -54,7 +54,7 @@ public class ReviewQueryController {
 		summary = "내 리뷰 목록 조회",
 		description = """
 			로그인한 사용자의 리뷰 목록을 페이지네이션으로 조회합니다.
-
+			
 			**응답 항목 (각 리뷰):**
 			- 리뷰 내용, 이미지 URL, 공개 여부
 			- **평점 (rating)**: 0.5 ~ 5.0 (null일 수 있음)
@@ -70,7 +70,8 @@ public class ReviewQueryController {
 		@Parameter(description = "페이지 크기", example = "10")
 		@RequestParam(defaultValue = "10") @Min(1) int size
 	) {
-		Page<ReviewPageDto> response = reviewFacadeService.findAllWithPageableByUserId(token.getUser().getId(), page, size);
+		Page<ReviewPageDto> response = reviewFacadeService.findAllWithPageableByUserId(token.getUser().getId(), page,
+			size);
 		return ResponseUtils.page(response);
 	}
 

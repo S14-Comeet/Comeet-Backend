@@ -8,7 +8,7 @@ import lombok.Builder;
 
 @Builder
 @Schema(description = "리뷰 상세 정보 DTO")
-public record ReviewInfoDto (
+public record ReviewInfoDto(
 	@Schema(description = "리뷰 ID", example = "1")
 	Long reviewId,
 

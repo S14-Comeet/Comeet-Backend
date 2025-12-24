@@ -25,7 +25,6 @@ public class AsyncConfig implements AsyncConfigurer {
 		return Executors.newVirtualThreadPerTaskExecutor();
 	}
 
-
 	@Override
 	public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
 		return (ex, method, params) ->

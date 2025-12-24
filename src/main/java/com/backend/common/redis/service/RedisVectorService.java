@@ -109,7 +109,8 @@ public class RedisVectorService {
 	/**
 	 * 임베딩 데이터 DTO
 	 */
-	private record BeanEmbeddingData(Long beanId, float[] embedding) {}
+	private record BeanEmbeddingData(Long beanId, float[] embedding) {
+	}
 
 	/**
 	 * 원두 임베딩 삭제

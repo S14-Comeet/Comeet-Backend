@@ -7,12 +7,8 @@ import com.backend.domain.bean.enums.RoastingLevel;
 
 import lombok.Builder;
 
-/**
- * 추천 후보 정보 (내부 사용)
- */
 @Builder
 public record RecommendationCandidate(
-	// 원두 정보
 	Long beanId,
 	String beanName,
 	String beanDescription,
@@ -21,29 +17,21 @@ public record RecommendationCandidate(
 	List<String> flavorTags,
 	Integer totalScore,
 
-	// 메뉴 정보 (메뉴 추천 시)
 	Long menuId,
 	String menuName,
 	String menuDescription,
 	Integer menuPrice,
 	String menuImageUrl,
 
-	// 카페 정보 (메뉴 추천 시)
 	Long storeId,
 	String storeName,
 	String storeAddress,
 	BigDecimal storeLatitude,
 	BigDecimal storeLongitude,
 
-	// 유사도 점수
 	Double similarityScore,
 
-	// 거리 (LOCAL 모드 시)
-	Double distanceKm
-) {
-	/**
-	 * LLM 리랭킹용 텍스트 생성
-	 */
+	Double distanceKm) {
 	public String toDescriptionForLlm() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("원두: ").append(beanName);

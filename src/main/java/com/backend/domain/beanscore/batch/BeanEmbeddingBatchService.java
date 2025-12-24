@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 원두 임베딩 배치 서비스
- *
+ * <p>
  * bean_flavor_notes의 flavor를 임베딩하여 Redis Vector에 저장
  */
 @Slf4j
@@ -87,13 +87,16 @@ public class BeanEmbeddingBatchService {
 		return new EmbedResult(deletedCount, embeddedCount);
 	}
 
-	public record EmbedResult(int deletedCount, int embeddedCount) {}
+	public record EmbedResult(int deletedCount, int embeddedCount) {
+	}
 
 	/**
 	 * 배치 처리 (flavor가 있는 원두만 임베딩)
 	 */
-	private void processBatch(List<BeanScore> batch, AtomicInteger successCount, AtomicInteger skipCount,
-		AtomicInteger failCount) {
+	private void processBatch(
+		List<BeanScore> batch, AtomicInteger successCount, AtomicInteger skipCount,
+		AtomicInteger failCount
+	) {
 		for (BeanScore beanScore : batch) {
 			try {
 				// bean_flavor_notes에서 flavor 조회
