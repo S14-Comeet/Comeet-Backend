@@ -53,6 +53,7 @@ public class StoreConverter {
 			.category(store.getCategory())
 			.averageRating(store.getAverageRating())
 			.reviewCount(store.getReviewCount())
+			.visitCount(store.getVisitCount())
 			.thumbnailUrl(store.getThumbnailUrl())
 			.distance(GeoUtils.convertKmToMeters(distanceKm))
 			.build();
