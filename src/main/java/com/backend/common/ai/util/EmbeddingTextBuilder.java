@@ -150,8 +150,10 @@ public final class EmbeddingTextBuilder {
 		}
 		return switch (level) {
 			case LIGHT -> "Light Roast";
+			case MEDIUM_LIGHT -> "Medium-Light Roast";
 			case MEDIUM -> "Medium Roast";
-			case HEAVY -> "Dark Roast";
+			case MEDIUM_DARK -> "Medium-Dark Roast";
+			case DARK, HEAVY -> "Dark Roast";
 		};
 	}
 }

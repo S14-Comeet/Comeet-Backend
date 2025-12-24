@@ -117,6 +117,8 @@ public enum ErrorCode {
 	BEAN_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-005", "원두 업데이트에 실패했습니다."),
 	BEAN_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-006", "원두 삭제에 실패했습니다."),
 	BEAN_ACCESS_DENIED(HttpStatus.FORBIDDEN, "B-007", "원두에 대한 접근 권한이 없습니다."),
+	BEAN_FLAVOR_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-008", "원두-플레이버 매핑 저장에 실패했습니다."),
+	BEAN_FLAVOR_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "B-009", "원두-플레이버 매핑 삭제에 실패했습니다."),
 
 	/**
 	 * File Error

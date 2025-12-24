@@ -15,7 +15,7 @@ public class CuppingNoteFactory {
 	public CuppingNote create(final Long reviewId, final CuppingNoteReqDto reqDto) {
 		return CuppingNote.builder()
 			.reviewId(reviewId)
-			.roastingLevel(reqDto.roastingLevel())
+			.roastingLevel(reqDto.roastLevel())
 			.fragranceScore(reqDto.fragranceScore())
 			.aromaScore(reqDto.aromaScore())
 			.flavorScore(reqDto.flavorScore())
@@ -37,7 +37,7 @@ public class CuppingNoteFactory {
 		return CuppingNote.builder()
 			.id(id)
 			.reviewId(reviewId)
-			.roastingLevel(reqDto.roastingLevel())
+			.roastingLevel(reqDto.roastLevel())
 			.fragranceScore(reqDto.fragranceScore())
 			.aromaScore(reqDto.aromaScore())
 			.flavorScore(reqDto.flavorScore())

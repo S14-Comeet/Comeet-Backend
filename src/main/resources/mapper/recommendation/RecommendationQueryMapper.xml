@@ -105,7 +105,7 @@
         ORDER BY bs.total_score DESC
     </select>
 
-    <!-- 특정 원두를 사용하는 메뉴 조회 -->
+    <!-- 특정 원두를 사용하는 메뉴 조회 (bean_scores 없어도 조회 가능) -->
     <select id="findMenusByBeanId" resultMap="MenuWithBeanScoreResultMap">
         SELECT
             m.id AS menu_id,
@@ -139,7 +139,7 @@
         INNER JOIN stores s ON m.store_id = s.id
         INNER JOIN menu_bean_mappings mbm ON m.id = mbm.menu_id
         INNER JOIN beans b ON mbm.bean_id = b.id
-        INNER JOIN bean_scores bs ON b.id = bs.bean_id
+        LEFT JOIN bean_scores bs ON b.id = bs.bean_id
         LEFT JOIN roasteries r ON b.roastery_id = r.id
         WHERE m.deleted_at IS NULL
           AND s.deleted_at IS NULL

@@ -66,12 +66,19 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
 				.requestMatchers(WHITELIST).permitAll()
+
+				// 목록 조회 API (GET only)
 				.requestMatchers(HttpMethod.GET, "/stores").permitAll()
-				.requestMatchers(HttpMethod.GET, "/stores/**").permitAll()
-				.requestMatchers(HttpMethod.GET, "/menus/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/beans").permitAll()
-				.requestMatchers(HttpMethod.GET, "/beans/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/flavors").permitAll()
+
+				// 숫자 ID 기반 상세 조회 API (GET only)
+				// {id:\\d+} 패턴으로 숫자만 매칭, /stores/my 같은 경로는 authenticated로 처리
+				.requestMatchers(HttpMethod.GET, "/stores/{id:\\d+}").permitAll()
+				.requestMatchers(HttpMethod.GET, "/stores/{id:\\d+}/menus").permitAll()
+				.requestMatchers(HttpMethod.GET, "/stores/{id:\\d+}/reviews").permitAll()
+				.requestMatchers(HttpMethod.GET, "/menus/{id:\\d+}").permitAll()
+				.requestMatchers(HttpMethod.GET, "/beans/{id:\\d+}").permitAll()
 
 				.anyRequest().authenticated()
 			).oauth2Login(oauth2 -> oauth2

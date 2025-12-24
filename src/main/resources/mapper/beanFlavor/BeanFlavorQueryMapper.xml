@@ -10,7 +10,7 @@
     </select>
 
     <select id="findFlavorsByBeanIds" resultType="com.backend.domain.bean.dto.common.BeanFlavorDto">
-        SELECT f.id as flavorId, bfn.bean_id as beanId
+        SELECT bfn.bean_id as beanId, f.id as flavorId
         FROM flavors f
         INNER JOIN bean_flavor_notes bfn ON f.id = bfn.flavor_id
         WHERE bfn.bean_id IN

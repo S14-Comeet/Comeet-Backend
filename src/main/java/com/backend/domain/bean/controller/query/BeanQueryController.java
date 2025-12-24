@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.common.response.BaseResponse;
 import com.backend.common.response.PageResponse;
 import com.backend.common.util.ResponseUtils;
+import com.backend.domain.bean.dto.response.BeanFlavorResDto;
 import com.backend.domain.bean.dto.response.BeanResDto;
 import com.backend.domain.bean.service.facade.BeanFacadeService;
+import com.backend.domain.bean.service.query.BeanFlavorQueryService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class BeanQueryController {
 
 	private final BeanFacadeService beanFacadeService;
+	private final BeanFlavorQueryService beanFlavorQueryService;
 
 	@Operation(
 		summary = "원두 상세 조회",
@@ -85,5 +88,16 @@ public class BeanQueryController {
 	) {
 		Page<BeanResDto> response = beanFacadeService.searchBeansByCountry(keyword, page, size);
 		return ResponseUtils.page(response);
+	}
+
+	@Operation(
+		summary = "원두-플레이버 매핑 조회",
+		description = "원두에 매핑된 플레이버 목록을 조회합니다."
+	)
+	@GetMapping("/{beanId}/flavors")
+	public ResponseEntity<BaseResponse<BeanFlavorResDto>> getBeanFlavors(
+		@PathVariable Long beanId
+	) {
+		return ResponseUtils.ok(beanFlavorQueryService.getBeanFlavors(beanId));
 	}
 }
