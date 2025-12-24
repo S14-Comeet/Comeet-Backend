@@ -11,9 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 사용자 취향 엔티티
- */
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,9 +29,6 @@ public class UserPreference {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-	/**
-	 * 기본 취향으로 생성 (모든 값 5)
-	 */
 	public static UserPreference createDefault(Long userId) {
 		return UserPreference.builder()
 			.userId(userId)
@@ -48,9 +42,6 @@ public class UserPreference {
 			.build();
 	}
 
-	/**
-	 * 취향 업데이트
-	 */
 	public void update(
 		Integer prefAcidity,
 		Integer prefBody,

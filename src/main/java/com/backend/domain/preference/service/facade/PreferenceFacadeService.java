@@ -14,9 +14,6 @@ import com.backend.domain.preference.service.query.PreferenceQueryService;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * UserPreference Facade Service
- */
 @Service
 @RequiredArgsConstructor
 public class PreferenceFacadeService {
@@ -24,18 +21,12 @@ public class PreferenceFacadeService {
 	private final PreferenceCommandService preferenceCommandService;
 	private final PreferenceQueryService preferenceQueryService;
 
-	/**
-	 * 사용자 취향 조회
-	 */
 	@Transactional(readOnly = true)
 	public PreferenceResDto getPreference(Long userId) {
 		UserPreference preference = preferenceQueryService.getByUserId(userId);
 		return PreferenceConverter.toResDto(preference);
 	}
 
-	/**
-	 * 사용자 취향 초기화 (없으면 생성)
-	 */
 	@Transactional
 	public PreferenceResDto initPreference(Long userId) {
 		if (preferenceQueryService.existsByUserId(userId)) {
@@ -48,14 +39,10 @@ public class PreferenceFacadeService {
 		return PreferenceConverter.toResDto(preference);
 	}
 
-	/**
-	 * 사용자 취향 업데이트
-	 */
 	@Transactional
 	public PreferenceResDto updatePreference(Long userId, PreferenceUpdateReqDto reqDto) {
 		UserPreference preference = preferenceQueryService.findByUserId(userId)
 			.orElseGet(() -> {
-				// 취향 정보가 없으면 기본값으로 생성
 				UserPreference newPreference = UserPreference.createDefault(userId);
 				preferenceCommandService.save(newPreference);
 				return newPreference;
@@ -76,9 +63,6 @@ public class PreferenceFacadeService {
 		return PreferenceConverter.toResDto(preference);
 	}
 
-	/**
-	 * 사용자 취향 삭제
-	 */
 	@Transactional
 	public void deletePreference(Long userId) {
 		if (!preferenceQueryService.existsByUserId(userId)) {

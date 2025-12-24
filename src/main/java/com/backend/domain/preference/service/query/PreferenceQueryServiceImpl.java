@@ -12,9 +12,6 @@ import com.backend.domain.preference.mapper.query.PreferenceQueryMapper;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * UserPreference Query Service 구현체
- */
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor

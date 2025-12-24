@@ -8,9 +8,6 @@ import com.backend.domain.preference.mapper.command.PreferenceCommandMapper;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * UserPreference Command Service 구현체
- */
 @Service
 @Transactional
 @RequiredArgsConstructor
