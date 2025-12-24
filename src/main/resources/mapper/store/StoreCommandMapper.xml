@@ -79,4 +79,12 @@
         <include refid="common.CommonSql.notDeleted"/>
     </update>
 
+    <update id="incrementVisitCount">
+        UPDATE stores
+        SET visit_count = visit_count + 1,
+            updated_at  = NOW()
+        WHERE id = #{storeId}
+        <include refid="common.CommonSql.notDeleted"/>
+    </update>
+
 </mapper>

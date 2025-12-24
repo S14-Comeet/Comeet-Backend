@@ -66,4 +66,16 @@ public class StoreCommandServiceImpl implements StoreCommandService {
 		log.info("[Store] 평점 업데이트 완료 - storeId: {}, averageRating: {}, reviewCount: {}",
 			storeId, averageRating, reviewCount);
 	}
+
+	@Override
+	public void incrementVisitCount(final Long storeId) {
+		int affectedRows = storeCommandMapper.incrementVisitCount(storeId);
+
+		if (affectedRows == 0) {
+			log.warn("[Store] 방문 카운트 증가 실패 - storeId: {}", storeId);
+			throw new StoreException(ErrorCode.STORE_NOT_FOUND);
+		}
+
+		log.info("[Store] 방문 카운트 증가 완료 - storeId: {}", storeId);
+	}
 }

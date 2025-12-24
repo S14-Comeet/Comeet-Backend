@@ -13,4 +13,6 @@ public interface StoreCommandService {
 	void deleteStore(Long storeId);
 
 	void updateRatingStats(Long storeId, BigDecimal averageRating, Integer reviewCount);
+
+	void incrementVisitCount(Long storeId);
 }
