@@ -28,6 +28,7 @@ public class StoreValidator implements Validator<Store> {
 		validateNotDeleted(store);
 		validateStoreOwnership(store, userId, ErrorCode.STORE_OWNER_ONLY);
 	}
+
 	private void validateStoreExists(final Store store, final ErrorCode errorCode) {
 		if (store == null) {
 			throw new StoreException(errorCode);

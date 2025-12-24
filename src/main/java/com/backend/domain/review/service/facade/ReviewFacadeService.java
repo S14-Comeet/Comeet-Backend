@@ -104,8 +104,8 @@ public class ReviewFacadeService {
 	public ReviewedResDto getReviewDetails(final Long reviewId) {
 		Review review = reviewQueryService.findById(reviewId);
 		List<FlavorBadgeDto> badges = flavorQueryService.findFlavorsByReviewId(reviewId).stream()
-				.map(FlavorConverter::toFlavorBadgeDto)
-				.toList();
+			.map(FlavorConverter::toFlavorBadgeDto)
+			.toList();
 		return ReviewConverter.toReviewedResDto(review, badges);
 	}
 
@@ -145,9 +145,9 @@ public class ReviewFacadeService {
 
 	private ReviewedResDto createReviewedResDto(final Review review, final List<Long> flavorIds) {
 		List<FlavorBadgeDto> badges = flavorQueryService.findAllByIds(flavorIds)
-				.stream()
-				.map(FlavorConverter::toFlavorBadgeDto)
-				.toList();
+			.stream()
+			.map(FlavorConverter::toFlavorBadgeDto)
+			.toList();
 
 		return ReviewConverter.toReviewedResDto(review, badges);
 	}
@@ -172,44 +172,45 @@ public class ReviewFacadeService {
 	private List<ReviewPageDto> buildReviewPageDtos(final List<Review> reviews) {
 		// * 리뷰 ID 목록 추출
 		List<Long> reviewIds = reviews.stream()
-				.map(Review::getId)
-				.toList();
+			.map(Review::getId)
+			.toList();
 
 		List<ReviewFlavorDto> reviewFlavors = tastingNoteQueryMapper.findFlavorIdsByReviewIds(reviewIds);
 
 		// * Flavor ID를 모아서 한 번에 조회
 		List<Long> allFlavorIds = reviewFlavors.stream()
-				.map(ReviewFlavorDto::flavorId)
-				.distinct()
-				.toList();
+			.map(ReviewFlavorDto::flavorId)
+			.distinct()
+			.toList();
 
 		// * Flavor 정보를 한 번에 조회하고 Map으로 변환
 		Map<Long, FlavorBadgeDto> flavorMap = flavorQueryService.findAllByIds(allFlavorIds)
-				.stream()
-				.map(FlavorConverter::toFlavorBadgeDto)
-				.collect(Collectors.toMap(FlavorBadgeDto::flavorId, badge -> badge));
+			.stream()
+			.map(FlavorConverter::toFlavorBadgeDto)
+			.collect(Collectors.toMap(FlavorBadgeDto::flavorId, badge -> badge));
 
 		// * ReviewId별로 Flavor 그룹화
 		Map<Long, List<FlavorBadgeDto>> reviewBadgesMap = reviewFlavors.stream()
-				.collect(Collectors.groupingBy(
-						ReviewFlavorDto::reviewId,
-						Collectors.mapping(
-								dto -> flavorMap.get(dto.flavorId()),
-								Collectors.filtering(Objects::nonNull, Collectors.toList()))));
+			.collect(Collectors.groupingBy(
+				ReviewFlavorDto::reviewId,
+				Collectors.mapping(
+					dto -> flavorMap.get(dto.flavorId()),
+					Collectors.filtering(Objects::nonNull, Collectors.toList()))));
 
 		// * 리뷰별로 Flavor 뱃지 매핑하여 DTO 변환
 		return reviews.stream()
-				.map(review -> {
-					List<FlavorBadgeDto> badges = reviewBadgesMap.getOrDefault(review.getId(), List.of());
-					return ReviewConverter.toReviewPageDto(review, badges);
-				})
-				.toList();
+			.map(review -> {
+				List<FlavorBadgeDto> badges = reviewBadgesMap.getOrDefault(review.getId(), List.of());
+				return ReviewConverter.toReviewPageDto(review, badges);
+			})
+			.toList();
 	}
 
 	public CuppingResDto createCuppingNote(
-			final Long userId,
-			final Long reviewId,
-			final CuppingNoteReqDto reqDto) {
+		final Long userId,
+		final Long reviewId,
+		final CuppingNoteReqDto reqDto
+	) {
 		getValidatedReview(reviewId, userId);
 		validateCuppingNoteNotDuplicate(reviewId);
 		CuppingNote cuppingNote = processCreateCuppingNote(reviewId, reqDto);
@@ -217,9 +218,10 @@ public class ReviewFacadeService {
 	}
 
 	public CuppingResDto updateCuppingNote(
-			final Long userId,
-			final Long reviewId,
-			final CuppingNoteReqDto reqDto) {
+		final Long userId,
+		final Long reviewId,
+		final CuppingNoteReqDto reqDto
+	) {
 		getValidatedReview(reviewId, userId);
 		CuppingNote cuppingNote = processUpdateCuppingNote(reviewId, reqDto);
 		return createCuppingResDto(cuppingNote);
@@ -262,9 +264,9 @@ public class ReviewFacadeService {
 
 	private void updateStoreRatingStats(final Long storeId) {
 		StoreRatingStatsDto stats = reviewQueryService.findRatingStatsByStoreId(storeId)
-				.orElse(new StoreRatingStatsDto(BigDecimal.ZERO, 0));
+			.orElse(new StoreRatingStatsDto(BigDecimal.ZERO, 0));
 		storeCommandService.updateRatingStats(storeId, stats.averageRating(), stats.reviewCount());
 		log.debug("[Review] 가맹점 평점 업데이트 - storeId: {}, avgRating: {}, count: {}",
-				storeId, stats.averageRating(), stats.reviewCount());
+			storeId, stats.averageRating(), stats.reviewCount());
 	}
 }

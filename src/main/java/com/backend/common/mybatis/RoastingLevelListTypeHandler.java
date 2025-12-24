@@ -53,7 +53,8 @@ public class RoastingLevelListTypeHandler extends BaseTypeHandler<List<RoastingL
 		if (json == null || json.isBlank()) {
 			return new ArrayList<>();
 		}
-		List<String> stringList = gson.fromJson(json, new TypeToken<List<String>>() {}.getType());
+		List<String> stringList = gson.fromJson(json, new TypeToken<List<String>>() {
+		}.getType());
 		return stringList.stream()
 			.map(RoastingLevel::valueOf)
 			.toList();

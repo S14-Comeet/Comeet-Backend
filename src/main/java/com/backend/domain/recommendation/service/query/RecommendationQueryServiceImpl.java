@@ -23,9 +23,10 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 
 	@Override
 	public List<MenuWithBeanScoreDto> findFilteredMenus(
-			List<String> dislikedTags,
-			List<String> preferredRoastLevels,
-			GeoUtils.BoundingBox boundingBox) {
+		List<String> dislikedTags,
+		List<String> preferredRoastLevels,
+		GeoUtils.BoundingBox boundingBox
+	) {
 		BigDecimal minLat = null, maxLat = null, minLon = null, maxLon = null;
 		if (boundingBox != null) {
 			minLat = boundingBox.minLatitude();
@@ -35,9 +36,9 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 		}
 
 		List<MenuWithBeanScoreDto> menus = recommendationQueryMapper.findFilteredMenus(
-				dislikedTags,
-				preferredRoastLevels,
-				minLat, maxLat, minLon, maxLon);
+			dislikedTags,
+			preferredRoastLevels,
+			minLat, maxLat, minLon, maxLon);
 
 		log.debug("[Recommendation] 필터링된 메뉴 조회 완료 - {}건", menus.size());
 		return menus;
@@ -54,7 +55,7 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 		}
 
 		List<MenuWithBeanScoreDto> menus = recommendationQueryMapper.findMenusByBeanId(
-				beanId, minLat, maxLat, minLon, maxLon);
+			beanId, minLat, maxLat, minLon, maxLon);
 
 		log.debug("[Recommendation] 원두 사용 메뉴 조회 완료 - beanId: {}, {}건", beanId, menus.size());
 		return menus;
@@ -63,14 +64,14 @@ public class RecommendationQueryServiceImpl implements RecommendationQueryServic
 	@Override
 	public Double calculateDistance(MenuWithBeanScoreDto menu, BigDecimal latitude, BigDecimal longitude) {
 		if (menu.storeLatitude() == null || menu.storeLongitude() == null
-				|| latitude == null || longitude == null) {
+			|| latitude == null || longitude == null) {
 			return null;
 		}
 
 		return GeoUtils.calculateHaversineDistance(
-				latitude.doubleValue(),
-				longitude.doubleValue(),
-				menu.storeLatitude().doubleValue(),
-				menu.storeLongitude().doubleValue());
+			latitude.doubleValue(),
+			longitude.doubleValue(),
+			menu.storeLatitude().doubleValue(),
+			menu.storeLongitude().doubleValue());
 	}
 }

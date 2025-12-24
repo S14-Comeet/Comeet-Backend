@@ -9,29 +9,29 @@ import lombok.Builder;
 
 @Builder
 public record RecommendationCandidate(
-		Long beanId,
-		String beanName,
-		String beanDescription,
-		String beanOrigin,
-		RoastingLevel roastLevel,
-		List<String> flavorTags,
-		Integer totalScore,
+	Long beanId,
+	String beanName,
+	String beanDescription,
+	String beanOrigin,
+	RoastingLevel roastLevel,
+	List<String> flavorTags,
+	Integer totalScore,
 
-		Long menuId,
-		String menuName,
-		String menuDescription,
-		Integer menuPrice,
-		String menuImageUrl,
+	Long menuId,
+	String menuName,
+	String menuDescription,
+	Integer menuPrice,
+	String menuImageUrl,
 
-		Long storeId,
-		String storeName,
-		String storeAddress,
-		BigDecimal storeLatitude,
-		BigDecimal storeLongitude,
+	Long storeId,
+	String storeName,
+	String storeAddress,
+	BigDecimal storeLatitude,
+	BigDecimal storeLongitude,
 
-		Double similarityScore,
+	Double similarityScore,
 
-		Double distanceKm) {
+	Double distanceKm) {
 	public String toDescriptionForLlm() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("원두: ").append(beanName);

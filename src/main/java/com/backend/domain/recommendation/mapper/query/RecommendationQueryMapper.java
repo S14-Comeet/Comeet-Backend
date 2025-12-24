@@ -12,17 +12,19 @@ import com.backend.domain.recommendation.dto.internal.MenuWithBeanScoreDto;
 public interface RecommendationQueryMapper {
 
 	List<MenuWithBeanScoreDto> findFilteredMenus(
-			@Param("dislikedTags") List<String> dislikedTags,
-			@Param("preferredRoastLevels") List<String> preferredRoastLevels,
-			@Param("minLatitude") BigDecimal minLatitude,
-			@Param("maxLatitude") BigDecimal maxLatitude,
-			@Param("minLongitude") BigDecimal minLongitude,
-			@Param("maxLongitude") BigDecimal maxLongitude);
+		@Param("dislikedTags") List<String> dislikedTags,
+		@Param("preferredRoastLevels") List<String> preferredRoastLevels,
+		@Param("minLatitude") BigDecimal minLatitude,
+		@Param("maxLatitude") BigDecimal maxLatitude,
+		@Param("minLongitude") BigDecimal minLongitude,
+		@Param("maxLongitude") BigDecimal maxLongitude
+	);
 
 	List<MenuWithBeanScoreDto> findMenusByBeanId(
-			@Param("beanId") Long beanId,
-			@Param("minLatitude") BigDecimal minLatitude,
-			@Param("maxLatitude") BigDecimal maxLatitude,
-			@Param("minLongitude") BigDecimal minLongitude,
-			@Param("maxLongitude") BigDecimal maxLongitude);
+		@Param("beanId") Long beanId,
+		@Param("minLatitude") BigDecimal minLatitude,
+		@Param("maxLatitude") BigDecimal maxLatitude,
+		@Param("minLongitude") BigDecimal minLongitude,
+		@Param("maxLongitude") BigDecimal maxLongitude
+	);
 }

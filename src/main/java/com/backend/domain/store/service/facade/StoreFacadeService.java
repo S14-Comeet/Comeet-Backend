@@ -138,6 +138,7 @@ public class StoreFacadeService {
 	private String normalize(String text) {
 		return text.replaceAll(INVALID_CHAR_REGEX, BLANK).toLowerCase();
 	}
+
 	public StoreDetailResDto updateStore(Long storeId, StoreUpdateReqDto reqDto, Long userId) {
 		Store store = storeQueryService.findById(storeId);
 		storeValidator.validateExistingStore(store, userId);

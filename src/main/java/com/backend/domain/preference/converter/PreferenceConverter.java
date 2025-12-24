@@ -11,14 +11,14 @@ public final class PreferenceConverter {
 
 	public static PreferenceResDto toResDto(UserPreference entity) {
 		return new PreferenceResDto(
-				entity.getId(),
-				entity.getUserId(),
-				entity.getPrefAcidity(),
-				entity.getPrefBody(),
-				entity.getPrefSweetness(),
-				entity.getPrefBitterness(),
-				entity.getPreferredRoastLevels(),
-				entity.getLikedTags(),
-				entity.getDislikedTags());
+			entity.getId(),
+			entity.getUserId(),
+			entity.getPrefAcidity(),
+			entity.getPrefBody(),
+			entity.getPrefSweetness(),
+			entity.getPrefBitterness(),
+			entity.getPreferredRoastLevels(),
+			entity.getLikedTags(),
+			entity.getDislikedTags());
 	}
 }

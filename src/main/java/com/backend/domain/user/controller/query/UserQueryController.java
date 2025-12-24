@@ -45,7 +45,6 @@ public class UserQueryController {
 		return ResponseUtils.ok(response);
 	}
 
-
 	@Operation(
 		summary = "닉네임 중복 체크",
 		description = "닉네임 사용 가능 여부를 확인합니다. 회원가입 전 실시간 중복 체크에 사용합니다."

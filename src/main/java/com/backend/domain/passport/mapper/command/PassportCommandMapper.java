@@ -8,9 +8,9 @@ import com.backend.domain.passport.entity.Passport;
 @Mapper
 public interface PassportCommandMapper {
 
-    void insertPassport(Passport passport);
+	void insertPassport(Passport passport);
 
-    void insertPassportVisit(@Param("passportId") Long passportId, @Param("visitId") Long visitId);
+	void insertPassportVisit(@Param("passportId") Long passportId, @Param("visitId") Long visitId);
 
-    void updateCoverImage(@Param("passportId") Long passportId, @Param("imageUrl") String imageUrl);
+	void updateCoverImage(@Param("passportId") Long passportId, @Param("imageUrl") String imageUrl);
 }

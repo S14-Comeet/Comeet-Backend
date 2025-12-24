@@ -9,9 +9,10 @@ import com.backend.domain.recommendation.dto.internal.MenuWithBeanScoreDto;
 public interface RecommendationQueryService {
 
 	List<MenuWithBeanScoreDto> findFilteredMenus(
-			List<String> dislikedTags,
-			List<String> preferredRoastLevels,
-			GeoUtils.BoundingBox boundingBox);
+		List<String> dislikedTags,
+		List<String> preferredRoastLevels,
+		GeoUtils.BoundingBox boundingBox
+	);
 
 	List<MenuWithBeanScoreDto> findMenusByBeanId(Long beanId, GeoUtils.BoundingBox boundingBox);
 

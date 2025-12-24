@@ -135,7 +135,8 @@ public class BatchImageGenerationFacadeService {
 
 	private String buildPromptFromPassport(final Passport passport) {
 		try {
-			return String.format(passportImagePrompt.getContentAsString(StandardCharsets.UTF_8), passport.getOriginSequence());
+			return String.format(passportImagePrompt.getContentAsString(StandardCharsets.UTF_8),
+				passport.getOriginSequence());
 		} catch (IOException e) {
 			throw new AiException(ErrorCode.USER_PROMPT_REQUIRED);
 		}

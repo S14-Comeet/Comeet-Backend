@@ -125,7 +125,7 @@ public enum ErrorCode {
 	 */
 	INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "F-001", "파일 이름이 유효하지 않습니다."),
 	INVALID_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "F-002", "파일 타입이 유효하지 않습니다."),
-	IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"F-003" , "이미지 업로드에 실패했습니다."),
+	IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "F-003", "이미지 업로드에 실패했습니다."),
 
 	/**
 	 * Passport Error
