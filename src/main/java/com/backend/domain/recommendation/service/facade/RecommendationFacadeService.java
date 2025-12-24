@@ -1,8 +1,5 @@
 package com.backend.domain.recommendation.service.facade;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,8 +13,6 @@ import com.backend.common.ai.dto.RerankRequest;
 import com.backend.common.ai.dto.RerankResponse;
 import com.backend.common.ai.service.EmbeddingService;
 import com.backend.common.ai.service.LlmService;
-import com.backend.common.error.ErrorCode;
-import com.backend.common.error.exception.RecommendationException;
 import com.backend.common.redis.dto.VectorSearchResult;
 import com.backend.common.redis.service.RedisVectorService;
 import com.backend.common.util.GeoUtils;
