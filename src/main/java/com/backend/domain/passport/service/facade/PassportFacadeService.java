@@ -106,4 +106,32 @@ public class PassportFacadeService {
 		log.info("[Passport] 여권 생성 완료, passportId={}, userId={}", passportId, userId);
 	}
 
+	@Transactional
+	public void generatePassportsForMonth(int year, int month, Long userId) {
+		log.info("[Passport] 여권 생성 테스트 시작 - year={}, month={}, userId={}", year, month, userId);
+
+		if (userId != null) {
+			generatePassportForUser(userId, year, month);
+			log.info("[Passport] 여권 생성 테스트 완료 - userId={}", userId);
+		} else {
+			List<Long> userIds = findUsersWithVisitsInMonth(year, month);
+			log.info("[Passport] 대상 사용자 조회 완료 - count={}", userIds.size());
+
+			int successCount = 0;
+			int failCount = 0;
+
+			for (Long targetUserId : userIds) {
+				try {
+					generatePassportForUser(targetUserId, year, month);
+					successCount++;
+				} catch (Exception e) {
+					log.error("[Passport] 여권 생성 실패 - userId={}", targetUserId, e);
+					failCount++;
+				}
+			}
+
+			log.info("[Passport] 여권 생성 테스트 완료 - success={}, failed={}", successCount, failCount);
+		}
+	}
+
 }
