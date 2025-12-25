@@ -16,7 +16,7 @@ public interface UserQueryMapper extends QueryMapper<User> {
 
 	Optional<User> findBySocialId(@Param("socialId") String socialId);
 
-	Boolean existBySocialId(@Param("socialId") String socialId);
+	boolean existBySocialId(@Param("socialId") String socialId);
 
-	Boolean existByNickname(@Param("nickname") String nickname);
+	boolean existByNickname(@Param("nickname") String nickname);
 }

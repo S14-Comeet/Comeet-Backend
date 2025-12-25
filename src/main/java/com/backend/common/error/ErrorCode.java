@@ -32,6 +32,9 @@ public enum ErrorCode {
 	NICKNAME_NOT_BLANK(HttpStatus.BAD_REQUEST, "U-002", "닉네임은 필수 입력값입니다."),
 	NICKNAME_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "U-003", "닉네임 형식이 올바르지 않습니다."),
 	INVALID_USER(HttpStatus.BAD_REQUEST, "U-004", "유효하지 않은 사용자입니다."),
+	NICKNAME_DUPLICATED(HttpStatus.CONFLICT, "U-005", "이미 사용 중인 닉네임입니다."),
+	ROLE_CHANGE_NOT_ALLOWED(HttpStatus.FORBIDDEN, "U-006", "역할을 변경할 수 없는 상태입니다."),
+	INVALID_ROLE(HttpStatus.BAD_REQUEST, "U-007", "유효하지 않은 역할입니다."),
 	/**
 	 * Auth/JWT Error
 	 */
