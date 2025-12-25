@@ -43,13 +43,18 @@
                r.name    AS roastery_name
         FROM visits v
                  INNER JOIN menus m ON v.menu_id = m.id
-                 LEFT JOIN menu_bean_mappings mbm ON m.id = mbm.menu_id
-                 LEFT JOIN beans b ON mbm.bean_id = b.id
+                 LEFT JOIN (
+                     SELECT menu_id, MIN(bean_id) AS min_bean_id
+                     FROM menu_bean_mappings
+                     GROUP BY menu_id
+                 ) min_mbm ON m.id = min_mbm.menu_id
+                 LEFT JOIN beans b ON min_mbm.min_bean_id = b.id
                  LEFT JOIN roasteries r ON b.roastery_id = r.id
         WHERE v.user_id = #{userId}
           AND YEAR(v.created_at) = #{year}
           AND MONTH(v.created_at) = #{month}
           AND v.menu_id IS NOT NULL
+          AND v.is_verified = true
         ORDER BY v.created_at ASC
     </select>
 

@@ -11,7 +11,7 @@
                s.name         AS store_name,
                s.address      AS store_address,
                s.latitude     AS latitude,
-               s.longitude    AS longitube,
+               s.longitude    AS longitude,
                MAX(b.country) AS bean_origin,
                m.name         AS menu_name
         FROM passport_visits pv
