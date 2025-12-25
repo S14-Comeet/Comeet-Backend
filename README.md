@@ -1,6 +1,6 @@
 <div align="center">
 
-# ☕ Comeet
+# ☕ 커슐랭 (Cochelin)
 [![개발 상태][status-shield]][status-url]
 
 ### ✨ 커피와 사람을 연결하는 특별한 만남 ✨
@@ -14,21 +14,27 @@
 - [📖 프로젝트 소개](#-프로젝트-소개)
 - [🎯 프로젝트 목표](#-프로젝트-목표)
 - [🛠️ 기술 스택](#️-기술-스택)
+- [🚀 Quick Start](#-quick-start)
+- [🌿 Git Branch 전략](#-git-branch-전략)
 - [📝 Commit Message Convention](#-commit-message-convention)
 - [📚 상세 문서](#-상세-문서)
+
 ---
 
 # 📖 프로젝트 소개
 
 > [!IMPORTANT]
-> **Comeet**은 스페셜티 커피를 사랑하는 20-30대를 위한 커피 탐험 플랫폼입니다.
+> **커슐랭(Cochelin)**은 스페셜티 커피를 사랑하는 20-30대를 위한 커피 탐험 플랫폼입니다.
 > 지도 기반으로 주변 카페를 발견하고, **메뉴를 인증**하며, **커피 테이스팅 노트**를 작성하는 새로운 경험을 제공합니다.
 
 **핵심 차별점**:
 - 🎯 **메뉴 인증 시스템**: GPS 기반 100m 반경 내 메뉴 인증
 - ☕ **커피 원두 정보**: 생산 국가, 농장, 품종, 가공 방식 등 상세 정보
 - 📝 **테이스팅 노트**: 초심자/심화자 템플릿으로 체계적인 커피 기록
+- 🧪 **커핑 노트**: SCA 표준 7가지 항목 평가 (Fragrance, Aroma, Flavor 등)
 - 📊 **커피 여권**: 국가별, 로스터리별 통계 및 방문 기록
+- 🤖 **AI 추천**: 취향 기반 원두/메뉴 추천 (Vector Search + LLM)
+- 📌 **북마크**: 폴더 기반 카페 저장 및 관리
 
 ---
 
@@ -37,7 +43,7 @@
 ### 핵심 가치
 - **접근성**: 커피 초보자부터 심화자까지 수준별 기록 템플릿 제공
 - **탐험**: 지도 기반으로 새로운 카페를 발견하고 메뉴 인증
-- **성장**: 레벨 시스템과 뱃지를 통한 게임화 요소
+- **개인화**: AI 기반 취향 분석 및 맞춤 추천
 - **기록**: 테이스팅 노트를 통한 체계적인 커피 기록 관리
 
 ### 타겟 사용자
@@ -51,27 +57,92 @@
 # 🛠️ 기술 스택
 
 ## Backend (이 레포지토리)
-```
-- Language: Java 21
-- Framework: Spring Boot 3.5.7
-- ORM: MyBatis
-- Architecture: REST API
-- Database: MySQL 8.0+
-- External API: Naver GeoLocation API
-```
+| 분류 | 기술 |
+|------|------|
+| Language | Java 21 |
+| Framework | Spring Boot 3.5.7 |
+| ORM | MyBatis 3.0.5 (XML Mapper) |
+| Database | MySQL 8.0+ |
+| Cache & Vector | Redis Stack (캐싱, 세션, 벡터 검색) |
+| AI | Spring AI + OpenAI (임베딩, LLM 리랭킹), Gemini (여권 이미지 생성) |
+| Security | Spring Security + JWT + OAuth2 (Naver) |
+| API Docs | Swagger UI (SpringDoc) |
 
 ## Frontend (별도 레포지토리)
-```
-- Framework: Vue.js
-- Map API: Naver Map API
-```
+| 분류 | 기술 |
+|------|------|
+| Framework | Vue.js |
+| Map | Naver Map API |
 
 ## Infrastructure
-```
-- Deployment: AWS / Naver Cloud Platform
-- Image Storage: AWS S3 / Object Storage
+| 분류 | 기술 |
+|------|------|
+| Deployment | AWS / Naver Cloud Platform |
+| Image Storage | AWS S3 |
+| CI/CD | GitHub Actions |
+
+---
+
+# 🚀 Quick Start
+
+## 요구 사항
+- Java 21+
+- MySQL 8.0+
+- Redis Stack Server (벡터 검색 지원)
+
+## 실행 방법
+
+```bash
+# 1. Redis Stack Server 실행
+docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+
+# 2. 프로젝트 클론
+git clone https://github.com/S14-Comeet/Comeet-Backend.git
+cd Comeet-Backend
+
+# 3. 환경 변수 설정 (application-local.yml 참고)
+
+# 4. 빌드 (테스트 제외)
+./gradlew clean build -x test
+
+# 5. 실행
+./gradlew bootRun
 ```
 
+## 데이터베이스 초기화
+
+SQL 파일은 아래 순서대로 실행합니다:
+
+```bash
+# 1. 스키마 생성
+mysql -u [user] -p [database] < src/main/resources/sql/schema/schema.sql
+
+# 2. 스키마 변경사항 적용 (필요시)
+mysql -u [user] -p [database] < src/main/resources/sql/schema/change.sql
+
+# 3. 기초 데이터 입력
+mysql -u [user] -p [database] < src/main/resources/sql/data/flavor_prod.sql
+mysql -u [user] -p [database] < src/main/resources/sql/data/country_coordinates.sql
+
+# 4. 메인 데이터 임포트
+mysql -u [user] -p [database] < src/main/resources/sql/data/data_import.sql
+
+# 5. 데이터 정규화
+mysql -u [user] -p [database] < src/main/resources/sql/data/normalize_bean_country_and_processing.sql
+```
+
+| 순서 | 파일 | 설명 |
+|------|------|------|
+| 1 | `schema/schema.sql` | 테이블 생성 |
+| 2 | `schema/change.sql` | 스키마 변경사항 |
+| 3 | `data/flavor_prod.sql` | 플레이버 휠 마스터 데이터 |
+| 4 | `data/country_coordinates.sql` | 국가별 좌표 데이터 |
+| 5 | `data/data_import.sql` | 카페, 메뉴, 원두 등 메인 데이터 |
+| 6 | `data/normalize_bean_country_and_processing.sql` | 원두 국가/가공방식 정규화 |
+
+## API 문서
+서버 실행 후 Swagger UI에서 API 문서를 확인할 수 있습니다:
+- **Local**: http://localhost:8080/
 
 ---
 
@@ -153,9 +224,9 @@
 
 <div align="center">
 
-### ✨ **Comeet과 함께 나만의 커피 여행을 시작하세요!** ✨
+### ✨ **커슐랭과 함께 나만의 커피 여행을 시작하세요!** ✨
 
-*Made with ❤️ by Comeet Team*
+*Made with ❤️ by Cochelin Team*
 
 </div>
 
